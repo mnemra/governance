@@ -1,0 +1,40 @@
+{
+  "entries": {
+    "adrs/README.md": {
+      "primary_audience": "human",
+      "prompt_path": "strip-pass.md",
+      "prompt_sha256": "9a5cec0247acd96ea933ae89a5355c91d85a2f49cd89c9a7c5f2f582577a7a23",
+      "source_sha256": "6224ee39c7f145bf59281e141a52ef3b0dc1155331454b7de135aa9ce57c5a9a",
+      "translated_at": "2026-05-22T22:30:00Z"
+    },
+    "architecture-principles.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "140df66730636b5165b263914036472af56691b49fd8ada8a0ec1adf590247bb",
+      "translated_at": "2026-05-22T22:30:00Z"
+    },
+    "architecture-values.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "6a2ca6b31c09b1cd47f2e010d7fd0353b010a922ede4408cdb8e8962a4b787af",
+      "translated_at": "2026-05-22T22:30:00Z"
+    },
+    "constraint-edges.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "c4c68d2350f44fe588954fe04d9468e7ea84effe35104684c2a23bf1d64e217c",
+      "translated_at": "2026-05-22T22:30:00Z"
+    },
+    "index.md": {
+      "primary_audience": "human",
+      "prompt_path": "strip-pass.md",
+      "prompt_sha256": "9a5cec0247acd96ea933ae89a5355c91d85a2f49cd89c9a7c5f2f582577a7a23",
+      "source_sha256": "3fee50330f916b266b057b256d54bfb4325a6ae436a90724b4b10e52203f3d57",
+      "translated_at": "2026-05-22T22:30:00Z"
+    }
+  },
+  "schema_version": 1
+}

@@ -1,0 +1,23 @@
+# macOS
+.DS_Store
+
+# Squash-merge message used by the dispatch workflow
+MERGE_MESSAGE
+
+# mdBook build output
+docs/book/
+docs/_build/
+
+# Working scratch (dispatch reports etc. live in workspace brain/, not the repo)
+scratch/
+
+# Python bytecode cache
+__pycache__/
+*.pyc
+
+# Translation pipeline: pending sidecar is ephemeral (removed by --finalize on success)
+docs/_published/.translation-pending.json
+
+# Accidental Rust noise (this repo has no Rust code, but keep a safety net)
+target/
+**/*.rs.bk

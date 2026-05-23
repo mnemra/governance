@@ -1,0 +1,89 @@
+<!-- ===== docs/src/index.md ===== -->
+
+---
+title: mnemra-governance
+summary: "Governance canon for the mnemra ecosystem. Canon migration pending; this is the scaffold."
+primary-audience: human
+---
+
+# mnemra-governance
+
+Governance for the mnemra ecosystem. This repo holds the agent-primary canon that describes how mnemra projects work: architecture values, architecture principles, constraint edges, and the G-* series of architecture decision records.
+
+Canon migration is pending. This scaffold is the foundation on which that migration lands.
+
+## About this site
+
+This documentation is built with [mdBook](https://rust-lang.github.io/mdBook/) and published through a dual-audience pipeline:
+
+- **Agent-primary sources** live in `docs/src/` (Markdown with YAML frontmatter)
+- **Human-rendered output** is built into `docs/_published/human/` and rendered by mdBook
+- **Agent-rendered output** is built into `docs/_published/agent/` and used to generate `llms.txt` / `llms-full.txt`
+
+The publish mechanism is documented at `scripts/docs-translate.py` and `scripts/docs-llms.py`.
+
+## Repository
+
+Source code lives at: [https://github.com/mnemra/governance](https://github.com/mnemra/governance).
+
+<!-- ===== docs/src/architecture-values.md ===== -->
+
+---
+title: Architecture Values
+summary: "Placeholder. Architecture values canon migrates here in a follow-up dispatch."
+primary-audience: agent
+---
+
+# Architecture Values
+
+Placeholder page. The architecture values canon migrates here in a follow-up dispatch.
+
+<!-- ===== docs/src/architecture-principles.md ===== -->
+
+---
+title: Architecture Principles
+summary: "Placeholder. Architecture principles canon migrates here in a follow-up dispatch."
+primary-audience: agent
+---
+
+# Architecture Principles
+
+Placeholder page. The architecture principles canon migrates here in a follow-up dispatch.
+
+<!-- ===== docs/src/constraint-edges.md ===== -->
+
+---
+title: Constraint Edges
+summary: "Placeholder. Constraint edges canon migrates here in a follow-up dispatch."
+primary-audience: agent
+---
+
+# Constraint Edges
+
+Placeholder page. The constraint edges canon migrates here in a follow-up dispatch.
+
+<!-- ===== docs/src/adrs/README.md ===== -->
+
+---
+title: Architecture Decision Records
+summary: "Placeholder. G-* ADRs migrate here in a follow-up dispatch."
+primary-audience: human
+---
+
+# Architecture Decision Records
+
+Placeholder. The G-* series of architecture decision records (G-0001 through G-0029 at time of scaffold) migrates here in a follow-up dispatch.
+
+ADRs follow the [MADR](https://adr.github.io/madr/) format with a `G-` prefix denoting workspace-level governance ADRs (as distinct from project-level `P-` ADRs that live in individual project repos).
+
+<!-- ===== docs/src/glossary.md ===== -->
+
+---
+title: Glossary
+summary: "Terms and conventions used across the mnemra governance canon."
+primary-audience: human
+---
+
+# Glossary
+
+Placeholder. The glossary will be populated as the architecture values, principles, constraint edges, and G-* ADRs migrate into this repo. Until then this page exists to anchor cross-references and to serve as the `{{GLOSSARY}}` injection source for the translation pipeline.

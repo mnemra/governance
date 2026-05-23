@@ -1,0 +1,19 @@
+[book]
+title = "mnemra-governance"
+authors = []
+language = "en"
+src = "_published/human"
+
+[output.html]
+git-repository-url = "https://github.com/mnemra/governance"
+
+# mdBook runs preprocessor commands from the book root (docs/), so the repo-root
+# script is reached via `../scripts/`. See mnemra-core's spec CWD gotcha (AC #4).
+[preprocessor.strip-frontmatter]
+command = "uv run ../scripts/mdbook-strip-frontmatter.py"
+
+[preprocessor.mermaid]
+command = "mdbook-mermaid"
+
+[preprocessor.d2]
+command = "mdbook-d2"
