@@ -1,0 +1,56 @@
+# mnemra-governance
+
+> Plugin-extensible context layer for AI coding workflows. This site documents the project's intent, architecture decisions, and specifications.
+
+## Introduction
+
+- [Introduction](index.md): Governance canon for the mnemra ecosystem: architecture values, principles, constraint edges, and the G-series of architecture decision records.
+
+## Architecture Values
+
+- [Architecture Values](architecture-values.md): The workspace's standing architecture values — core system-property and meta values that shape every architecture decision.
+
+## Architecture Principles
+
+- [Architecture Principles](architecture-principles.md): The workspace's standing named architecture principles, operationalizing the values in architecture-values.md.
+
+## Constraint Edges
+
+- [Constraint Edges](constraint-edges.md): Edges view over the workspace constraint graph — relationships between values, principles, and workspace ADRs.
+
+## Architecture Decision Records
+
+- [ADR Overview](adrs/README.md): The G-series of governance architecture decision records: MADR format, G- prefix, ecosystem-wide scope.
+- [G-0001: Testing Philosophy](adrs/G-0001-testing-philosophy.md): Workspace testing standards: 90% coverage floor, inverted pyramid (unit-heavy), no personal-project discount.
+- [G-0002: No Compile-Time Asset Embedding](adrs/G-0002-no-compile-time-asset-embedding.md): Serve static files at runtime via ServeDir rather than baking them into the binary at compile time; use Docker multi-stage builds for deployment.
+- [G-0003: Two-Tier ADR System](adrs/G-0003-adr-two-tier-system.md): Workspace ADRs (G-prefix) for general standards; project ADRs (P-prefix) for project-specific decisions; projection pattern for public-safe summaries.
+- [G-0004: Hybrid XML Format for Agent Profiles](adrs/G-0004-xml-agent-profiles.md): Agent profiles use hybrid XML format: XML tags for structure, markdown inside tags for prose. Required top-level tags enumerated; max two nesting levels.
+- [G-0005: SQL File-Based Migrations](adrs/G-0005-sql-file-migrations.md): Migrations live as SQL files embedded at compile time via include_str!; a generic migration runner tracks schema version; forward-only migrations.
+- [G-0006: Justfile as CI Contract](adrs/G-0006-justfile-as-ci-contract.md): CI YAML invokes `just ci` and nothing else; gate logic lives in the justfile; fixed verify-* recipe vocabulary shared across all projects.
+- [G-0007: Knowledge-Extraction Nudge Hook](adrs/G-0007-knowledge-extraction-nudge-hook.md): Two-hook pattern (Stop for detection + UserPromptSubmit for delivery) implements a once-per-session nudge at task-completion boundaries; session-keyed state file.
+- [G-0008: Knowledge-Extraction Capture Schema](adrs/G-0008-knowledge-extraction-capture-schema.md): Child table skill_run_captures (FK to skill_runs) holds per-capture observability; writer-ownership, partial-state resume, and /clear orphan semantics specified.
+- [G-0009: Knowledge-Extraction Duplicate-Detection Scope](adrs/G-0009-knowledge-extraction-duplicate-detection-scope.md): Title-only flat grep over 5 destination types, 6 corpora; LLM-driven overlap judgment; field-level UPDATE diff; scope list held as config array for mnemra portability.
+- [G-0010: Knowledge-Extraction Worked-Example Encoding](adrs/G-0010-knowledge-extraction-worked-example-encoding.md): 13 initial worked examples in a skill-file appendix; retro-driven refinement cadence; soft cap at 20 examples before trim decision.
+- [G-0011: Knowledge-Extraction Advisory-Drift Detection](adrs/G-0011-knowledge-extraction-advisory-drift-detection.md): New operational-form skill: advisory phrase list + LLM self-check protocol for operational-form detection; reusable across /spec, /discover.
+- [G-0012: Knowledge-Extraction Safety Ceiling](adrs/G-0012-knowledge-extraction-safety-ceiling.md): N=6 rounds per rule, M=20k tokens per rule, M_run=80k tokens per invocation; char-count approximation at runtime; run-level accumulator on skill_runs parent row.
+- [G-0013: Stage 6 Approval Label Vocabulary](adrs/G-0013-stage6-approval-label-vocabulary.md): PR labels (stage6-approved, release-mode-*, bump:*) form the canonical Stage 6 signal; cardinality-failure = ABORT; audit via workspace activity log; authorization enforcement delegated to G-0024.
+- [G-0014: Review Finding Identity and Persistence](adrs/G-0014-review-finding-identity-and-persistence.md): (file, content-anchor, severity) triple as finding identity; SHA-256 5-line window; per-round markdown files in the review store; severity-mutation and anchor-remap rules for iterate-to-zero correctness.
+- [G-0015: Devcontainer Per-Repo Upstream Base](adrs/G-0015-devcontainer-per-repo-upstream-base.md): Per-repo devcontainer FROM upstream language-native base (SHA-pinned); built and pushed to GHCR by repo's own CI; no workspace-shared base image.
+- [G-0016: Layered Secret Detection](adrs/G-0016-layered-secret-detection.md): Three-layer defense: lefthook regex at pre-commit, GitHub-native push protection continuously, Stage 5 verify-secrets recipe as deterministic backstop.
+- [G-0017: Feature Flags FlagProvider Trait](adrs/G-0017-feature-flags-flagprovider-trait.md): FlagProvider trait shape is workspace canon; per-repo env-var backend per repo; extract to shared crate only at rule-of-three (3+ repos) — no premature extraction.
+- [G-0018: Workspace Merge Template and Recovery Cap](adrs/G-0018-workspace-merge-template-and-recovery-cap.md): Canonical Stage 6–7 sequence in a workspace template script; recovery cap = 3 (count-all); counter in PR description footer; audit via workspace activity log.
+- [G-0019: Tag-Race Serialization](adrs/G-0019-tag-race-serialization.md): Per-repo release workflow uses GHA concurrency on release-pr job only; release job is concurrency-free per release-plz guidance; Mode B race is accepted + monitored.
+- [G-0020: Rust Release Automation (release-plz)](adrs/G-0020-rust-release-automation-release-plz.md): release-plz is the canonical Rust release tool for CHANGELOG generation and semver bump computation; PAT or GitHub App required (not GITHUB_TOKEN); cocogitto deferred to first polyglot repo.
+- [G-0021: Monotonic Non-Decreasing Version Policy](adrs/G-0021-monotonic-non-decreasing-version-policy.md): Pattern A repos use monotonic non-decreasing versioning; bump:none is honor-system + reviewer-enforced; revert PR bumps track public-API impact, not numeric distance.
+- [G-0022: Embargo Flow Architecture](adrs/G-0022-embargo-flow-architecture.md): No embargo workflow built by default; use GitHub Security Advisories (GHSA) with temporary private fork on first incident; audit-PR re-engages quality gates at T0.
+- [G-0023: GitHub Merge Queue](adrs/G-0023-github-merge-queue.md): GitHub Merge Queue is the R26b enforcement mechanism; intermediate-state CI splits into two check categories; admin bypass requires workspace activity log audit row.
+- [G-0024: Stage 6 Label Authorization](adrs/G-0024-stage6-label-authorization.md): Two GitHub-native enforcement layers: Layer A restricts who may apply gating labels; Layer B wraps cardinality validation as a required-status-check; Layer C audit cross-reference at retrieval time.
+- [G-0025: Internal IPC Typed Binary Encoding](adrs/G-0025-internal-ipc-typed-binary-encoding.md): Typed binary encoding (Protocol Buffers or FlatBuffers) for internal IPC; JSON reserved for stored state, user-visible APIs, and cross-trust-domain surfaces.
+- [G-0026: Project Dev Docs Tooling](adrs/G-0026-project-dev-docs-tooling.md): mdBook for project-level developer documentation; D2 for architecture-grade diagrams in built doc sites; Mermaid for GitHub-native diagram rendering in committed .md files.
+- [G-0027: Agent-Primary Source Artifacts](adrs/G-0027-agent-primary-source-artifacts.md): Source-of-truth artifacts (requirements, specs, architecture, ADRs) are authored in agent-primary form: structured, machine-addressable, named identifiers, no integrated-narrative requirement. Human views are generated on demand.
+- [G-0028: Agent-First Workflow Shape](adrs/G-0028-agent-first-workflow-shape.md): Unified /brief skill (intake → frame → spec, two human touchpoints); /verify paired skill (four-signal verification); mandatory Stage 0 baseline load of architecture values, principles, and ADRs.
+- [G-0029: Publish-Time Human Render](adrs/G-0029-publish-time-human-render.md): Agent-primary doc repos publish two surfaces (mdBook HTML for humans; llms.txt for agents) from one canonical source tree via EXPLAIN/STRIP translation passes run locally; committed build artifacts; hash-gated regeneration.
+
+## Glossary
+
+- [Glossary](glossary.md): Terms and conventions used across the mnemra governance canon.

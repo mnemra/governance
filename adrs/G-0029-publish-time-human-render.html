@@ -1,0 +1,402 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>G-0029: Publish-Time Human Render - mnemra-governance</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-79642c4f.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-eb7d2461.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">mnemra-governance</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/mnemra/governance" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="g-0029-publish-time-human-render-via-bidirectional-translation"><a class="header" href="#g-0029-publish-time-human-render-via-bidirectional-translation">G-0029: Publish-Time Human Render via Bidirectional Translation</a></h1>
+<p><strong>Status:</strong> Accepted
+<strong>Date:</strong> 2026-05-20</p>
+<h2 id="context"><a class="header" href="#context">Context</a></h2>
+<p>Source artifacts written for agents first (<a href="../glossary.html#agent-primary-source">agent-primary source</a>, the convention G-0027 sets) are tuned for an agent reader: dense, named, heavily cross-referenced, and full of workspace-internal vocabulary. That vocabulary includes ADR codes like G-0027, principle shorthand like P-Defer (the principle that defers a mechanism choice until evidence forces it), requirement codes like R12, and lifecycle-tier names. It carries real meaning for an agent. To an outside human, it’s opaque. The outside humans here are the contributors, integrators, and evaluators who land on a published docs site without any of that context.</p>
+<p>G-0026 made mdBook the workspace docs stack and already ships rendered HTML to GitHub Pages. So a repo that follows both G-0026 and G-0027 publishes a human-readable surface, the mdBook HTML, whose underlying source was authored for agents. The two decisions leave a gap between them. Humans arrive on pages that were never written for them.</p>
+<p>The usual fix is P-WriteTimeAudience (strip workspace-internal team names when the page is published). That removes the names but leaves the conceptual shorthand untouched. Resolving the shorthand needs a separate translation pass.</p>
+<p>A second gap showed up at the same time. There’s no agent-addressable docs surface (no <code>llms.txt</code> or <code>llms-full.txt</code>), so an agent querying the published docs has no structured way in. The same pipeline that builds the human surface can build the agent surface, both from the one canonical source.</p>
+<p>Resolving those two gaps together is the mechanism this ADR records.</p>
+<h2 id="decision"><a class="header" href="#decision">Decision</a></h2>
+<p>Repos whose source is agent-primary publish two surfaces from one canonical source tree, using a translation pass at publish time that runs in both directions.</p>
+<h3 id="1-single-canonical-source-tree"><a class="header" href="#1-single-canonical-source-tree">1. Single canonical source tree</a></h3>
+<p><code>docs/src/</code> is the one place documents are authored. No parallel sibling trees. Every document (intent, ADRs, specs, guides, glossary) is written once: in agent-primary form where an agent is the natural reader, or in human-primary form where a human is. The source is the source of truth. Both published surfaces derive from it.</p>
+<h3 id="2-two-publication-surfaces"><a class="header" href="#2-two-publication-surfaces">2. Two publication surfaces</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Surface</th><th>Location</th><th>Generated via</th></tr>
+</thead>
+<tbody>
+<tr><td>mdBook HTML (humans)</td><td><code>_published/human/</code> → GitHub Pages</td><td>EXPLAIN-pass translations + mdBook build</td></tr>
+<tr><td>llms.txt + llms-full.txt (agents)</td><td><code>_published/agent/</code> + <code>_published/llms*.txt</code></td><td>STRIP-pass translations + concatenation</td></tr>
+</tbody>
+</table>
+</div>
+<p>Both surfaces are generated locally and <strong>committed to the repo</strong>. CI stays dumb: it runs <code>mdbook build</code> against the committed <code>_published/human/</code> tree, copies the committed llms.txt and llms-full.txt into the build output, and deploys to gh-pages. No LLM calls happen in cloud CI.</p>
+<h3 id="3-bidirectional-translation-at-publish-time"><a class="header" href="#3-bidirectional-translation-at-publish-time">3. Bidirectional translation at publish time</a></h3>
+<p>Each canonical page declares a <code>primary-audience</code> frontmatter field, either <code>agent</code> or <code>human</code>. The default comes from the directory: <code>intent/</code>, <code>adrs/</code>, and <code>specs/</code> default to <code>agent</code>; <code>guides/</code> and <code>intro.md</code> default to <code>human</code>.</p>
+<p>There are two translation passes, invoked via the <code>/docs-translate</code> slash command [superseded — see Mechanism details (resolved 2026-05-21)]:</p>
+<ul>
+<li><strong>EXPLAIN pass</strong> — agent-primary source to a human render. It resolves jargon, adds narrative, links glossary terms, and surfaces the context the source left implicit. Used for intent docs, ADRs, and specs.</li>
+<li><strong>STRIP pass</strong> — human-primary source to an agent render. It removes pedagogical scaffolding, tightens the prose to facts and contracts, and adds explicit cross-references to ADRs and specs. Used for guides.</li>
+</ul>
+<p>For each page, the side that matches its canonical audience is copied verbatim into the matching <code>_published/</code> subtree. Only the opposite-audience side needs a translation pass.</p>
+<h3 id="4-translation-runs-locally-not-in-cloud-ci"><a class="header" href="#4-translation-runs-locally-not-in-cloud-ci">4. Translation runs locally, not in cloud CI</a></h3>
+<p>Translation is invoked through the <code>/docs-translate</code> slash command on the maintainer’s local machine, using Claude Code subscription usage (the plan budget, not metered API spend). The translated outputs get committed. This is the API-budget constraint at work: any LLM call placed in cloud CI would draw API credits on every push.</p>
+<h3 id="5-frontmatter-summary-as-llmstxt-description-source"><a class="header" href="#5-frontmatter-summary-as-llmstxt-description-source">5. Frontmatter <code>summary:</code> as llms.txt description source</a></h3>
+<p>Each canonical <code>.md</code> carries a <code>summary:</code> YAML frontmatter field. The llms.txt manifest is generated from the SUMMARY.md navigation structure plus these <code>summary:</code> values. When the translation pass generates the human-form page and the canonical source has no summary yet, the pass populates <code>summary:</code>.</p>
+<h3 id="6-hash-gated-translation-regeneration-via-translation-manifestjson"><a class="header" href="#6-hash-gated-translation-regeneration-via-translation-manifestjson">6. Hash-gated translation regeneration via <code>.translation-manifest.json</code></a></h3>
+<p>A <code>.translation-manifest.json</code> sidecar tracks the content hash of each canonical source page. <code>just docs-check</code> computes hashes for all <code>docs/src/**/*.md</code> and returns nonzero if any source has changed without a matching translation update. That nonzero is the enforcement signal for pre-push validation. Translation only runs for pages whose source hash differs from the manifest entry.</p>
+<h3 id="7-canonical-specs-vs-implementation-history-split"><a class="header" href="#7-canonical-specs-vs-implementation-history-split">7. Canonical specs vs. implementation-history split</a></h3>
+<p>A docs tree holds two categories of “spec”:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Category</th><th>Role</th><th>mdBook nav</th></tr>
+</thead>
+<tbody>
+<tr><td>Canonical architecture specs</td><td>Living, locked frame+spec deliverables. Primary reading.</td><td>Included — front-and-center in SUMMARY.md</td></tr>
+<tr><td>Implementation-history specs</td><td>Dated snapshots of completed setup/infra work. Audit trail.</td><td>Excluded from SUMMARY.md nav; on disk only</td></tr>
+</tbody>
+</table>
+</div>
+<p>Implementation-history specs live at <code>docs/src/history/</code> on disk so <code>llms-full.txt</code> picks them up, which gives the agent surface the full trail. SUMMARY.md leaves them out, so mdBook never renders them to HTML. Outside humans see only the primary content. Agents see everything.</p>
+<h3 id="8-build-factoring-hybrid-scaffold-then-promote"><a class="header" href="#8-build-factoring-hybrid-scaffold-then-promote">8. Build factoring: hybrid scaffold-then-promote</a></h3>
+<p>The mechanism is built in the first repo to adopt it (mnemra-core). The workspace-canon slot is reserved now, by this ADR, with the mechanism details promoted up from a TBD placeholder. Once the mechanism settles in mnemra-core, it gets promoted in place into the workspace-shared tool (either a <code>scripts/</code> recipe or a <code>.claude/commands/docs-translate.md</code> slash command), with no relocation. Repos that adopt later get a thin justfile recipe that calls the workspace tool.</p>
+<h2 id="mechanism-details-resolved-2026-05-21"><a class="header" href="#mechanism-details-resolved-2026-05-21">Mechanism details (resolved 2026-05-21)</a></h2>
+<p>The translation pipeline’s deterministic gating, its prompt and substitution mechanism, its manifest, and the agent (llms.txt) surface were built and proven in the first adopter, mnemra-core. The human (mdBook) surface <em>generates</em> correctly but is NOT yet wired into the published build. That wiring is tracked separately. The specifics below are promoted from the TBD placeholder into canon.</p>
+<h3 id="pipeline-surfaces"><a class="header" href="#pipeline-surfaces">Pipeline surfaces</a></h3>
+<p>Three surfaces work together:</p>
+<ul>
+<li><strong><code>scripts/docs-translate.py</code></strong> — deterministic gating only, no LLM calls. It has modes <code>--plan</code>, <code>--finalize</code>, and <code>--check</code>, with <code>--src docs/src --out docs/_published --prompts docs/prompts</code>. It owns: source hashing, manifest IO, verbatim copies of canonical-audience and structural pages, orphan cleanup, and emitting the per-page translation plan (the assembled prompts) for the orchestrator to dispatch.</li>
+<li><strong><code>scripts/docs-llms.py</code></strong> — generates <code>llms.txt</code> (the manifest) and <code>llms-full.txt</code> (the agent-tree concatenation in SUMMARY.md order). Its <code>--check</code> mode is the drift gate.</li>
+<li><strong><code>/docs-translate</code> slash command</strong> — the orchestration loop (see Dispatch contract).</li>
+</ul>
+<h3 id="recipes"><a class="header" href="#recipes">Recipes</a></h3>
+<ul>
+<li><code>just docs-check</code> → <code>docs-translate.py --check</code> plus <code>docs-llms.py --check</code> (the pre-push non-stale gate).</li>
+<li><code>just docs-llms</code> → regenerate <code>llms.txt</code> and <code>llms-full.txt</code>.</li>
+<li><code>just docs-serve</code> → <code>mdbook serve docs/</code>.</li>
+</ul>
+<p>There’s intentionally no <code>just docs-translate</code> recipe. Translation needs an in-session agent dispatch, and a justfile recipe can’t perform one.</p>
+<h3 id="prompt-files-and-substitution"><a class="header" href="#prompt-files-and-substitution">Prompt files and substitution</a></h3>
+<p>The EXPLAIN-pass and STRIP-pass prompts live at <code>docs/prompts/explain-pass.md</code> and <code>docs/prompts/strip-pass.md</code>. The planner builds each page’s prompt by substituting three tokens:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Token</th><th>Substituted with</th></tr>
+</thead>
+<tbody>
+<tr><td><code>{{GLOSSARY}}</code></td><td>full contents of <code>docs/src/glossary.md</code> (the EXPLAIN register)</td></tr>
+<tr><td><code>{{PAGE}}</code></td><td>the canonical source page body + frontmatter</td></tr>
+<tr><td><code>{{NONCE}}</code></td><td>a per-run random nonce delimiter (prompt-injection defense, LLM01)</td></tr>
+</tbody>
+</table>
+</div>
+<p><code>validate_prompt</code> requires <code>{{NONCE}}</code> in every prompt template. A template that’s missing it fails the planner. The nonce wraps untrusted page content so that any instructions injected inside a source page can’t escape the data region.</p>
+<h3 id="manifest-schema"><a class="header" href="#manifest-schema">Manifest schema</a></h3>
+<p><code>docs/_published/.translation-manifest.json</code>:</p>
+<pre><code class="language-json">{
+  "schema_version": 1,
+  "entries": {
+    "&lt;rel-path under docs/src&gt;": {
+      "primary_audience": "agent" | "human",
+      "prompt_path": "explain-pass.md" | "strip-pass.md",
+      "prompt_sha256": "&lt;hex&gt;",
+      "source_sha256": "&lt;hex&gt;",
+      "translated_at": "&lt;ISO-8601 UTC&gt;"
+    }
+  }
+}
+</code></pre>
+<p>Hash gating keys on <strong>both</strong> <code>source_sha256</code> and <code>prompt_sha256</code>. A page retranslates when its source changes OR when its pass prompt changes.</p>
+<h3 id="structural-never-translated-pages"><a class="header" href="#structural-never-translated-pages">Structural (never-translated) pages</a></h3>
+<p><code>SUMMARY.md</code> and <code>glossary.md</code> are structural. They’re copied verbatim into BOTH <code>_published/human/</code> and <code>_published/agent/</code>, and they’re excluded from the manifest and the plan items. (<code>glossary.md</code> is also the <code>{{GLOSSARY}}</code> injection source.)</p>
+<h3 id="_published-layout-as-built"><a class="header" href="#_published-layout-as-built"><code>_published/</code> layout (as built)</a></h3>
+<pre><code>docs/_published/
+  human/                      # EXPLAIN-translated + verbatim human-canonical pages (mdBook source)
+  agent/                      # STRIP-translated + verbatim agent-canonical pages
+  llms.txt                    # generated manifest (Jeremy Howard format)
+  llms-full.txt               # agent/ concatenation in SUMMARY.md order
+  .translation-manifest.json  # source + prompt content hashes
+</code></pre>
+<h3 id="dispatch-contract-docs-translate"><a class="header" href="#dispatch-contract-docs-translate">Dispatch contract (<code>/docs-translate</code>)</a></h3>
+<p>Translation needs an in-session LLM call, so the loop is an orchestrator-driven slash command rather than a justfile recipe:</p>
+<ol>
+<li><strong>Plan</strong> — <code>docs-translate.py --plan</code> emits JSON <code>items[]</code>, each carrying <code>source_path</code>, <code>output_path</code>, and an <code>assembled_prompt</code>. An empty <code>items</code> means nothing is stale, so stop.</li>
+<li><strong>Dispatch</strong> — for each item, the orchestrator dispatches a general-purpose sub-agent (<code>mode: default</code>, no Write/Edit/Bash) whose only job is to return the translated Markdown as its final message. The parent session writes each result to <code>output_path</code>. Parallelism is mandatory: sub-agents dispatch in batches of 4 in a single message. An empty or preamble response retries once with a “return only Markdown” prefix; a second failure aborts before finalize.</li>
+<li><strong>Finalize</strong> — <code>docs-translate.py --finalize</code> updates the manifest after all outputs are on disk. A non-zero exit (a missing output) aborts without writing a partial manifest.</li>
+</ol>
+<h3 id="operational-notes-orchestrator-side--policy-not-pipeline-mechanism"><a class="header" href="#operational-notes-orchestrator-side--policy-not-pipeline-mechanism">Operational notes (orchestrator-side — policy, not pipeline mechanism)</a></h3>
+<p>The pipeline itself is model-agnostic. What follows is orchestration policy applied at dispatch time:</p>
+<ul>
+<li>EXPLAIN-pass renders (the human-facing prose) default to the Opus tier, per the human-prose-output standard. The STRIP pass (the agent form) can use a cheaper tier.</li>
+</ul>
+<h3 id="ci-shape"><a class="header" href="#ci-shape">CI shape</a></h3>
+<p>CI stays dumb, with no LLM calls. It runs <code>mdbook build docs/</code>, copies the committed <code>llms.txt</code> and <code>llms-full.txt</code> into the build output (<code>docs/book/</code>), and deploys that tree to the <code>gh-pages</code> branch.</p>
+<p><strong>Current-state caveat (2026-05-21):</strong> <code>book.toml</code> sets <code>src = "src"</code>, so mdBook builds the canonical <code>docs/src/</code> tree, NOT <code>_published/human/</code>. The human surface is therefore not yet wired to the EXPLAIN translations. The §2 design-intent wiring is pending. The agent surface (<code>docs-llms.py</code>, default <code>--src docs/_published/agent</code>) IS wired to the STRIP translations.</p>
+<h2 id="scope"><a class="header" href="#scope">Scope</a></h2>
+<p>This is a workspace-shared pattern. <strong>First adopter: mnemra-core.</strong> It applies to any workspace repo that publishes docs to outside humans where the canonical source is agent-first. Downstream adopters aren’t enumerated here. The trigger is “publishing to outside humans from an agent-primary source,” not membership in a fixed list.</p>
+<p>The workspace tool location (the promotion target once the mechanism settles) is TBD at promotion time. Current candidates: <code>scripts/docs-translate</code>, <code>.claude/commands/docs-translate.md</code>.</p>
+<h2 id="alternatives-considered"><a class="header" href="#alternatives-considered">Alternatives Considered</a></h2>
+<p><strong>Workspace-shared tooling from day one.</strong> Build the translation prompts and scripts in the workspace right away, before mnemra-core proves the pattern. Rejected: that’s premature workspace plumbing, laid before the mechanism is validated in a real adopter.</p>
+<p><strong>Per-repo-then-extract on second adopter.</strong> Build the full mechanism in mnemra-core, and extract it only when a second repo needs it. Rejected: the maintainer named workspace scope explicitly at design time, which overrides the rule-of-three. Waiting for a second adopter would defer the promotion-path design.</p>
+<p><strong>First-paragraph extraction as llms.txt description source.</strong> Use each page’s first paragraph after the H1 as its llms.txt description. Rejected: first paragraphs aren’t always good one-liners, and the pattern produces inconsistent manifest quality.</p>
+<p><strong>Accept non-deterministic translation.</strong> Run translation on every invocation and accept the diff churn. Rejected: noisy diffs on unchanged source hurt PR review quality and erode trust in the committed translation artifacts.</p>
+<h2 id="consequences"><a class="header" href="#consequences">Consequences</a></h2>
+<p><strong>Positive:</strong></p>
+<ul>
+<li>Outside humans land on pages authored for them, and outside agents get a structured llms.txt entry point. Both gaps from the Context section close.</li>
+<li>One canonical source, so there’s no dual-source drift. That’s the failure mode G-0027 explicitly rejected in its “Dual-source” alternative.</li>
+<li>Translation cost stays bounded to local subscription usage. Cloud CI stays free of API spend.</li>
+<li>Hash gating produces stable, meaningful diffs. Translation commits line up with actual source changes.</li>
+<li>The glossary gives the EXPLAIN pass a shared register, which keeps it consistent across pages and over time.</li>
+</ul>
+<p><strong>Negative / accepted:</strong></p>
+<ul>
+<li>The <code>_published/</code> tree is a committed build artifact, so PR diffs include translated content next to the source changes. Mitigation: the PR review convention focuses content review on <code>docs/src/</code>, and treats <code>_published/</code> changes as visual confirmation only.</li>
+<li>Translation quality depends on the EXPLAIN and STRIP prompts. A prompt change triggers a full retranslation (a one-off cost, bounded, and explicit in the PR diff).</li>
+<li>Future contributors have to run <code>just docs-check</code> before pushing doc changes. The failure-with-message handles first-violation cases. This is an acknowledged onboarding cost.</li>
+<li>Translation is gated on a local subscription. A repo maintainer without a Claude Code subscription can’t regenerate translations. That’s an accepted constraint.</li>
+</ul>
+<p><strong>Downstream:</strong></p>
+<ul>
+<li>The mnemra-core docs restructure inherits directly from the spec layout and the frontmatter contract (<code>title</code>, <code>summary:</code>, <code>primary-audience</code>).</li>
+<li>When the mechanism settles in mnemra-core, a workspace-promotion task updates this ADR with the resolved workspace tool location.</li>
+<li>The glossary migrates to a structured form once the structured-delta tooling lands. At that point the EXPLAIN pass reads from the structured source.</li>
+</ul>
+<h2 id="changelog"><a class="header" href="#changelog">Changelog</a></h2>
+<ul>
+<li>2026-05-20 — Initial draft. Decision lineage recorded; mechanism details TBD pending first-adopter implementation.</li>
+<li>2026-05-20 — Amendment: corrected “session codes” → “requirement codes” in Context section. R-codes are requirement identifiers from canonical requirements docs, not session-episode shorthand.</li>
+<li>2026-05-21 — Amendment: “Mechanism details” promoted from TBD placeholder to resolved mechanism, following first-adopter (mnemra-core) implementation. Records the three pipeline surfaces, the recipe set, prompt files + <code>{{GLOSSARY}}</code>/<code>{{PAGE}}</code>/<code>{{NONCE}}</code> substitution (incl. the nonce injection defense), the manifest schema (source/prompt sha256 hash-gating), the structural-page both-sides-verbatim rule (<code>SUMMARY.md</code> + <code>glossary.md</code>), the <code>_published/</code> layout, and the <code>/docs-translate</code> dispatch contract. Resolves the proposal’s <code>just docs-translate</code> recipe to a <code>/docs-translate</code> slash command (translation needs in-session Agent dispatch).</li>
+<li>2026-05-21 — Correction: the same-day “Mechanism details” amendment overclaimed the human surface as built. In fact <code>book.toml</code> sets <code>src = "src"</code>, so CI builds <code>docs/src/</code> and the human EXPLAIN translations are not yet served (the agent/llms surface IS wired). Corrected the resolved-section intro and CI-shape subsection to current state; human-surface wiring tracked as a separate pending task.</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../adrs/G-0028-agent-first-workflow-shape.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../glossary.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../adrs/G-0028-agent-first-workflow-shape.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../glossary.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

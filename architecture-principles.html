@@ -1,0 +1,445 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Architecture Principles - mnemra-governance</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-79642c4f.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-eb7d2461.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">mnemra-governance</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/mnemra/governance" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="architecture-principles"><a class="header" href="#architecture-principles">Architecture Principles</a></h1>
+<blockquote>
+<p>Living doc. Operationalizes the values in <code>architecture-values.md</code>.
+Captures the workspace’s standing architecture principles, evolved over time.</p>
+</blockquote>
+<h2 id="how-to-use-this-doc"><a class="header" href="#how-to-use-this-doc">How to use this doc</a></h2>
+<p>Values describe what we believe matters. Principles describe how we act on it. Two roles read this doc:</p>
+<ul>
+<li><strong>The decomposer</strong> (the role that figures out what to build before execution: framing a design session, drafting an ADR, writing a spec, cutting scope) consults it during ADR drafting (every Decision section traces to one or more principles), during design-session option-generation (principles are the tiebreakers under the locked quality-attribute anchor, where a quality attribute is a non-functional property like security or maintainability that applies to every project), and during discovery requirement-shaping (principles surface in RFC 2119 SHALL/SHOULD form when they cross into observable behavior).</li>
+<li><strong>The agentic team</strong> (the specialists the orchestrator dispatches work to) consults it during dispatch. Reviewers cite principles when grounding findings. Implementers check proposed mechanisms against them. Researchers shape recommendations to fit.</li>
+</ul>
+<p>Principles are named, not numbered. Insert order isn’t load-bearing. Reorders and additions don’t renumber the surrounding rules. Each principle below carries a short label (<code>P-Defer</code>, <code>P-PerRepoFirst</code>, and so on) that other documents can reference.</p>
+<p>When a principle conflicts with a workspace guardrail (a hard operational rule that forbids an action outright, like credential handling or force-push to a protected branch), the guardrail wins. Principles guide decisions. Guardrails forbid actions.</p>
+<h2 id="principles"><a class="header" href="#principles">Principles</a></h2>
+<h3 id="p-defer"><a class="header" href="#p-defer">P-Defer</a></h3>
+<p>Defer mechanism until evidence forces the choice. (Anchors Simplicity, Reversibility.)</p>
+<p><strong>Why.</strong> Trip-wire-driven adoption beats anticipated-need adoption. When the trip-wire fires, the shape of the evidence tells you the shape of the mechanism. A speculative mechanism gets sized for the imagined problem, not the real one. And it carries maintenance cost from the day it ships.</p>
+<p><strong>How it shows up.</strong> Open and Deferred sections in architecture documents name the mechanisms that are <em>not</em> being adopted now, each with a stated trip-wire to revisit. A workflow stage gets built when the absence of it has hurt more than once. Not when someone imagines it might.</p>
+<p><strong>Anti-example.</strong> “We should add this now because we’ll probably need it later,” without naming the trip-wire that would make it necessary, or what the evidence would look like. Or worse: claiming a tool enforces a constraint the tool doesn’t actually support, and only catching the gap during review.</p>
+<h3 id="p-perrepofirst"><a class="header" href="#p-perrepofirst">P-PerRepoFirst</a></h3>
+<p>Per-repo first; extract on rule-of-three. (Anchors Simplicity, Migration cost.)</p>
+<p><strong>Why.</strong> Premature extraction creates a workspace artifact that every reader and every tool has to reason about before the shared code earns its keep. Extraction shapes that grow from observed reuse beat shapes built from speculation about what the reuse will look like.</p>
+<p><strong>How it shows up.</strong> A trait or interface contract can live as workspace canon (a single decision record) while the implementation lives per-repo. Shared crates emerge when three repos diverge in non-trivial ways on the same problem. Not before.</p>
+<p><strong>Anti-example.</strong> Building a shared library for a problem only one repo has, on the assumption others will eventually need it. Building workspace-side image pipelines or shared scaffolding before any repo has shown the need.</p>
+<h3 id="p-lockcontract"><a class="header" href="#p-lockcontract">P-LockContract</a></h3>
+<p>Lock the contract; vary the implementation. (Anchors Simplicity, Migration cost, Rust-ecosystem alignment.)</p>
+<p><strong>Why.</strong> The contract is what other code depends on. Implementations are swappable when the contract is stable. Locking the contract is what makes substitution safe: the runtime, the storage backend, the third-party SDK can all change behind a stable seam.</p>
+<p><strong>How it shows up.</strong> A CI orchestrator that calls a single workspace recipe, with all gate logic behind that recipe, makes the runner choice (hosted, self-hosted, local) substitutable. A trait in front of a feature-flag backend lets the backend swap from environment variables to a hosted SDK without touching call sites. A finding-identity tuple anchored on content rather than line numbers survives format-rewriting.</p>
+<p><strong>Anti-example.</strong> Hard-coding a specific tool invocation directly in CI YAML. Pinning a contract to a specific runner. Putting business logic in the orchestrator layer instead of behind the contract.</p>
+<h3 id="p-minblastradius"><a class="header" href="#p-minblastradius">P-MinBlastRadius</a></h3>
+<p>A change reaches as far as the architecture lets it. (Anchors Maintainability, Reversibility.)</p>
+<p><strong>Why.</strong> Every dependency is a propagation surface. The cost of a change is proportional to the number of files, callers, and downstream systems it touches, and the architecture’s job is to keep that cost small. The unit goal is that a fix isolates to one module, a feature lands behind one seam, and the rest of the codebase doesn’t know either happened. When that isn’t possible, the architecture is reporting structural debt. Surface it as a separate restructure task rather than expanding the immediate change.</p>
+<p><strong>How it shows up.</strong> Modules hide design decisions, not data (Parnas / Ousterhout). Strong-form coupling stays within an encapsulation boundary; cross-module coupling is by name or type only (connascence, Page-Jones). Behavior changes land behind seams (Feathers) or abstractions (branch-by-abstraction, Hammant); risky changes ship behind toggles when feasible. New abstractions extract on the third occurrence (rule of three, Hunt/Thomas, Fowler) and only when the abstraction <em>deepens</em>, hiding a decision behind a smaller interface than the duplication exposed. Wrong abstractions get re-inlined and re-extracted, not patched with another flag parameter (Metz).</p>
+<p>Five cross-stack mechanism rules operationalize this principle (stack-specific extensions live in the implementer stack skills’ <code>&lt;maintainability&gt;</code> sections):</p>
+<ul>
+<li><strong>Extract on the third occurrence.</strong> Two occurrences stay duplicated; the third reveals the actual shape of the abstraction.</li>
+<li><strong>Re-inline before re-abstracting.</strong> A wrong abstraction gets inlined back into its callers, then a new abstraction is extracted from the new pattern. Don’t patch the wrong abstraction with another flag parameter.</li>
+<li><strong>Vocabulary consistency across the codebase.</strong> One verb per operation (<code>fetch</code> <em>or</em> <code>get</code>, not both); one noun per domain concept. Project-level vocabulary doc in <code>ai_docs/</code> when scale demands.</li>
+<li><strong>Cross-module coupling is by name and type only.</strong> Shared meaning, shared algorithm, positional dependency stay within a single encapsulation boundary.</li>
+<li><strong>A change touching N modules in lock-step is a defect.</strong> First commit introduces the seam; subsequent commits change behavior behind it.</li>
+</ul>
+<p><strong>Anti-example.</strong> A spec that requires changes in N modules in lock-step (the seam is missing; the first commit should introduce it). An abstraction extended with a third parameter to handle a new case (the abstraction is wrong; re-inline and re-extract). A constant whose name adds no information (<code>MAGIC = 3</code>). A module whose public interface is 60% of its line count (shallow; should deepen or merge). Code reviewed in isolation that compiles correctly but creates non-local coupling (the diff hides connascence across module boundaries).</p>
+<h3 id="p-stackdiscipline"><a class="header" href="#p-stackdiscipline">P-StackDiscipline</a></h3>
+<p>Reject ecosystem-misaligned tooling unless no in-stack path exists. (Anchors Rust-ecosystem alignment.)</p>
+<p><strong>Why.</strong> Tooling that drags in a foreign toolchain for non-essential reasons creates the upgrade-and-version-management burden the stack-alignment value explicitly resists. Each additional ecosystem is another set of advisory feeds, lockfile semantics, and breaking-change cadences to track.</p>
+<p><strong>How it shows up.</strong> Hook tooling and pre-commit checks pick the stack-aligned option even when a more popular cross-ecosystem option exists. When Python is required, the toolchain consolidates to a single tool rather than an accreted layer of historical tooling. When the in-stack option is pre-1.0 or thin, hand-rolling a small mechanism often beats inheriting churn from outside.</p>
+<p><strong>Anti-example.</strong> Adopting a richer-dashboard tool over an in-stack equivalent because the dashboard is nicer. Adding a foreign-language dependency to a recipe that has no other reason to need it. Picking a tool because it’s industry-default when the stack-aligned alternative already covers the requirement.</p>
+<h3 id="p-securitylayered"><a class="header" href="#p-securitylayered">P-SecurityLayered</a></h3>
+<p>Security defaults compose by layer, with each layer independently load-bearing. (Anchors Security.)</p>
+<p>The layers:</p>
+<ul>
+<li><strong>Supply chain.</strong> SBOM generated per change. Dependencies pass tier review (license, maintenance, source).</li>
+<li><strong>Design-time.</strong> A threat model is generated for every spec covering new components or integrations that cross a trust boundary, AND for every architectural decision touching authentication, authorization, data egress, secret handling, or external dependencies. Copy-edit-scope changes don’t trigger a threat model.</li>
+<li><strong>Change-time.</strong> Security review on every change that ships. The reviewer’s lens is security, not just code-correctness.</li>
+<li><strong>Runtime.</strong> Layered detection: pre-commit checks plus native repo controls plus downstream verification. Defense in depth, not single-gate.</li>
+</ul>
+<p><strong>Why.</strong> Losing any layer weakens the whole; the layers aren’t substitutable. Supply-chain hygiene without design-time threat modeling lets architectural risks ship clean. Threat modeling without runtime detection lets known risks land unmonitored. Single-gate enforcement creates a bypass that owns the whole posture.</p>
+<p><strong>Anti-example.</strong> A “we’ll add security review when there’s something risky to review” posture, when security review is the mechanism that determines what’s risky. A pre-commit check that’s the only check, with no downstream verification if it’s bypassed. A spec that touches authentication or secret handling and doesn’t carry a threat model.</p>
+<h3 id="p-instrumentbefore"><a class="header" href="#p-instrumentbefore">P-InstrumentBefore</a></h3>
+<p>Every production surface ships instrumented before launch. (Anchors Observability.)</p>
+<p>Metrics, structured logs, and traces, sized to the surface, in place at first user-touch. Not added after the first incident.</p>
+<p><strong>Why.</strong> Without observability, claims about quality, reliability, and reversibility are unverifiable. The first time something breaks under load is the worst time to start adding instrumentation. The operator is debugging blind and the evidence to root-cause is gone.</p>
+<p><strong>Production threshold.</strong> “Production” means any system intended for use by anyone, including the decomposer alone, past an explicitly-scoped experiment phase. Learning-mode is allowed only when it carries (a) a stated time-box and (b) a stated transition criterion (“when X happens, this becomes production”). Anything not explicitly time-boxed is production. There’s no personal-project exception: code that nominally runs “just for me” still ships instrumented if it’s meant to keep running.</p>
+<p><strong>Anti-example.</strong> “We’ll add metrics once we have users.” A long-running tool with no structured logs and no error-rate visibility, justified as “just for me.” A learning-mode prototype that’s been running production traffic for six months without ever crossing the transition criterion.</p>
+<h3 id="p-worktrees"><a class="header" href="#p-worktrees">P-Worktrees</a></h3>
+<p>All code work happens in worktrees. A worktree is a separate working tree off the main branch, opened per code-modifying dispatch so main stays stable and failed work is discardable. (Anchors Reversibility, Decomposition.)</p>
+<p><strong>Why.</strong> Worktrees keep main stable while agents work in isolation. They make verification on dirty trees safe. They make parallel dispatch possible. The “no exceptions” rule exists because skipping the worktree on standalone repos rationalizes past the discipline. Consistency is what builds the habit, and the habit is what the dispatch model depends on.</p>
+<p><strong>How it shows up.</strong> Every code-modifying dispatch opens a worktree at the start of the workflow. The orchestrator creates the worktree before dispatch, not via subagent isolation flags (which override the dispatch permission model). Cleanup follows a known sequence to handle squash-merge gotchas.</p>
+<p><strong>Anti-example.</strong> Direct commits to main on any repo. Stashing a working tree, checking out a branch to verify its tests, and stash-popping back, which has silently lost working-tree deltas this way. Using subagent isolation flags to create a worktree, which forfeits permissions the dispatched agent needs.</p>
+<h3 id="p-mainprotected"><a class="header" href="#p-mainprotected">P-MainProtected</a></h3>
+<p>Main is protected. PR plus CI is the gate every change passes. (Anchors Reversibility, Quality.)</p>
+<p><strong>Why.</strong> CI must run before code reaches main. Direct pushes, even with server-side bypass, skip the gate the protection rule exists to enforce. Bypass warnings are a hard stop, not a footnote.</p>
+<p><strong>How it shows up.</strong> Repo settings disable direct push to main. Merge mode is constrained to preserve a clean history. The main branch holds linear, CI-validated state. Auto-merge on green is allowed only when the diff has already passed the human gate before PR creation.</p>
+<p><strong>Anti-example.</strong> Treating “bypassed rule violations” output as a note to surface later. Pushing directly to main “just this once” because the change feels small. Scope: this principle binds repos with a remote main branch under protection. Early-development repos with no remote yet follow their own workflow rules, but the moment a remote exists, the gate applies.</p>
+<h3 id="p-shiftleft"><a class="header" href="#p-shiftleft">P-ShiftLeft</a></h3>
+<p>Shift the human gate left. (Anchors Reversibility, Decomposition.)</p>
+<p><strong>Why.</strong> Rework cost grows the later it’s caught. The decomposer’s eye catches “this isn’t what I meant,” a structural-intent check that automated gates can’t make. Automated gates catch structural defects, a correctness check the decomposer doesn’t have time to make. Both layers are required; neither replaces the other.</p>
+<p><strong>How it shows up.</strong> The decomposer reviews the diff before PR creation, not after. Automated reviewers (security, code, tests) run after every implementation cycle, not just at the end. The closed-enum approval vocabulary moves the decomposer’s intent into a state machine that subsequent gates can read.</p>
+<p>Three decomposition discipline patterns operationalize the shift-left posture upstream of code review. First, <em>scope known before execution</em>: the spec carries explicit scope (layers touched, layers not touched, data requirements, whether existing surfaces satisfy) and the plan is pure sequencing once scope is locked. A plan with an “audit the API surface” step, or any other investigation that was owed at design time, is the spec reporting a decomposition gap. Second, <em>validator before field</em>: for any structured schema (spec template, ADR shape, completion-report header, intake form), write the mechanical Stage-X validator for each candidate field before adding the field. A hand-wavy validator means the field hasn’t earned its slot; tightening the validator forces the field into one of three resolutions, namely narrower scope, a different stage, or recognition as a property rather than a field. Third, <em>catalog before unifying mechanism</em>: within a single research pass, catalog the operation and concept surface first, propose the simplest unified shape, then let decomposition emerge from where the shape strains. Don’t import an external framework’s family of abstractions top-down. The decomposer’s grain operates at the structural-mechanism layer; reviewers and orchestrators check for these patterns at workflow handoff boundaries.</p>
+<p>Three cross-stack mechanism rules operationalize the decomposition discipline (anti-example-anchored, same form as the P-MinBlastRadius rules):</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>#</th><th>Rule</th><th>Anti-example</th></tr>
+</thead>
+<tbody>
+<tr><td>D1</td><td><strong>Scope known before planning.</strong> A spec carries explicit scope: layers touched, layers not touched, data requirements, whether existing surfaces satisfy. A plan that includes “audit X” or “check whether Y exists” is the spec reporting a decomposition gap; fix the spec.</td><td>A redesign plan whose first phase was an “API audit” step: scope discovery that was owed at design time leaked into the plan.</td></tr>
+<tr><td>D2</td><td><strong>Validator before field.</strong> For any structured schema (spec template, ADR shape, completion-report header, intake form), write the mechanical Stage-X validator for each candidate field before adding the field. A hand-wavy validator means the field doesn’t earn its slot.</td><td>An intake-schema review that caught two ambiguous fields (a risk-profile-at-intake field and an audience-as-field) only because each was made to face a mechanical validator first.</td></tr>
+<tr><td>D3</td><td><strong>Catalog before unifying mechanism.</strong> Within a single research pass, catalog the operation and concept surface first, propose the simplest unified shape, then let decomposition emerge from where the shape strains. Don’t impose a family of abstractions top-down from an external framework.</td><td>A knowledge-object survey that converged on a small schema family by catalog-then-strain rather than by importing an external framework’s structure wholesale.</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Anti-example.</strong> Autonomous merge to main without a decomposer-intent check. Removing the decomposer’s review even when automated gates passed clean, since the gates check correctness, not intent. Trying to make the decomposer faster by surfacing every flag instead of trusting the loop on the routine ones.</p>
+<h3 id="p-tddpairs"><a class="header" href="#p-tddpairs">P-TDDPairs</a></h3>
+<p>TDD pairs on non-trivial work; self-tests on mechanical work. (Anchors Quality, Decomposition.)</p>
+<p><strong>Why.</strong> Single-agent TDD is a known contamination failure mode: the same model writing tests and implementation in one context relaxes assertions to make the suite green. Property-based tests are spec-derived rather than impl-derived, so they catch spec-vs-impl drift the same agent can’t see.</p>
+<p>The quality-over-speed tradeoff is corroborated by industrial TDD studies (a four-team industrial study found 40-90% lower pre-release defect density at a 15-35% development-time cost; a controlled experiment found test-first code passed 18% more black-box cases at a 16% time cost). The single-agent contamination mechanism is corroborated by AI-era empirical work: a 2026 study of LLM coding agents found agent-written tests are dominated by value-revealing output over assertions, and that changing test <em>volume</em> did not change task outcomes. Agent self-tests reshape process and cost more than they verify behavior. Property-based tests resist this because a property is a specification-derived invariant (the technique originates with QuickCheck, 2000): it asserts what the code <em>should</em> do independent of what it <em>does</em>, so it detects spec-vs-impl drift that an implementation-derived test cannot. The failure the discipline defends against is the “cycle of self-deception,” tests that share the implementation’s flaws.</p>
+<p><strong>How it shows up.</strong> Non-trivial work (security boundaries, concurrency, public APIs, data validation, trait or interface contracts) gets a red-phase test task dispatched separately from the implementation task. The test-writer dispatches first; the implementer’s task depends on the red phase landing. Mechanical work (scaffolds, config loaders, simple CRUD, format conversions) accepts implementer self-tests because the contamination risk is low and the dispatch overhead is high relative to the work.</p>
+<p>Verifying the red phase means confirming the test fails for the spec reason, not merely that it fails. A test that errors before its behavioral assertion runs, because a dependency is un-mocked or a setup step is wrong, is a wrong-reason red. It’s a red-phase defect, not a valid red phase. Assertions on spec-mandated output use the strength the spec mandates. Where the spec requires equality, a substring or positional check is too weak. Assert equality. A test suite that can’t fail (counters that never increment, a harness that always exits zero) isn’t a test. Tests don’t mutate process-global state without isolation, and carry no hardcoded secrets even in fixtures.</p>
+<p>Five cross-stack mechanism rules operationalize this principle (anti-example-anchored, same form as the P-MinBlastRadius rules):</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>#</th><th>Rule</th><th>Anti-example</th></tr>
+</thead>
+<tbody>
+<tr><td>T1</td><td><strong>Assertions are spec-derived, not implementation-derived.</strong> A non-trivial surface’s tests are written from the specification by a separate context, before the implementation, so they encode intended behavior independently. On critical logic (parsers, validators, security boundaries) the assertion is a property (a spec invariant), not a single worked example.</td><td>An acceptance criterion satisfiable by pasting the expected output into a file without running the behavior under test. The test was shaped to the artifact, not the spec.</td></tr>
+<tr><td>T2</td><td><strong>Verify red for the <em>right reason</em>.</strong> A red phase passes only when the test fails on the behavioral assertion the spec names. A test that errors before its assertion runs (un-mocked dependency, setup fault) is a wrong-reason red and is a red-phase defect. Grade the pre-review red run, not a post-review artifact that was fixed into shape.</td><td>A red-phase test that throws on an un-stubbed call before reaching its behavioral assertion. The test is reported as a valid failing test. It is not.</td></tr>
+<tr><td>T3</td><td><strong>Assertions are as strong as the spec mandates, and the suite can fail.</strong> Where the spec requires equality, assert equality. A substring/positional/<code>in</code> check is too weak. A harness whose counters never increment or that always exits zero is not a test.</td><td>A golden-output test using a substring/position check where the spec requires exact equality; a runner that reports 0/0 passed and exits zero while testing nothing.</td></tr>
+<tr><td>T4</td><td><strong>Tests isolate process-global state.</strong> Tests that mutate global state (environment variables, process-wide config, shared fixtures) serialize access so they don’t flake under parallel execution.</td><td>A test mutating a process-global environment variable with no isolation, passing single-threaded and flaking under the parallel test runner.</td></tr>
+<tr><td>T5</td><td><strong>No hardcoded secrets in tests.</strong> Test credentials are generated per run from a shared helper, not literal constants, even in fixtures and even when not exploitable. Fix the smell; don’t filter the scanner.</td><td>A test fixture with a hardcoded password literal, dismissed as a scanner false-positive and excluded by path filter instead of removed.</td></tr>
+</tbody>
+</table>
+</div>
+<p>The split that already exists (non-trivial surfaces get a separate red-phase task; mechanical work accepts implementer self-tests) is unchanged; T1-T5 specify what good looks like inside the red-phase task once the split has been made.</p>
+<p><strong>Anti-example.</strong> Asking a single agent to write tests, implementation, and recovery for a security boundary in one dispatch. Re-presenting the TDD-pair pattern as “one of three options” each dispatch instead of applying it as standard. Single-agent TDD on parsers, validators, allowlists, or anything that ingests untrusted input.</p>
+<h3 id="p-iteratetozero"><a class="header" href="#p-iteratetozero">P-IterateToZero</a></h3>
+<p>Iterate-to-zero with stable finding identity, hard cap. The iterate-to-zero loop runs fix-and-review rounds until no blocking finding remains, with a round cap that triggers escalation instead of another round. (Anchors Quality, Reversibility.)</p>
+<p><strong>Why.</strong> Iterate-to-zero only converges if “same finding” can be detected across rounds; otherwise the count drifts and the cap exhausts on cosmetic restatements of fixed defects. Finding identity must be content-anchored, not line-anchored, because formatting passes shift line numbers without changing the underlying defect. The cap exists because fix loops longer than the limit usually indicate a deeper design problem the loop won’t resolve: escalate, don’t grind.</p>
+<p>This is the AI-era operationalization of formal inspection’s iterate-to-converge discipline (Fagan, 1976, 60-90% defect detection through structured rounds with per-round diminishing returns). The loop converges <em>only because the grading signal is external</em>. Intrinsic self-correction, the same agent grading and fixing its own output with no outside feedback, is empirically shown to sometimes <em>degrade</em> output across self-correction rounds rather than improve it (Huang et al., ICLR 2024). The reviewer is that external signal. This is why iterate-to-zero depends on heterogeneous reviewers (P-HeterogeneousReviewers) rather than treating review as optional polish: the dependency is what keeps the loop on the convergent side of the self-correction result.</p>
+<p><strong>How it shows up.</strong> Finding identity is a tuple of file plus content-anchor (a normalized window around the cited finding) plus severity. Dedup keys ignore severity so a downgraded finding still matches; gating uses current-round severity. After each implementation cycle, the orchestrator runs a deterministic format pass before review so reviewer findings don’t drift on whitespace.</p>
+<p>A fix can move a defect’s content-anchor and surface a <em>related</em> defect in its place, the fix-induced variant (a worked instance: a label-authorization fix closed the original path but left a sibling path open at a new anchor). A fix-induced variant counts as a new finding for convergence accounting (its anchor differs), but the round records it <em>as</em> fix-induced rather than as an unrelated discovery. The fraction of a round’s new findings that are fix-induced variants is the discriminator between a loop that’s converging (variants trending to zero) and a loop that’s grinding on a deeper design problem (variants persisting or rising). When that fraction stays high as the cap approaches, the cap-escalation discipline applies (escalate to a design conversation; see P-TrustThenRetro’s <em>cap-escalation-vs-iteration</em> discipline). The content-anchor’s stability is bounded: it survives line-shift and formatter churn (a normalized window absorbs whitespace and line-number drift), but agent regeneration between rounds can rewrite the surrounding code semantically (renaming, extracting, reordering) and rotate the anchor without resolving the defect. The remap pass handles the mechanical cases; semantic-drift handling beyond remap is deferred until evidence forces it (P-Defer), the trip-wire being remapped-FIXED entries that re-occur at a different anchor above a threshold.</p>
+<p>Three cross-stack mechanism rules operationalize this principle (anti-example-anchored, same form as the P-MinBlastRadius rules):</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>#</th><th>Rule</th><th>Anti-example</th></tr>
+</thead>
+<tbody>
+<tr><td>I1</td><td><strong>Identity is content-anchored, never line-anchored.</strong> A finding’s identity across rounds is <code>(file, content-anchor, severity)</code> where the anchor is a normalized window of code, not a line range. Line-anchored identity breaks every round under AI-era between-round churn.</td><td>A finding tuple keyed on <code>path:42-58</code>: an agent inserts ten lines higher in the file between rounds, the same untouched defect now reads <code>path:52-68</code>, the round counts it as new, and the cap exhausts on one underlying issue. (The line-shift incident that drove G-0014’s content-anchor decision; corroborated industry-wide by GitClear’s two-week churn rising 3.1%→5.7%.)</td></tr>
+<tr><td>I2</td><td><strong>Dedup ignores severity; the gate reads current-round severity.</strong> “Same finding across rounds” is keyed on <code>(file, content-anchor)</code> with severity excluded, so a downgraded finding still matches; the merge/ship gate then reads the current round’s severity to decide whether it still blocks.</td><td>A reviewer downgrades a <code>blocker</code> to <code>nit</code> after a partial fix; a severity-in-the-key identity counts it as a new finding (cap exhaustion) <em>and</em> a downgrade-to-<code>nit</code> produces a false-pass exit while the defect is still present. (G-0014’s M9 closure.)</td></tr>
+<tr><td>I3</td><td><strong>A fix-induced variant counts as new but is recorded as fix-induced; rising variant-rate near the cap triggers escalation, not another round.</strong> When a round’s new finding is a variant of a prior finding the fix shifted (different anchor, related defect), the round dispositions it as a variant. If variants stay a high fraction of new findings as the cap approaches, the loop is grinding; escalate to a design conversation per P-TrustThenRetro’s cap-escalation discipline.</td><td>A label-authorization fix closes the original path but leaves a detective-only sibling path open at a new anchor; three rounds later the same defect class keeps reappearing at fresh anchors and the loop grinds to the hard cap on a problem a one-line structural decision would have closed. (Worked instance from the review corpus; the implementation-side analogue is a fix loop re-attempting verification three times against the same surface without converging.)</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Anti-example.</strong> Reviewer-assigned finding IDs that depend on the reviewer remembering state across rounds. A line-anchored identity tuple that breaks every time a formatter runs. Grinding past the round cap on a defect that keeps reappearing in different shapes, where the right move is a design conversation, not another fix attempt.</p>
+<h3 id="p-heterogeneousreviewers"><a class="header" href="#p-heterogeneousreviewers">P-HeterogeneousReviewers</a></h3>
+<p>Reviewers are heterogeneous specialists, layered by surface. (Anchors Honesty, Quality.)</p>
+<p><strong>Why.</strong> Multiple copies of the same model converge on the same blind spots, the homogeneous LLM-on-LLM echo failure mode. Heterogeneous specialists each apply a distinct domain lens (security, operations, accessibility, voice, test design, research, perspective) and surface different findings. Layering is by surface touched, not by routine fan-out.</p>
+<p>This is the algorithmic-monoculture failure formalized outside the workspace. A collection of decision-makers running the same construction is susceptible to correlated failure even when each is individually more capable (Kleinberg &amp; Raghavan 2021). Shared components (same base model, same training data) homogenize outcomes by construction, not merely by coincidence of heuristic (Bommasani et al. 2022). Same-model evaluation also carries a measurable self-preference bias (Panickssery et al. 2024): a copy reviewing a sibling’s output is biased toward the patterns it shares with that sibling, compounding rather than correcting the shared error. The literature’s prescribed fix is evaluator diversity by construction (Verga et al. 2024), which is what “heterogeneous specialists, layered by surface” operationalizes, with model-tier diversity added where review judgment is load-bearing (the perspective-versus-judgment split: the assigned lens selects which reviewer, the model tier selects the judgment depth, and the two choices are independent).</p>
+<p><strong>How it shows up.</strong> A code-and-security reviewer is on every change. Other specialists join when their domain is touched: UI changes draw an accessibility-and-design reviewer; deploy or CI changes draw an operations reviewer; external-facing prose draws a voice-and-clarity reviewer; backend logic implemented by one perspective draws a different perspective lens. Briefs are scoped to a single tier. Discovery review surfaces requirement gaps, architecture review surfaces mechanism choices, execution review surfaces migration concerns. Mixing tiers produces noise.</p>
+<p>The heterogeneity also catches factual errors the originating author wouldn’t have surfaced alone. A worked instance: a decision record claimed a release tool enforced a path-coverage check; the operations reviewer’s distinct lens verified the tool’s actual mechanism (commit-message matching, no path coverage) and surfaced the unverified claim before it shipped. Without the heterogeneous-reviewer pass the false mechanism would have landed, and subsequent specs would have built on it. Heterogeneity is a Honesty mechanism, not only a quality mechanism.</p>
+<p>Heterogeneity also compounds over time through the review-mining loop. Because distinct lenses produce distinct findings (a homogeneous set produces correlated findings that collapse to one), the review corpus accumulates a diverse finding stream worth mining. Recurring findings get extracted and embedded into the relevant skill or agent profile, so the next review no longer has to re-find them. The maintainability review (findings landing in the stack skills) and this principles series (review findings landing as canon amendments) are worked examples: heterogeneous review produces distinct findings, distinct findings become an embedded rule, and the finding stops recurring. A homogeneous reviewer set short-circuits the loop at the first step, because correlated reviewers produce the same findings, collapsing the diverse input stream the loop depends on.</p>
+<p>Four cross-stack mechanism rules operationalize this principle (anti-example-anchored, same form as the P-MinBlastRadius rules):</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>#</th><th>Rule</th><th>Anti-example</th></tr>
+</thead>
+<tbody>
+<tr><td>H1</td><td><strong>Select reviewers by lens, not by name or count.</strong> A touched surface draws the reviewer whose lens covers it; a surface with no matching lens draws no reviewer, not a default one. Confidence does not come from more reviewers. It comes from more <em>distinct</em> lenses.</td><td>Adding a second reviewer “to be safe” when the second carries no lens the first lacks: correlated draws add confidence, not coverage.</td></tr>
+<tr><td>H2</td><td><strong>Same model fanned out is not heterogeneity.</strong> Re-running one agent on one artifact, even across separate dispatches, produces correlated errors by construction (shared base model). Heterogeneity requires a distinct <em>lens</em>; where review judgment is load-bearing, a distinct <em>model tier</em> strengthens it.</td><td>Dispatching the same reviewer three times for confidence, or treating two same-model passes as an independent cross-check.</td></tr>
+<tr><td>H3</td><td><strong>Author and reviewer are separate participants at dispatch time.</strong> The participant who produced an artifact does not gate it; a distinct lens does. This holds at document granularity (implementer is not reviewer) and at sub-document granularity (a second-lens cross-check on one’s own draft before it hardens).</td><td>A single agent writing tests, implementation, and self-review in one pass: assertions relax to make its own output pass.</td></tr>
+<tr><td>H4</td><td><strong>One tier and one surface per reviewer brief; load lenses conditionally.</strong> A reviewer brief is scoped to a single review tier (discovery, architecture, or execution) and the lens-specific skill loads only when the diff touches its surface. Tier-mixing produces false positives at every tier; always-loading every lens burns context and dilutes signal.</td><td>A brief asking one reviewer to flag requirement gaps, mechanism choices, and migration concerns at once; or every security sub-lens loaded on a diff with no matching surface.</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Anti-example.</strong> Running the same reviewer three times for confidence. Adding a generic-purpose reviewer that duplicates an existing lens. Putting tier-mixed findings in one reviewer brief, where the result is false-positive findings at every tier.</p>
+<h3 id="p-preservedecisionspace"><a class="header" href="#p-preservedecisionspace">P-PreserveDecisionSpace</a></h3>
+<p>Preserve the decision space. (Anchors Honesty, Decomposition.)</p>
+<p><strong>Why.</strong> Decisions stripped of their rejected alternatives become unreproducible: the next reader and the next decision-making session re-litigate the same options blind. Artifacts rewritten without preserving prior versions lose the durable trail of what changed and why. Both forms of erasure cost the same thing. Future readers can’t see the option space the decision was made against.</p>
+<p><strong>How it shows up.</strong> Every architecture decision record carries an Alternatives Considered section listing rejected options with reasons. Open and Deferred sections document what was <em>not</em> adopted, each with a trigger to revisit. Evolving documents carry a Changelog section in-line; snapshot-style coexistence (where multiple versions need to live side-by-side) uses a version prefix on the filename, but evolving docs amend rather than re-version. Amend, don’t erase.</p>
+<p><strong>Anti-example.</strong> “We chose X because X is the right answer,” without naming what the alternatives were and why they lost. Dropping a rejected alternative from the Considered list because it now feels obviously wrong, when the future reader needs to know it was on the table. Rewriting a living doc without recording what changed. Asserting a factual claim without its evidence basis (“the maintainer uses X” with no grounding in a personal-baseline, a user-context memory, or a verified prior-work artifact): the future reader can’t see the basis the claim was evaluated against, and the structural failure is the same shape as an erased alternative because both make the artifact’s reasoning unreproducible. The worked instance is an inference jump that produced a fabricated vendor-integration claim (the agent observed the maintainer uses a tool, observed the vendor ships an integration for it, and concluded the maintainer uses that integration); the discipline the workspace landed in response requires source-grounding before any such claim hardens.</p>
+<h3 id="p-writetimeaudience"><a class="header" href="#p-writetimeaudience">P-WriteTimeAudience</a></h3>
+<p>Generic at write-time for repo artifacts; identity-preserving for workspace artifacts. (Anchors Honesty, Dogfooding.)</p>
+<p><strong>Why.</strong> Two durability profiles need two write-time disciplines. Repo-persisted artifacts (specs, ADRs, plans, READMEs) live in a context where any commit can become a publish event, so there’s no reliable “right before publish” sweep moment. They get genericized at write-time: generic role labels, no workspace-specific paths, no internal-feedback citations, no team-agent personal names. Workspace-private artifacts (reviews, internal field notes) preserve team-agent attribution because that <em>is</em> the pattern signal worth keeping for future analysis and learning.</p>
+<p><strong>How it shows up.</strong> A repo’s specs and ADRs use roles (“the maintainer,” “the implementing developer,” “the design reviewer”). A workspace-private review keeps the reviewing agent’s name, the dispatch identifier, and the context of the dispatch. Reviews live workspace-internal, not in the project repo, precisely so the attribution can be preserved without leaking on publish.</p>
+<p>For repo-persisted artifacts specifically, the discipline strips: workspace absolute paths (<code>/Users/...</code>, <code>$HOME/...</code>, bare workspace-root references), workspace-internal directory citations (the memory root, the team-inbox root, the scratch root, and similar private directory roots), workspace-feedback-memory citations (a feedback-memory file referenced by its private filename), workspace-team-agent names (the orchestrator’s and specialist agents’ personal labels), and memory-internal taxonomy (the task DB, the workspace-CLI binary, internal-project codenames). The maintainer’s name in narrative is preserved when the artifact is theirs: the discipline strips workspace-internal taxonomy, not authorship attribution. Workspace-internal operational specs that are never destined for a project repo are exempt; the discipline applies at the durability boundary, not as a blanket sweep. This enumeration is the source-of-truth; the workspace operational rules carry an imperative pointer back to it rather than a second copy.</p>
+<p>Three cross-stack mechanism rules operationalize this principle at the artifact level (anti-example-anchored, same form as the P-MinBlastRadius rules):</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>#</th><th>Rule</th><th>Anti-example</th></tr>
+</thead>
+<tbody>
+<tr><td>W1</td><td><strong>Role-label-before-name check at write.</strong> When writing a repo-persisted artifact, name the participant by role (“the maintainer,” “the implementer,” “the security reviewer,” “the orchestrator”). Use a personal name only when authorship attribution requires it (the maintainer’s name in narrative when the artifact is theirs) or when the name is the externally-known product or framework name. Personal names for team-agent specialists are workspace-internal vocabulary and do not survive into repo artifacts.</td><td>A published project spec that says “the orchestrator must decide before dispatch whether the SvelteKit specialist waits,” leaking orchestrator and specialist by workspace-internal name.</td></tr>
+<tr><td>W2</td><td><strong>Path-and-citation hygiene check at write.</strong> When writing a repo-persisted artifact, never cite workspace absolute paths, workspace-internal directory roots (the memory root, the team-inbox root, the scratch root, and similar private directory roots), workspace-feedback-memory files (referenced by private filename), or memory-internal taxonomy (the task DB, workspace-CLI binary paths). The repo’s own paths are fine; the workspace’s are not. The maintainer’s name in narrative is permitted when authorship requires it.</td><td>A published project spec whose Target line is an absolute workspace path under the operator’s home directory.</td></tr>
+<tr><td>W3</td><td><strong>Two-profile decision before file creation, not at move-time.</strong> Before creating a file, name its durability profile: workspace-private (lives outside the project repo tree; identity-preserving discipline applies) or repo-persisted (lives inside the repo tree; generic-at-write discipline applies). Don’t write under one profile and refactor at move-time; the over-genericization vector lives at those move moments, where identity-preserving content gets stripped on the way in.</td><td>A mid-development sweep over workspace-internal skill files that would have stripped the configured-agent attribution the maintainer values during daily use; the right discipline is to decide each new file’s destination at creation, not to sweep mid-life.</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Anti-example.</strong> Putting reviewer files inside a project repo where they’ll ride along on publish. Writing a project ADR that cites a workspace-internal feedback note. Genericizing a workspace-private artifact to the point where it loses the attribution that made it useful.</p>
+<h3 id="p-trustthenretro"><a class="header" href="#p-trustthenretro">P-TrustThenRetro</a></h3>
+<p>Trust the loop; retro selectively. (Anchors Dual-audience, Quality.)</p>
+<p><strong>Why.</strong> This is a principle about the architecture of the human and agentic-team composition itself, not about any single system. Direction is set up-front by the decomposer; the team executes within direction; review concentrates on outcomes and patterns rather than per-step approval. Walking every flag returns the decomposer to a per-step approval gate rather than the direction-setter role, and the decomposer is the bottleneck in the composition. Optimizing review time on what matters is what makes the workflow sustainable; trusting the rest until evidence says otherwise is what makes the composition scale.</p>
+<p><strong>How it shows up.</strong> Routine quality gates (automated review, test execution, format passes) run and resolve their findings without per-finding approval, escalating only on patterns that exceed a threshold. Architectural concerns get flagged in deviation reports, not blocked at execution time. The decomposer’s review shifts to load-bearing checkpoints (intent-mismatch, scope drift, design conflicts), not every diff line.</p>
+<p>Three composition failure-mode patterns are anti-cases for this principle: (a) <em>wrong participant in control</em>, the orchestrator executing directly when the work should have been dispatched, or executing without intent grounding the human’s context would have supplied; (b) <em>insufficient handoff</em>, a dispatch lacking the context-load that lets the dispatched agent act under the orchestrator’s intent (missing skill injection, missing scope envelope, wrong question-shape for the receiving agent); (c) <em>trust failures in either direction</em>, under-trust where the orchestrator walks every routine finding with the human and serializes work through human attention, or over-trust where the orchestrator introduces decisions without the reviewer signal that would catch wrong assumptions. Reviewers and orchestrators check for these patterns at handoff boundaries.</p>
+<p>Three trust-calibration disciplines operationalize this principle at dispatch boundaries; where the failure-mode catalog above names what to avoid, these name what to do. First, <em>participant capability declaration</em>: every dispatched agent’s scope envelope declares what the agent is reliable for. Reliance above the declared scope is over-trust; reliance below it is under-trust. Calibration is to the declared scope, not to general agent capability. Second, <em>reliance-level taxonomy at dispatch time</em>: each dispatch sits at one of three reliance levels. Advice means the agent proposes and the decomposer decides. Vetted means the agent acts, a reviewer gates, and the decomposer samples. Autonomous-with-veto means the agent acts within bounds and the decomposer overrides post-hoc. The level is a dispatch parameter, not a runtime discovery. Third, <em>cap escalation versus iteration</em>: when an iterate-to-zero loop approaches the cap (P-IterateToZero), the escalation mode is a design conversation, not another fix round. Grinding past the cap on a defect that keeps reappearing in different shapes is the failure mode the cap exists to prevent.</p>
+<p><strong>Anti-example.</strong> Surfacing every reviewer finding for per-item approval before the dispatched fix can land. Treating routine pre-commit and CI failures as escalations rather than routine. Re-presenting standard practices as menu options on every dispatch instead of applying them silently.</p>
+<h3 id="p-compositionbridge"><a class="header" href="#p-compositionbridge">P-CompositionBridge</a></h3>
+<p>Durable artifacts close the human-agent asymmetry. (Anchors Composition, Dogfooding.)</p>
+<p><strong>Why.</strong> The human in the composition carries persistent low-resolution context (years of decisions, patterns, taste, accumulated rules); the agentic team carries session-scoped high-resolution context (fine-grained file state, current spec, in-loop reasoning). The asymmetry doesn’t close at runtime. There’s no protocol that loads years of context into a session prompt at sufficient resolution. It closes at the <em>artifact layer</em>: durable encodings (architecture documents, skill files, ADRs, the workspace canon, the task DB) that load the slow-changing context into the fast-loading session. Where the artifact is present and current, the composition is stable. Where it’s missing or stale, the asymmetry leaks at runtime and either the human becomes the bottleneck (re-explaining context every session) or the agent runs without grounding.</p>
+<p><strong>How it shows up.</strong> Session-level patterns get encoded into reloadable artifacts when caught (the knowledge-extraction loop). Specs, ADRs, and architecture docs are agent-primary (G-0027), written to be loaded cold and applied directly, not summarized for an agent that then loads its summary. Constraint baselines (principles, values, ADRs) load at every workflow-stage start (G-0028 Stage 0), never assumed to be latent. Memory writes are bounded and append-only at the carrier’s discretion (G-0007..G-0012); hooks never write rule content. Cross-session continuity is handled by stash and inbox, both visible at session-start checklists; nothing is left to organic recall.</p>
+<p>Three cross-stack rules operationalize this principle (composition discipline at the participant boundary):</p>
+<ul>
+<li><strong>Participant-in-control check before action.</strong> Before acting, name which participant should be in control. If the answer is “the orchestrator” but the work is in a category that always dispatches (project source, tests, runtime config, spec revisions, README, ADRs), the answer is wrong. Dispatch.</li>
+<li><strong>Handoff context-load before dispatch.</strong> A dispatch is well-formed when the receiving agent has objective, output format and completion-report shape, tool and scope guidance, task boundaries, and load-bearing skill injection. Hand-built dispatches with one or two template blocks are the failure mode.</li>
+<li><strong>Trust-execute-retro after direction.</strong> Once direction is set on a structured flow, execute forward; the orchestrator reviews selectively at points of the human’s choosing, and retros on outcome divergence. Walking every flag with the human serializes work through their attention, which is never the goal.</li>
+</ul>
+<p><strong>Anti-example.</strong> A skill or ADR drafted referencing memory paths or team names without verification. A spec carrying claims about “the operator uses X” that aren’t anchored in a memory or file. A repeated pattern across sessions that surfaces in three retros before being encoded as a rule (the bottleneck the knowledge-extraction loop exists to close). An orchestrator executing a spec edit directly instead of dispatching, or a hand-built agent call with one template block where five were required.</p>
+<h2 id="changelog"><a class="header" href="#changelog">Changelog</a></h2>
+<ul>
+<li><strong>2026-05-21.</strong> Tier-1 Batch B canon landing. Extended P-HeterogeneousReviewers “Why” with AI-era algorithmic-monoculture grounding (Kleinberg &amp; Raghavan 2021, Bommasani et al. 2022, Panickssery et al. 2024, Verga et al. 2024) and “How it shows up” with the review-mining loop, plus four X-rules (H1-H4). Extended P-TDDPairs “Why” with industrial and AI-era empirical grounding and “How it shows up” with red-phase / assertion-strength discipline, plus five X-rules (T1-T5) and a companion Rust stack-skill <code>&lt;P-TDDPairs&gt;</code> block (TF1-TF4). Extended P-IterateToZero “Why” with the external-feedback dependency (Huang et al., ICLR 2024) and “How it shows up” with the fix-induced-variant disposition and the semantic-drift boundary, plus three X-rules (I1-I3). Added reviewer-seat and orchestrator <code>&lt;push-back-when&gt;</code> rules to the agent profiles. The cap number stays domain-specific (principle remains number-free). Each principle validated under outside literature, AI-era empirical work, and the workspace review corpus.</li>
+<li><strong>2026-05-17.</strong> Tier-1 Batch A canon landing. Extended P-ShiftLeft “How it shows up” with three decomposition discipline patterns plus D1-D3 X-rules; extended P-WriteTimeAudience “How it shows up” with the relocated repo-artifact enumeration (now source-of-truth) plus W1-W3 X-rules; extended P-TrustThenRetro “How it shows up” with three trust-calibration disciplines (participant-capability-declaration / reliance-level-taxonomy / cap-escalation-vs-iteration), composing with the existing failure-mode catalog; extended P-PreserveDecisionSpace Anti-example with the fabricated-claim case; extended P-HeterogeneousReviewers “How it shows up” with the unverified-mechanism worked example. P-TrustThenRetro validated under external literature (Bainbridge 1983 / Lee &amp; See 2004 / Hollnagel 2009).</li>
+<li><strong>2026-05-15.</strong> Added P-CompositionBridge principle (artifact-as-substrate) and extended P-TrustThenRetro “How it shows up” with three composition failure-mode patterns (wrong-participant / insufficient-handoff / trust-failures-both-directions). Operationalizes Composition value’s substrate mechanism and protocol mechanism under separate principles by mechanism distinction. Three cross-stack X-rules (participant-in-control check, handoff context-load, trust-execute-retro) land under P-CompositionBridge.</li>
+<li><strong>2026-05-13.</strong> Added P-MinBlastRadius principle. Operationalizes the new Maintainability core value via information-hiding + locality + change-isolation seams + cross-stack X-rules. Composes with P-LockContract (system-boundary case) and P-Worktrees (workflow-layer change isolation).</li>
+<li><strong>2026-04-30.</strong> Initial structure: 15 named principles (<code>P-Defer</code>, <code>P-PerRepoFirst</code>, <code>P-LockContract</code>, <code>P-StackDiscipline</code>, <code>P-SecurityLayered</code>, <code>P-InstrumentBefore</code>, <code>P-Worktrees</code>, <code>P-MainProtected</code>, <code>P-ShiftLeft</code>, <code>P-TDDPairs</code>, <code>P-IterateToZero</code>, <code>P-HeterogeneousReviewers</code>, <code>P-PreserveDecisionSpace</code>, <code>P-WriteTimeAudience</code>, <code>P-TrustThenRetro</code>).</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="architecture-values.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="constraint-edges.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="architecture-values.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="constraint-edges.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,364 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>G-0024: Stage 6 Label Authorization - mnemra-governance</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-79642c4f.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-eb7d2461.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">mnemra-governance</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/mnemra/governance" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="g-0024-stage-6-approval--label-set-authorization--required-status-check-enforcement"><a class="header" href="#g-0024-stage-6-approval--label-set-authorization--required-status-check-enforcement">G-0024: Stage 6 Approval — Label-Set Authorization + Required-Status-Check Enforcement</a></h1>
+<p><strong>Status:</strong> Accepted
+<strong>Date:</strong> 2026-04-30</p>
+<h2 id="context"><a class="header" href="#context">Context</a></h2>
+<p>This decision is a governance ADR (a <code>G-</code>series record that applies across the whole ecosystem rather than to one project). It builds on Stage 6, the approval-labelling step in a change’s life. G-0013 locked the closed-enum label vocabulary as the canonical Stage 6 approval signal. Round 1 security review surfaced a structural authorization gap. G-0013 specifies <em>what</em> the labels are and <em>what</em> the gate logic does. It does not specify <em>who</em> may apply them, nor <em>what</em> prevents the GitHub merge UI from bypassing the gate logic entirely.</p>
+<p>By GitHub default, any collaborator with the <strong>Triage</strong> role or higher can apply labels via the web UI or <code>gh api</code>. The protected branch also has no required status check that depends on label cardinality validation. Put those two facts together and the workflow’s Stage 6 gate is mechanically bypassable in two ways:</p>
+<ol>
+<li><strong>Label spoofing.</strong> Any Triage+ collaborator applies <code>stage6-approved</code> + <code>release-mode-A</code> + <code>bump:patch</code>. The auto-merge cycle proceeds. The audit row records the maintainer’s name as actor, because the audit row is self-attestation per G-0013, but the actual approver was someone else.</li>
+<li><strong>UI merge bypass.</strong> A repo admin clicks GitHub’s “Merge pull request” button directly, skipping the workspace template script (G-0018). The cardinality check the script carries never runs. The merge lands.</li>
+</ol>
+<p>In v1 with a single sequencer, both paths are theoretical. In a multi-collaborator future state (“workflow IS what mnemra adopts” with non-maintainer contributors and automation accounts), both paths become real attack surfaces.</p>
+<p>This ADR closes both gaps with GitHub-native primitives.</p>
+<h2 id="decision"><a class="header" href="#decision">Decision</a></h2>
+<p><strong>Two GitHub-native enforcement layers, both required per in-scope repo:</strong></p>
+<h3 id="layer-a--restrict-label-set-permission-via-repository-ruleset"><a class="header" href="#layer-a--restrict-label-set-permission-via-repository-ruleset">Layer A — Restrict label-set permission via repository ruleset</a></h3>
+<p>For each in-scope repo, configure a repository ruleset (via <code>gh api -X POST /repos/{owner}/{repo}/rulesets</code> or repo Settings → Rules) that restricts who may apply or remove labels in the gating families:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Label family</th><th>Permitted actors</th></tr>
+</thead>
+<tbody>
+<tr><td><code>stage6-approved</code> (presence)</td><td>Named maintainer (single-actor allowlist in v1); F1: explicit allowlist of approver identities</td></tr>
+<tr><td><code>release-mode-A</code>, <code>release-mode-B</code>, <code>release-mode-A-exception</code></td><td>Named maintainer; automation accounts MAY apply during the workspace template script invocation, never independently</td></tr>
+<tr><td><code>bump:patch</code>, <code>bump:minor</code>, <code>bump:major</code>, <code>bump:none</code></td><td>Named maintainer; automation accounts MAY apply during the workspace template script invocation</td></tr>
+<tr><td><code>recovery:1</code>, <code>recovery:2</code>, <code>recovery:3</code> (if adopted per G-0018 amendment)</td><td>Same as <code>bump:*</code> family</td></tr>
+</tbody>
+</table>
+</div>
+<p>Other labels (informational, project-tracking) remain unrestricted.</p>
+<p><strong>Ruleset enforcement mechanism:</strong> GitHub’s ruleset API supports an <code>actor_id</code> allowlist on the <code>pull_request</code> and <code>repository</code> rule types via custom labels rules where available. When the platform tier doesn’t expose this, the fallback is a GitHub Actions workflow <code>verify-stage6-labeler</code> triggered on the <code>pull_request.labeled</code> event:</p>
+<pre><code class="language-yaml"># .github/workflows/verify-stage6-labeler.yml
+on:
+  pull_request:
+    types: [labeled, unlabeled]
+jobs:
+  verify-labeler:
+    if: contains(fromJson('["stage6-approved","release-mode-A","release-mode-B","release-mode-A-exception","bump:patch","bump:minor","bump:major","bump:none"]'), github.event.label.name)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify labeler is in allowlist
+        run: |
+          if [[ "${{ github.event.sender.login }}" != "&lt;maintainer-github-handle&gt;" \
+             &amp;&amp; "${{ github.event.sender.login }}" != "&lt;ci-bot-handle&gt;" \
+             &amp;&amp; "${{ github.event.sender.login }}" != "&lt;release-bot-handle&gt;" ]]; then
+            echo "::error::Label ${{ github.event.label.name }} applied by unauthorized actor ${{ github.event.sender.login }}"
+            exit 1
+          fi
+</code></pre>
+<p>The per-repo retrofit spec (the document that defines what done looks like before implementation) implements one of these, depending on plan tier. Verify availability via <code>gh api repos/{owner}/{repo}</code> plus the ruleset endpoint.</p>
+<h3 id="layer-b--required-status-check-tying-cardinality-to-branch-protection"><a class="header" href="#layer-b--required-status-check-tying-cardinality-to-branch-protection">Layer B — Required-status-check tying cardinality to branch protection</a></h3>
+<p>Per in-scope repo, branch protection on <code>main</code> includes a required status check that depends on a <code>verify-stage6-labels</code> workflow:</p>
+<pre><code class="language-yaml"># .github/workflows/verify-stage6-labels.yml
+on:
+  pull_request:
+    types: [opened, edited, synchronize, labeled, unlabeled]
+  merge_group:  # also runs in queue per G-0023
+jobs:
+  verify-labels:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    steps:
+      - name: Verify Stage 6 label cardinality
+        run: |
+          # Read current labels via gh api
+          # Validate exactly-one of release-mode-* family when stage6-approved present
+          # Validate exactly-one of bump:* family when stage6-approved present
+          # Fail loudly on cardinality violation; never pick-rather-than-fail
+</code></pre>
+<p>Branch-protection settings include <strong>both</strong> <code>verify-stage6-labels</code> AND <code>verify-stage6-labeler</code> in <code>required_status_checks.contexts</code>. Both checks are required-status-checks. A failing labeler check (Layer A) and a failing cardinality check (Layer B) each block the merge. Putting Layer A in <code>required_status_checks</code> is what makes it preventive rather than detective. A spoofed-labeler PR with valid cardinality would still merge if Layer A were only a status check that’s not listed in required-status-checks. Listing Layer A as a required-status-check closes that gap.</p>
+<p><strong>Layer A fail-open behavior under Actions out-of-quota:</strong> if the GitHub Actions quota is exhausted, <code>verify-stage6-labeler</code> won’t run, and <code>required_status_checks</code> treats a missing required check as “blocked.” The PR cannot merge. This is fail-closed, not fail-open. Document it in the per-repo retrofit runbook so operators don’t mistake quota-exhaustion for a workflow bug.</p>
+<p><strong>Cardinality-failure mode:</strong> ABORT, never pick. The check fails loudly with a stderr message identifying the conflicting labels and the cardinality rule violated. The PR’s check status reads “failure” until the labels are corrected.</p>
+<h3 id="layer-c--audit-cross-reference-at-retrieval-time-r-pending-2-mitigation"><a class="header" href="#layer-c--audit-cross-reference-at-retrieval-time-r-pending-2-mitigation">Layer C — Audit cross-reference at retrieval time (R-pending-2 mitigation)</a></h3>
+<p>The audit row in the workspace activity log carries the actor as a CLI argument. This is self-attestation and cannot survive a credential compromise. Mitigation per accepted-risk R-pending-2:</p>
+<p>The audit-row action string captures all gating-label values:</p>
+<pre><code>&lt;workspace-cli&gt; activity log --actor &lt;maintainer&gt; \
+  --action "stage6-approved chunk #&lt;ref&gt; mode &lt;X&gt; bump &lt;Y&gt;" \
+  --task-id &lt;chunk-task-id&gt;
+</code></pre>
+<p>When reconstructing approval audit, query both surfaces and cross-check across all three label families (approval, release-mode, bump):</p>
+<pre><code class="language-bash"># 1. activity_log query — extract approval, mode, and bump values
+&lt;workspace-cli&gt; activity log --filter 'action LIKE "stage6-approved%"' --task-id &lt;chunk&gt;
+
+# 2. GitHub event log query — query all three label families
+gh api /repos/{owner}/{repo}/issues/&lt;pr#&gt;/events \
+  --jq '[.[] | select(.event=="labeled" and (
+    .label.name=="stage6-approved" or
+    (.label.name | startswith("release-mode-")) or
+    (.label.name | startswith("bump:"))
+  ))]'
+</code></pre>
+<p>If the activity_log row’s <code>actor</code> does not match the GitHub event log’s <code>actor.login</code> for any of the three label families’ labeled events, audit reconstruction flags inconsistency. This catches credential-compromise scenarios where the audit row was forged but the GitHub event log (cryptographically attributed) shows a different labeler.</p>
+<p><strong>Eventual-consistency note.</strong> GitHub’s <code>/issues/&lt;pr#&gt;/events</code> endpoint reflects label changes within a few seconds of the underlying event. Audit reconstruction MUST query the event log only after the PR’s <code>merged_at</code> timestamp plus a small safety margin (recommend 60 seconds) to avoid catching mid-flight inconsistency.</p>
+<h2 id="alternatives-considered"><a class="header" href="#alternatives-considered">Alternatives Considered</a></h2>
+<ul>
+<li><strong>Status quo (G-0013 unchanged).</strong> Rejected. Security review demonstrated the gate is mechanically bypassable in two ways. Multi-collaborator state makes both paths real.</li>
+<li><strong>Cryptographic actor binding via OIDC subject in audit row.</strong> Rejected for v1. It’s real implementation work, and it doesn’t fit the “no new tools” simplicity anchor. The mnemra-content-plugin can do this later. Layer C cross-reference is the lean substitute.</li>
+<li><strong>Branch protection alone (no Layer A label-permission restriction).</strong> Rejected. Layer B catches the merge-time cardinality, but Layer A prevents the upstream label-spoofing event. Both are needed for defense-in-depth.</li>
+<li><strong>Pull request review approvals as the gate signal</strong> (drop labels entirely; use GitHub’s native review-approvals UI). Rejected. G-0013 alternatives locked the closed-enum label vocabulary as the canonical signal for downstream tooling. Reverting to review-approvals re-opens settled architecture.</li>
+<li><strong>Workspace-side check via webhook → external service.</strong> Rejected. It adds infrastructure. GitHub-native rulesets plus Actions cover the gate without external dependencies.</li>
+</ul>
+<h2 id="consequences"><a class="header" href="#consequences">Consequences</a></h2>
+<ul>
+<li><strong>Per-repo retrofit:</strong> add the two workflows (<code>verify-stage6-labeler.yml</code> + <code>verify-stage6-labels.yml</code>); update branch protection to require <strong>both</strong> <code>verify-stage6-labeler</code> AND <code>verify-stage6-labels</code> in <code>required_status_checks.contexts</code>; configure the repository ruleset for label-set permission. The operations engineer is dispatched per repo as part of the merge-mode migration runbook.</li>
+<li><strong>G-0013 references G-0024 for enforcement mechanism.</strong> The G-0013 amendment adds: “Cardinality enforcement and label-set authorization are specified in G-0024.”</li>
+<li><strong>G-0018 references G-0024 for label-set authority.</strong> The workspace template script sets the labels under the automation account’s identity. The labels propagate through Layer A’s check, since automation accounts are in the allowlist.</li>
+<li><strong>G-0023 (merge queue) interacts with Layer B.</strong> <code>verify-stage6-labels</code> is required-against-intermediate-state, because label cardinality is a property of the PR’s metadata. G-0023 lists <code>verify-stage6-labels</code> in its required-checks set.</li>
+<li><strong>R-pending-2 mitigation in place via Layer C.</strong> The accepted-risk note in G-0018 for the audit-row self-attestation gap points to G-0024 Layer C as the compensating control.</li>
+<li><strong>Cardinality-failure semantics locked.</strong> ABORT-and-fail-loud, never pickapick. The <code>verify-stage6-labels</code> workflow’s exit code is the authority. Conflicting-label state never silently resolves to a chosen value.</li>
+<li><strong>GitHub plan tier dependency:</strong> Layer A’s repository ruleset mechanism varies by plan tier. The Actions-based fallback (a workflow checking <code>github.event.sender.login</code> against an allowlist) works on all tiers and is the v1 default.</li>
+<li><strong>Allowlist maintenance:</strong> the v1 allowlist is the named maintainer plus designated automation accounts. Multi-collaborator state extends the allowlist via a separate spec.</li>
+<li><strong>External-PR contributors:</strong> out of scope for v1. In-scope repos restrict PR creation to collaborators. If and when external PRs enter scope, this ADR is amended with a <code>pull_request_target</code> policy and fork-PR label-handling.</li>
+<li><strong>Mnemra migration:</strong> the GitHub-native primitives (rulesets, branch protection, Actions workflows) survive mnemra absorption unchanged. The allowlist’s substrate may shift if mnemra introduces a richer identity model, but the pattern holds: named approvers gate the labels, and cardinality is a required-status-check.</li>
+<li><strong>Audit cross-reference cost at retrieval time:</strong> an extra <code>gh api</code> call per audit reconstruction. The cost is acceptable, because audit retrieval is human-initiated, not a hot path.</li>
+<li><strong>Bot allowlist by-name caveat (R-pending-5).</strong> The Actions-based Layer A fallback enforces by <code>github.event.sender.login</code>, which is sender identity, not authentication context. A compromised credential for an automation account can apply gating labels through Layer A’s allowlist. Mitigations: fine-grained credentials scoped to label-write permission only, 90-day rotation, and GitHub App tokens (preferred when feasible per the G-0020 token strategy). Captured as R-pending-5 in the constraints summary’s accepted-risks table.</li>
+</ul>
+<h2 id="changelog"><a class="header" href="#changelog">Changelog</a></h2>
+<h3 id="2026-04-30--round-2-review-amendments"><a class="header" href="#2026-04-30--round-2-review-amendments">2026-04-30 — Round 2 review amendments</a></h3>
+<ul>
+<li><strong>Layer A detective-only gap:</strong> the original draft listed only <code>verify-stage6-labels</code> in <code>required_status_checks.contexts</code>. Spoofed-labeler PRs with valid cardinality would still merge under Layer B alone. <strong>Fixed:</strong> both <code>verify-stage6-labeler</code> AND <code>verify-stage6-labels</code> are now required-status-checks.</li>
+<li><strong>Layer C narrow:</strong> Layer C cross-reference covered <code>stage6-approved</code> only. Bump and release-mode label values weren’t queried, and the audit-row action string didn’t carry the bump value. <strong>Fixed:</strong> widened the action-string format to include <code>bump &lt;Y&gt;</code> and widened the GitHub event log query to all three label families.</li>
+<li><strong>Layer A out-of-quota fail-open concern:</strong> verified fail-closed. <code>required_status_checks</code> treats a missing required check as blocked, so quota exhaustion blocks merges rather than unblocking them. Added an explanatory paragraph plus a retrofit-runbook note.</li>
+<li><strong>Eventual-consistency note added</strong> to Layer C.</li>
+<li><strong>R-pending-5 added:</strong> bot allowlist by-name credential-compromise risk, with named compensating controls.</li>
+</ul>
+<p>Status remains <strong>Proposed</strong> pending lock.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../adrs/G-0023-github-merge-queue.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../adrs/G-0025-internal-ipc-typed-binary-encoding.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../adrs/G-0023-github-merge-queue.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../adrs/G-0025-internal-ipc-typed-binary-encoding.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,470 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>G-0028: Agent-First Workflow Shape - mnemra-governance</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-79642c4f.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-eb7d2461.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">mnemra-governance</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/mnemra/governance" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="g-0028-agent-first-workflow-shape--brief--verify-with-principlesvalues-as-baseline"><a class="header" href="#g-0028-agent-first-workflow-shape--brief--verify-with-principlesvalues-as-baseline">G-0028: Agent-First Workflow Shape — /brief + /verify, with Principles+Values as Baseline</a></h1>
+<p><strong>Status:</strong> Accepted
+<strong>Date:</strong> 2026-05-13</p>
+<h2 id="context"><a class="header" href="#context">Context</a></h2>
+<p>The existing <code>/discover → /architect → /spec</code> workflow was built around the way humans elicit and decide. Each skill walks the <a href="../glossary.html#the-decomposer">decomposer</a> (the role that figures out what to build before execution: framing a design session, drafting an ADR, writing a spec, cutting scope) through a multi-step conversation. Questions get surfaced, options get weighed, decisions get confirmed one cluster at a time. The shape made sense when the agents were assistants and the decomposer was the producer.</p>
+<p>The premise has shifted. The agents <em>are</em> the producers now. The decomposer is the source of intent and the final acceptor. The human-elicitation shape over-asks for course-correction, produces too many in-loop interruptions, and trial-and-errors on a substrate (human-centric workflow design) that the actual workload (agent-led production) doesn’t share.</p>
+<p>An architecture session on 2026-05-13 made the gap concrete. Three substrate-level pivots happened mid-session, each one legitimately raised by the decomposer, and only one of six planned decision clusters got fully walked. Two specific gaps were named there, and this ADR resolves them first:</p>
+<ul>
+<li>The workflow doesn’t load <code>architecture-principles.md</code> (the named rules that operationalize the values) and <code>architecture-values.md</code> (the standing beliefs behind every decision) at session start. The anchor layer is missing for the whole conversation up to the point a human notices.</li>
+<li>The criterion for “is this an ADR or a design note” was built for humans (“major and hard to change”). The agent-first cut is different: a decision is an ADR when reversing it forces downstream agent rework, or when an external consumer already references it.</li>
+</ul>
+<p>The reframe makes the workflow’s job explicit. Take the decomposer’s intent plus the locked constraint framework (principles, values, workspace ADRs) and produce correct software, with human input only at intent and final acceptance. “Correct” has four parts: spec conformance, property-based test pass, intent-conformance review, and a decomposer spot check. Spec quality is the load-bearing input. Garbage in, garbage out. So the workflow’s real job is producing a spec tight enough that everything downstream is mechanical.</p>
+<p><strong>The meta-frame.</strong> <em>Apply structure at points where drift occurs.</em> The goal is human-and-agent productivity with correctness as the default. Humans and agents each carry characteristic strengths and characteristic failure modes. The workflow’s job is to blend the strengths and bound the failure modes of each, applying structure precisely at the points where work would otherwise drift. The old workflow was shaped by how humans work alone. The new one is shaped by how humans and agents work together.</p>
+<p>This ADR builds directly on <strong><a href="./G-0027.html">G-0027 (agent-primary source artifacts)</a></strong>, which establishes that source artifacts are authored for an agent reader first, with human views generated from them. This is the same principle applied to the workflow that produces those artifacts.</p>
+<h2 id="drivers"><a class="header" href="#drivers">Drivers</a></h2>
+<ul>
+<li>The decomposer’s stated goal: “out of the loop unless required.” Minimize human-in-loop friction.</li>
+<li>The measurement problem. No data loop exists today for workflow success. The framing has to enable a measurement loop, not just an aesthetic.</li>
+<li>Agent autonomy is safe only when the spec is verifiable. The workflow has to produce verifiable specs.</li>
+<li>Trial-and-error on workflow design is unsustainable. The framing has to lock so that iteration moves to implementation.</li>
+<li>Principles and values are already written down as a baseline. The workflow has to load them, not ignore them.</li>
+</ul>
+<h2 id="decision"><a class="header" href="#decision">Decision</a></h2>
+<p>Adopt an agent-first workflow shape with two skills. <strong><code>/brief</code></strong> is the unified workflow (three internal stages, two human touchpoints, mandatory principles-and-values baseline at Stage 0). <strong><code>/verify</code></strong> is its paired skill (a four-signal verification stack).</p>
+<h3 id="mandatory-stage-0--baseline-load-applies-to-every-brief-and-verify-invocation"><a class="header" href="#mandatory-stage-0--baseline-load-applies-to-every-brief-and-verify-invocation">Mandatory Stage 0 — baseline load (applies to every <code>/brief</code> and <code>/verify</code> invocation)</a></h3>
+<p>Stage 0 is the baseline-load step that every run starts from. Each <code>/brief</code> run begins by loading the constraint baseline into the working context:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Artifact</th><th>Location</th><th>Purpose</th></tr>
+</thead>
+<tbody>
+<tr><td>Architecture values</td><td><code>docs/src/architecture-values.md</code></td><td>The six core values plus supporting values; the system properties and meta values the work must respect</td></tr>
+<tr><td>Architecture principles</td><td><code>docs/src/architecture-principles.md</code></td><td>The named principles (<code>P-Defer</code> defers a mechanism choice until evidence forces it, <code>P-PerRepoFirst</code> keeps work per-repo before extracting to shared code, <code>P-LockContract</code> locks a contract once it has external consumers, and so on) that operationalize the values</td></tr>
+<tr><td>Workspace ADRs (G-prefix)</td><td><code>docs/src/adrs/G-*.md</code></td><td>Workspace-wide locked decisions, the <code>G-</code> governance series</td></tr>
+<tr><td>Constraint graph and edges</td><td><code>docs/src/constraint-edges.md</code></td><td>Relationships between principles, ADRs, and project constraints</td></tr>
+<tr><td>Project ADRs (P-prefix)</td><td><code>&lt;project&gt;/docs/src/adrs/P-*.md</code> (when project is named)</td><td>Project-specific locked decisions, inherited or overridden</td></tr>
+</tbody>
+</table>
+</div>
+<p>Loading isn’t optional. The previous workflow treated principles and values as latent context the agent might pick up if asked. Agent-first treats them as the operating frame the work must explicitly cite. Review passes at each stage check decisions against this baseline.</p>
+<h3 id="brief--unified-intake--frame--spec-two-human-touchpoints"><a class="header" href="#brief--unified-intake--frame--spec-two-human-touchpoints"><code>/brief</code> — unified intake → frame → spec, two human touchpoints</a></h3>
+<p><code>/brief</code> runs a piece of work from intake through a locked spec. Its three stages are Intake, Frame (the stage that elicits and synthesizes the problem shape before a spec is written), and Spec (the specification that defines what done looks like; agents decide how, the spec defines what).</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Stage</th><th>Owner</th><th>Activity</th><th>Output</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>1. Intake</strong></td><td>Decomposer writes; agents review</td><td>Structured intent capture: jobs-to-be-done (JTBD) plus non-goals plus success criteria plus hard constraints, with the exact schema set in a downstream task. An agent review pass validates schema completeness and detects conflicts with a principle or value. The decomposer iterates until lock. <strong>For existing projects, see “Project alignment audit” below.</strong></td><td>Validated intent</td></tr>
+<tr><td><strong>2a. Frame elicitation</strong></td><td>Agent proposes; decomposer inputs</td><td>The agent surfaces an architectural shape proposal (boundaries, component map, cross-cutting decisions, open ADR slots) drawn from intent, baseline, and any predecessor substrate. The decomposer inputs architectural direction. A <code>/clarify</code>-style loop iterates to 95% confidence. <strong>Collapsed under brownfield-extension modulation (see below).</strong></td><td>Architectural-direction input record</td></tr>
+<tr><td><strong>2b. Frame synthesis</strong></td><td>Agents synthesize</td><td>Walk the constraint graph from validated intent, baseline, and the Stage 2a input record. Propose operating constraints. A review pass flags conflicts. Batch routine ADRs and escalate only on novel-decision triggers.</td><td>Frame doc (constraint summary plus rationale chain)</td></tr>
+<tr><td><strong>3. Spec</strong></td><td>Agents synthesize</td><td>Produce a testable spec from the frame doc. A review pass validates testability and spec quality. The spec is the contract <code>/verify</code> consumes.</td><td>Locked spec</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Decomposer touchpoints (cold-start default):</strong></p>
+<ul>
+<li><strong>Intake-exit gate.</strong> Confirm validated intent.</li>
+<li><strong>Stage 2a elicitation loop.</strong> Input architectural direction, iterating to confidence. This is a bounded loop, not a single gate.</li>
+<li><strong>Frame-exit gate.</strong> Review the synthesized Frame before Spec begins. The Frame <em>is</em> the architecture. Reviewing it is the load-bearing checkpoint that separates “correct shape” from “passes agent review of its own work.”</li>
+<li><strong>Spec-exit gate.</strong> Confirm the locked spec.</li>
+</ul>
+<p><strong>Decomposer touchpoints (brownfield-extension modulation):</strong> The Stage 2a elicitation collapses. The Frame-exit gate collapses to a light “no surprises” scan, kept as a floor because it’s easier to relax later than to restore. The two-touchpoint shape (intake plus spec-exit) is effectively recovered for extension work, where the architecture is already framed and stable.</p>
+<p>Between gates, agents operate autonomously. The pause-and-escalate triggers below are the only legitimate re-entry path <strong>outside the Stage 2a elicitation loop and Frame-exit review</strong>.</p>
+<h3 id="project-alignment-audit-stage-1-sub-process-for-existing-projects"><a class="header" href="#project-alignment-audit-stage-1-sub-process-for-existing-projects">Project alignment audit (Stage 1 sub-process for existing projects)</a></h3>
+<p>When <code>/brief</code> is invoked against an existing project (project-id supplied or project path detected), Stage 1’s first action is a project-state audit <em>before</em> intent capture proceeds:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Check</th><th>Question</th><th>If misaligned</th></tr>
+</thead>
+<tbody>
+<tr><td>Intent artifact</td><td>Does an intent doc exist in the validated schema (JTBD plus non-goals plus success criteria plus hard constraints)?</td><td>Propose a retrofit from existing discovery or scoping artifacts; surface it to the decomposer</td></tr>
+<tr><td>Frame artifact</td><td>Does a frame doc or constraints summary exist? Does it cite principles, values, and ADRs?</td><td>Propose a retrofit; complete missing clusters before forward progress</td></tr>
+<tr><td>ADRs</td><td>Are ADRs in the expected format (per-file MADR with the P-prefix, and the agent-first reversal-cost criterion)?</td><td>Identify drift; retrofit opportunistically</td></tr>
+<tr><td>Spec</td><td>Does a spec exist in a <code>/verify</code>-consumable shape?</td><td>Defer to Stage 3 once the Frame is aligned</td></tr>
+<tr><td>Self-contained references</td><td>Do artifacts cite by name and ID self-containedly, per G-0027?</td><td>Retrofit references</td></tr>
+</tbody>
+</table>
+</div>
+<p>MADR is the lightweight ADR template the <code>G-</code> series follows: Context, Decision, Alternatives Considered, Consequences. <code>/verify</code> is the backstop stage that re-validates a finished change against the spec it was built from. Migration happens <em>before</em> the workflow continues.</p>
+<h3 id="cold-start-vs-brownfield-extension-modulation"><a class="header" href="#cold-start-vs-brownfield-extension-modulation">Cold-start vs brownfield-extension modulation</a></h3>
+<p>The cold-start case is the norm. The original lock of this ADR was implicitly calibrated to the warm-start case: projects with months of upstream architectural work that already supplied Frame-quality substrate. Most projects don’t start there. Running an agent-only Frame against a thin substrate would invent or stop. This surfaced on 2026-05-22 during mnemra-core’s first run through Stage 2 (Frame). The output was good <em>because</em> the warm-start substrate was sufficient. For cold-start projects the same path would fail.</p>
+<p>The modulation is <strong>novelty-keyed</strong>. Aligning it with the existing Lightweight path (which is intent-size keyed) gives one collapse rule with two discriminators:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Discriminator</th><th>Heavy (default)</th><th>Light (collapse)</th></tr>
+</thead>
+<tbody>
+<tr><td>Intent size</td><td>Multi-cluster, principle-crossing</td><td>Small, single-cluster, principles cover cleanly</td></tr>
+<tr><td>Frame novelty</td><td>New project OR new architectural surface OR Frame-altering feature</td><td>Extension of an established Frame within an existing project</td></tr>
+</tbody>
+</table>
+</div>
+<p>When BOTH discriminators land light, the full collapse fires (the existing Lightweight path). When either lands heavy, the heavier shape applies. The Stage 2a elicitation and the Frame-exit gate are in.</p>
+<p><strong>Detection at Stage 0:</strong> load the project’s existing Frame doc (if any) plus the last <code>/brief</code> run telemetry. Brownfield-extension is detected when a Frame doc exists for the target project AND the intent doesn’t propose architectural-surface changes. The collapse fires. Otherwise default to heavy.</p>
+<h3 id="calibration-phase--re-evaluation-tripwire"><a class="header" href="#calibration-phase--re-evaluation-tripwire">Calibration phase + re-evaluation tripwire</a></h3>
+<p>This amendment introduces a heavier-touchpoint shape than the original lock. The shape is <strong>calibration</strong>, not the final answer.</p>
+<p><strong>Tripwire:</strong></p>
+<ul>
+<li><strong>N = 5 cold-start Frame-exit reviews</strong> (the cohort). Tracked on <code>skill_run</code> telemetry as a per-stage flag.</li>
+<li><strong>At N, refit:</strong> the decomposer reviews the catch-rate. How often was the Frame revised at Frame-exit versus accepted as-is? Were the revisions things downstream code-and-security review would have caught anyway?</li>
+<li><strong>Brownfield expectation:</strong> a skip-rate higher than greenfield, because the architecture is stable. If brownfield-extension is <em>always</em> triggering the full heavy shape, the modulation rule isn’t detecting correctly.</li>
+<li><strong>Greenfield expectation:</strong> a lower skip-rate. If the decomposer is <em>always</em> skipping Frame-exit on greenfield too, that’s the calibration signal saying the gate has converged on a rubber-stamp. Refit gate density downward.</li>
+</ul>
+<p><strong>Refit options at N:</strong></p>
+<ol>
+<li>Keep gate density unchanged if the catch-rate justifies it.</li>
+<li>Collapse the Frame-exit gate to a notification (the decomposer is told the Frame is ready, with no blocking review).</li>
+<li>Full collapse to the original two-touchpoint shape.</li>
+<li>Tighten further if catch-rate evidence shows downstream review isn’t catching what Frame-exit catches.</li>
+</ol>
+<p>Bias toward more touchpoints during calibration. Relax case-by-case as evidence accumulates. The tripwire prevents calcification.</p>
+<h3 id="verify--paired-with-brief-four-signal-verification"><a class="header" href="#verify--paired-with-brief-four-signal-verification"><code>/verify</code> — paired with <code>/brief</code>; four-signal verification</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Signal</th><th>Source</th><th>Type</th><th>Notes</th></tr>
+</thead>
+<tbody>
+<tr><td>Tests pass</td><td>Generated from spec</td><td>Mechanical</td><td>Per G-0001 testing philosophy</td></tr>
+<tr><td>PBT pass</td><td>Property-based tests (PBT) on spec invariants</td><td>Mechanical</td><td>Catches spec-vs-impl drift</td></tr>
+<tr><td>Intent-conformance review</td><td>Agent (security-and-correctness-lensed)</td><td>Mechanical (hard step, current posture)</td><td>Confirms the impl satisfies the intent, not just the spec. Bridges the “passing tests on a lookup table” failure class</td></tr>
+<tr><td>Spot check</td><td>Decomposer</td><td>Human</td><td>Scales with trust; can lighten as the loop converges</td></tr>
+</tbody>
+</table>
+</div>
+<p>Three mechanical signals plus one human signal. <code>/verify</code> consumes the spec produced by <code>/brief</code> under a shared schema contract.</p>
+<h3 id="constraint-graph"><a class="header" href="#constraint-graph">Constraint graph</a></h3>
+<p>A graph view (not a stack) over Principles, Values, Workspace ADRs, Project ADRs, and per-task constraints.</p>
+<ul>
+<li><strong>Nodes:</strong> Principles, Values, Workspace ADRs (G-prefix), Project ADRs (P-prefix), per-task constraints</li>
+<li><strong>Edges:</strong> <code>specializes</code> (the source is a specific case of the target), <code>depends-on</code> (the source presupposes the target), <code>conflicts-with</code> (the two can’t both hold without negotiation), <code>refines</code> (the source tightens the target within the same domain)</li>
+<li><strong>Source-of-truth pattern:</strong> a view with an explicit edges file. Principles and ADRs stay primary in their existing locations. A file at <code>docs/src/constraint-edges.md</code> declares the relationships (markdown for now; promotion to a structured format is deferred to friction-driven need).</li>
+<li><strong>Traversal rule:</strong> the most-specific node applies when there’s no conflict (per-task &gt; project ADR &gt; workspace ADR &gt; principle). Conflicts escalate at intersection points (the review-pass surface).</li>
+</ul>
+<h3 id="pause-and-escalate-triggers-the-only-legitimate-human-in-loop-re-entry-between-gates"><a class="header" href="#pause-and-escalate-triggers-the-only-legitimate-human-in-loop-re-entry-between-gates">Pause-and-escalate triggers (the only legitimate human-in-loop re-entry between gates)</a></h3>
+<p>The triggers below are a <strong>starter set, not a closure</strong>. Per the meta-frame, structure applies at the points where drift occurs, and new triggers will be discovered through friction.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Trigger</th><th>Action</th></tr>
+</thead>
+<tbody>
+<tr><td>Principle conflict during any stage</td><td>Pause, escalate, single-decision walk</td></tr>
+<tr><td>Intent ambiguity unresolvable from current inputs</td><td>Pause, escalate, re-elicit</td></tr>
+<tr><td>Novel decision setting cross-project precedent</td><td>Pause, escalate, single-decision walk</td></tr>
+<tr><td>Substrate pivot that would invalidate locked artifacts in the session</td><td>Hard stop, capture as a gap note, stash, retro</td></tr>
+</tbody>
+</table>
+</div>
+<p>Routine decisions (within principles, no rework of done work) execute inline. Agents batch them and report at the next exit gate. This implements <code>P-TrustThenRetro</code>: direction is set up-front, the team executes within that direction, and the decomposer’s review concentrates on outcomes and patterns.</p>
+<h3 id="learning-loop--error-classification"><a class="header" href="#learning-loop--error-classification">Learning loop — error-classification</a></h3>
+<p>Post-deploy errors, and workflow drift caught in-session, classify into deterministic update targets:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Error class</th><th>Artifact to update</th><th>Forward-port to</th></tr>
+</thead>
+<tbody>
+<tr><td>Missed test case</td><td>Add test</td><td><code>/brief</code> Stage 3 test-generation step</td></tr>
+<tr><td>Missed spec scenario</td><td>Add to spec</td><td><code>/brief</code> Stage 2 (frame exit checklist)</td></tr>
+<tr><td>Missed principle implication</td><td>Add to principles or workspace ADR</td><td><code>/brief</code> Stage 1 validation pass</td></tr>
+<tr><td>Missed constraint</td><td>Add to constraint graph</td><td><code>/brief</code> Stage 2 graph walk</td></tr>
+<tr><td>Principle right, mechanism wrong (including maintenance disciplines: blast-radius limiting, locality, constants over inline strings, abstraction boundaries)</td><td>Refine the principle’s “How it shows up” or add a design note</td><td><code>/brief</code> Stage 2 mechanism selection; <code>/brief</code> Stage 3 spec</td></tr>
+<tr><td>Missed pause-and-escalate trigger</td><td>Add a new trigger to the table</td><td><code>/brief</code> pause-trigger list</td></tr>
+</tbody>
+</table>
+</div>
+<p>Each error class has a deterministic update target. The loop is mechanical, not ad-hoc. That ends the trial-and-error posture on workflow design.</p>
+<h3 id="naming"><a class="header" href="#naming">Naming</a></h3>
+<ul>
+<li><strong><code>/brief</code></strong> replaces <code>/discover</code> (the earlier-generation discovery pass that shaped scope before a spec) and the forward-direction of <code>/architect</code>. It’s the unified workflow.</li>
+<li><strong><code>/verify</code></strong> is a new skill, paired with <code>/brief</code>.</li>
+<li><strong><code>/architect</code></strong> retires in its forward direction (replaced by <code>/brief</code>). The audit and reverse-engineering direction survives as a concept but is deferred. It isn’t built.</li>
+<li><strong><code>/clarify</code></strong> is absorbed into the <code>/brief</code> intake review pass.</li>
+<li><strong><code>/spec</code></strong> is absorbed as <code>/brief</code> Stage 3. The existing skill file may remain as the implementation behind Stage 3.</li>
+</ul>
+<h3 id="canonical-entry-addendum--2026-05-17"><a class="header" href="#canonical-entry-addendum--2026-05-17">Canonical entry (addendum — 2026-05-17)</a></h3>
+<p><code>/brief</code> is the single canonical entry for any work that produces a spec. Invoking <code>/discover</code>, <code>/spec</code>, or <code>/clarify</code> standalone as a canonical entry point defeats canonical status, even where each still functions. Those skills survive only as <strong>internal mechanisms</strong> reused by <code>/brief</code> stages.</p>
+<p>Rationale: <code>/brief</code> is the one mechanism every spec-producing change routes through indefinitely. A defect or a bypass is multiplied across every future feature and product. Implied-by-naming (“replaces /discover and forward /architect”) is too weak a peg for that load-bearing status, so this addendum makes the exclusivity explicit. The recursion across feature and product altitudes (in the <code>/brief</code> skill) doesn’t create a second entry. It’s one door with an altitude argument.</p>
+<h2 id="alternatives-considered"><a class="header" href="#alternatives-considered">Alternatives Considered</a></h2>
+<p><strong>Keep the <code>/discover → /architect → /spec</code> triad and amend in place.</strong> The shape itself encodes human-elicitation. Amendments would be patches over a wrong-shaped contract. The three substrate-level pivots in one architecture session evidenced this. Rejected.</p>
+<p><strong>Three separate skills (<code>/intent</code>, <code>/frame</code>, <code>/spec</code>) instead of a unified <code>/brief</code>.</strong> This would be composable: re-run <code>/frame</code> without re-doing intent when principles shift. Rejected because the agent-first contract demands fewer human touchpoints by design. Three skills means three exit gates, which defeats “out of the loop unless required.” Unified <code>/brief</code> bakes the contract into the shape.</p>
+<p><strong>Stack-based constraint hierarchy (most-specific wins).</strong> Rejected because principle dimensions are independent axes (Determinism, Atomicity, Operability, and so on) that don’t override each other but apply orthogonally. A graph captures specialization versus orthogonality correctly. A stack flattens it.</p>
+<p><strong>Independent <code>/verify</code> (not paired with <code>/brief</code>).</strong> This would be more flexible: <code>/verify</code> works on any artifact, including legacy. Rejected for now because the agent-first contract demands deterministic verification, which demands a shared schema between producer and verifier. Independent invites schema drift.</p>
+<p><strong>Principle-conflict as a separate downstream gate.</strong> Rejected because conflicts caught downstream require re-walking the work that violated them. Catching at the input-review pass, and at every stage’s review pass, eliminates the re-walk.</p>
+<p><strong>Treat principles and values as latent context</strong> (the current behavior, where agents pick them up if asked). Rejected because the 2026-05-13 session evidenced the failure mode. Principles and values weren’t loaded at session start, so the anchor layer was missing for the whole conversation until the decomposer caught it mid-session. Stage 0 is a mandatory load, not optional.</p>
+<h2 id="consequences"><a class="header" href="#consequences">Consequences</a></h2>
+<p><strong>Positive:</strong></p>
+<ul>
+<li>Two human touchpoints per <code>/brief</code> run (intake plus spec exit), down from N. Aligns with “out of the loop unless required.”</li>
+<li>Principles and values are loaded as a baseline at Stage 0. The anchor gap that hurt the 2026-05-13 session is closed by structure, not by vigilance.</li>
+<li>Spec quality is now an explicit load-bearing input. The workflow’s real job is nameable and tunable.</li>
+<li>The verification stack is concrete (three mechanical signals plus one human). That enables a measurement loop.</li>
+<li>The learning loop has deterministic update targets, ending trial-and-error on workflow design.</li>
+<li>The constraint graph makes principle-conflict detection machine-tractable.</li>
+<li><code>/brief</code> and <code>/verify</code> form a contract, so the schema can be enforced.</li>
+<li>Implements <code>P-TrustThenRetro</code> structurally. The workflow shape <em>is</em> the trust-then-retro composition.</li>
+<li>The cold-start case is now structurally accommodated. Most projects don’t start with warm-start substrate.</li>
+<li>The Frame is reviewed <em>as architecture</em>, not as an agent-produced artifact.</li>
+<li>The calibration phase is structurally bounded by the re-evaluation tripwire. Workflow design moves out of trial-and-error posture on its own meta-shape.</li>
+<li>Novelty modulation prevents over-serving brownfield-extension work.</li>
+</ul>
+<p><strong>Negative:</strong></p>
+<ul>
+<li>Unified <code>/brief</code> is heavier per-run than today’s lightweight <code>/clarify</code>. Small features may feel over-served. Mitigation: Stage 1 and Stage 2 collapse fast when the intent is small and principles cover it cleanly.</li>
+<li>Intent-conformance review is new agent work. It needs design and instrumentation.</li>
+<li>The constraint graph and edges file is new infrastructure. The initial population is hand-work.</li>
+<li>Existing skill files need a rewrite and retirement. Migration is opportunistic: touch the file when adjacent work occurs.</li>
+<li>The cold-start touchpoint count is 3 (intake plus Frame-exit plus spec-exit), not 2. The modulation restores the two-touchpoint shape for brownfield-extension where it still applies.</li>
+<li>The Stage 2a elicitation loop is new. It needs design and instrumentation.</li>
+</ul>
+<p><strong>Downstream / open work:</strong></p>
+<ul>
+<li>Intake schema design. A separate task.</li>
+<li>Constraint graph initial population. A separate task; markdown edges file at <code>docs/src/constraint-edges.md</code>.</li>
+<li><code>/brief</code> skill draft. Implementation; this ADR locks the shape.</li>
+<li><code>/verify</code> skill draft. Implementation; intent-conformance review process design.</li>
+<li><code>skill_run</code> telemetry update. Per-stage flags within <code>/brief</code>.</li>
+<li>ADR-vs-design-note criterion codification. A separate task.</li>
+<li>mdbook aggregation for ADRs. Downstream of <code>/brief</code> Stage 3.</li>
+<li><strong>Add Maintainability as a core value</strong> in <code>architecture-values.md</code>. The unit goal is the <strong>minimum-blast-radius fix</strong>: when a change is needed, isolate it as much as possible, and the codebase architecture supports that isolation. The value sits in <code>architecture-values.md</code>; mechanism details live in the implementer skills and profiles, as concrete rules on abstraction, locality, constants versus inline strings, and module boundaries.</li>
+<li><strong>Add the meta-frame as a workspace value</strong> in <code>architecture-values.md</code>: <em>“Apply structure at points where drift occurs. Blend the strengths of human and agent work; bound the failure modes of each.”</em></li>
+</ul>
+<h2 id="changelog"><a class="header" href="#changelog">Changelog</a></h2>
+<ul>
+<li>2026-05-17: Canonical-entry addendum. Explicit statement that standalone invocation defeats canonical status; <code>/brief</code> recursive across feature and product altitudes is one door, not two.</li>
+<li>2026-05-17: Naming truth-fix. <code>/architect</code> no longer “stays in place under interim shape.” Forward-direction retired; audit-direction deferred (the concept survives, but it isn’t built); the legacy skill file is archived as harvest input.</li>
+<li>2026-05-23: Cold-start amendment. Explicit cold-start-vs-warm-start framing; Stage 2a pre-Frame elicitation sub-stage added (<code>/clarify</code>-style 95%-confidence loop); Frame-exit human gate restored for cold-start runs (cold-start touchpoint count 2 → 3); novelty-keyed modulation rule aligned with the existing Lightweight path; calibration tripwire baked in (N=5 cold-start Frame-exit cohort, refit at N). Source: the 2026-05-23 frame-canonical-entry alignment session. The original two-touchpoint lock was calibrated to the warm-start case, and cold-start is the norm. Calibration framing per the meta-rule: bias toward more touchpoints during calibration, relax case-by-case as evidence accumulates.</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../adrs/G-0027-agent-primary-source-artifacts.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../adrs/G-0029-publish-time-human-render.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../adrs/G-0027-agent-primary-source-artifacts.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../adrs/G-0029-publish-time-human-render.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>
