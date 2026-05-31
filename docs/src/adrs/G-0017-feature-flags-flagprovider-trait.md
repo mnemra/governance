@@ -49,7 +49,7 @@ impl FlagProvider for EnvVarFlags {
 
 Flag keys use kebab-case in source (`new-search-ranking`); env vars are screaming-snake-case with `FLAG_` prefix (`FLAG_NEW_SEARCH_RANKING`).
 
-**Extract to shared crate `workspace/crates/feature-flags/` only when commonality emerges across three or more repos** (rule of three). Until then, per-repo copies are intentional duplication; drift between them is fine because backends differ per-repo deployment context.
+**Extract to shared crate `<workspace-root>/crates/feature-flags/` only when commonality emerges across three or more repos** (rule of three). Until then, per-repo copies are intentional duplication; drift between them is fine because backends differ per-repo deployment context.
 
 **Backend swap path:** because `FlagProvider` is the seam, swapping `EnvVarFlags` for `OpenFeatureFlags` (when OpenFeature Rust reaches 1.0) or a vendor SDK is a per-repo decision: implement the trait against the new backend, swap the binding in repo `main.rs` / DI container.
 

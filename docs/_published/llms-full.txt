@@ -1319,7 +1319,7 @@ Stage 7 auto-merge logic reads labels via `gh api`; absence or wrong-cardinality
 **Audit recording uses the existing workspace activity log surface** with no schema expansion. At approval time, Stage 7 emits:
 
 ```
-brain activity log --actor <maintainer> \
+<workspace-cli> activity log --actor <maintainer> \
   --action "stage6-approved chunk #<ref> mode <X> bump <Y>" \
   --task-id <chunk-task-id>
 ```
@@ -1399,7 +1399,7 @@ An initial proposal used `(location, severity)` as identity. A subsequent propos
 - ...
 ```
 
-Anchors render as the first 6 hex characters of the SHA-256 in the markdown for human readability; the full hash lives in a fenced YAML block at the bottom of each reviewer file for tooling. Reviewer profiles get the anchor-computation recipe in their dispatch brief (workspace template ships a `bin/finding-anchor.sh` reference script).
+Anchors render as the first 6 hex characters of the SHA-256 in the markdown for human readability; the full hash lives in a fenced YAML block at the bottom of each reviewer file for tooling. Reviewer profiles get the anchor-computation recipe in their dispatch brief (workspace template ships a `<workspace-root>/bin/finding-anchor.sh` reference script).
 
 **Whole-file findings** (no line range) use a fixed-content-anchor of `whole-file`. Two file-level findings of the same severity on the same file collapse — acceptable for v1 since file-level findings are rare; reviewers should prefer line-anchored findings whenever a specific location is identifiable.
 
@@ -1433,7 +1433,7 @@ Concretely, iterate-to-zero terminates when no `(file, content-anchor)` pair car
 - **Cross-repo namespace.** The persistence path includes the repo segment (`<review-store>/<repo>-pr<N>/r<N>/<reviewer>.md`) so concurrent PRs sharing the same number across repos cannot collide.
 - **Store hygiene:** `<review-store>/<repo>-pr<N>/` directories accumulate during a PR's life. Cleanup happens at PR close (merged or abandoned). The session-start archive sweep moves closed-PR directories to archive after merge.
 - **Concurrent-round-write discipline.** Within a single round, multiple reviewers dispatch in parallel and write their files at completion. Reviewers do NOT read each other's same-round files — same-round dedup happens at the dispatch-coordinator post-round aggregation. The dispatch brief explicitly cites the `r<N-1>` glob to prevent read-the-current-round mistakes.
-- **Anchor computation is reviewer-side.** Reviewers compute the SHA-256 over the 5-line normalized window using the workspace-template `bin/finding-anchor.sh` (or equivalent). The anchor must be computed against the commit-SHA at which the reviewer is reading the file (typically the PR's HEAD at dispatch time). Round N+1 anchors against the new HEAD will produce different content-anchors only if the cited code itself changed; line-shift drift in unrelated parts of the file does not rotate the anchor.
+- **Anchor computation is reviewer-side.** Reviewers compute the SHA-256 over the 5-line normalized window using the workspace-template `<workspace-root>/bin/finding-anchor.sh` (or equivalent). The anchor must be computed against the commit-SHA at which the reviewer is reading the file (typically the PR's HEAD at dispatch time). Round N+1 anchors against the new HEAD will produce different content-anchors only if the cited code itself changed; line-shift drift in unrelated parts of the file does not rotate the anchor.
 - **Whole-file findings caveat.** Two file-level findings (anchor `whole-file`) of the same severity on the same file collapse. Reviewers preferring line-anchored findings reduce the chance of this collision. Acceptable corner case in v1.
 - **Iterate-to-zero metric is exact:** the new-findings-set difference produces a clean termination signal that survives line-range drift, severity flips, and reviewer-prose variation across rounds.
 - **Mnemra migration invariant.** Pre-mnemra: paths are store-relative under `<review-store>/<repo>-pr<N>/`. Post-mnemra: paths migrate to mnemra content-plugin namespace; the **(file, content-anchor, severity)** identity tuple is invariant across the migration. The content-anchor is content-addressed by construction, so it survives substrate changes.
@@ -1708,7 +1708,7 @@ impl FlagProvider for EnvVarFlags {
 
 Flag keys use kebab-case in source (`new-search-ranking`); env vars are screaming-snake-case with `FLAG_` prefix (`FLAG_NEW_SEARCH_RANKING`).
 
-**Extract to shared crate `workspace/crates/feature-flags/` only when commonality emerges across three or more repos** (rule of three). Until then, per-repo copies are intentional duplication; drift between them is fine because backends differ per-repo deployment context.
+**Extract to shared crate `<workspace-root>/crates/feature-flags/` only when commonality emerges across three or more repos** (rule of three). Until then, per-repo copies are intentional duplication; drift between them is fine because backends differ per-repo deployment context.
 
 **Backend swap path:** because `FlagProvider` is the seam, swapping `EnvVarFlags` for `OpenFeatureFlags` (when OpenFeature Rust reaches 1.0) or a vendor SDK is a per-repo decision: implement the trait against the new backend, swap the binding in repo `main.rs` / DI container.
 
@@ -1756,13 +1756,13 @@ These bundled because the recovery cap is a property of the workspace merge temp
 
 ## Decision
 
-**Workspace template script** at `workspace/bin/pr-create-with-automerge.sh` (or equivalent path post-mnemra-absorption). Per-repo copy via /spec retrofit; per-repo customization (default branch, body template) lives in the repo copy.
+**Workspace template script** at `<workspace-root>/bin/pr-create-with-automerge.sh` (or equivalent path post-mnemra-absorption). Per-repo copy via /spec retrofit; per-repo customization (default branch, body template) lives in the repo copy.
 
 Canonical sequence (post-Stage-6-approval, post-Stage-5-green):
 
 ```bash
 # 1. Durable approval audit (per G-0013)
-brain activity log --actor <maintainer> \
+<workspace-cli> activity log --actor <maintainer> \
   --action "stage6-approved chunk #<ref> mode <X>" \
   --task-id <chunk-task-id>
 
@@ -1800,7 +1800,7 @@ Workspace template script reads-and-increments at every step-1 invocation that t
 **Compensating control.** When the workspace template script detects an existing open PR at step 1 (i.e., a recovery cycle is in flight), it emits an additional `recovery-increment` activity row at the new counter value:
 
 ```
-brain activity log --actor <operator-or-automation> \
+<workspace-cli> activity log --actor <operator-or-automation> \
   --action "stage7-recovery-attempt N=<count> for PR #<pr#>" \
   --task-id <chunk-task-id>
 ```
@@ -2507,7 +2507,7 @@ Audit row in the workspace activity log carries the actor as a CLI argument; thi
 The audit-row action string captures all gating-label values:
 
 ```
-brain activity log --actor <maintainer> \
+<workspace-cli> activity log --actor <maintainer> \
   --action "stage6-approved chunk #<ref> mode <X> bump <Y>" \
   --task-id <chunk-task-id>
 ```
@@ -2516,7 +2516,7 @@ When reconstructing approval audit, query both surfaces and cross-check across a
 
 ```bash
 # 1. activity_log query — extract approval, mode, and bump values
-brain activity log --filter 'action LIKE "stage6-approved%"' --task-id <chunk>
+<workspace-cli> activity log --filter 'action LIKE "stage6-approved%"' --task-id <chunk>
 
 # 2. GitHub event log query — query all three label families
 gh api /repos/{owner}/{repo}/issues/<pr#>/events \
