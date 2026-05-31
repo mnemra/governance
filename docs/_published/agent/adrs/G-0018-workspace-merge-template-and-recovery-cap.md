@@ -20,13 +20,13 @@ These bundled because the recovery cap is a property of the workspace merge temp
 
 ## Decision
 
-**Workspace template script** at `workspace/bin/pr-create-with-automerge.sh` (or equivalent path post-mnemra-absorption). Per-repo copy via /spec retrofit; per-repo customization (default branch, body template) lives in the repo copy.
+**Workspace template script** at `<workspace-root>/bin/pr-create-with-automerge.sh` (or equivalent path post-mnemra-absorption). Per-repo copy via /spec retrofit; per-repo customization (default branch, body template) lives in the repo copy.
 
 Canonical sequence (post-Stage-6-approval, post-Stage-5-green):
 
 ```bash
 # 1. Durable approval audit (per G-0013)
-brain activity log --actor <maintainer> \
+<workspace-cli> activity log --actor <maintainer> \
   --action "stage6-approved chunk #<ref> mode <X>" \
   --task-id <chunk-task-id>
 
@@ -64,7 +64,7 @@ Workspace template script reads-and-increments at every step-1 invocation that t
 **Compensating control.** When the workspace template script detects an existing open PR at step 1 (i.e., a recovery cycle is in flight), it emits an additional `recovery-increment` activity row at the new counter value:
 
 ```
-brain activity log --actor <operator-or-automation> \
+<workspace-cli> activity log --actor <operator-or-automation> \
   --action "stage7-recovery-attempt N=<count> for PR #<pr#>" \
   --task-id <chunk-task-id>
 ```

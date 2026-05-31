@@ -88,15 +88,15 @@
       "primary_audience": "agent",
       "prompt_path": "explain-pass.md",
       "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
-      "source_sha256": "c5202d581d9e7b96b606f1e2dc140ae4a632e7efb4503e71d78b04307adaa588",
-      "translated_at": "2026-05-31T17:11:16Z"
+      "source_sha256": "924f1c05a00aa65c2252b87a3e831873e25919c6905e8ae60e712f751e1026e1",
+      "translated_at": "2026-05-31T19:47:12Z"
     },
     "adrs/G-0014-review-finding-identity-and-persistence.md": {
       "primary_audience": "agent",
       "prompt_path": "explain-pass.md",
       "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
-      "source_sha256": "9577485c0eaeaec8995e424d150f814b57fd3c38b2ac0b656141d5d18e3c5f7b",
-      "translated_at": "2026-05-31T17:11:16Z"
+      "source_sha256": "cd15cf9e6f8a864746cee7fba10c4c7b66c4ee461384a783eae8d52e63b7f762",
+      "translated_at": "2026-05-31T19:47:12Z"
     },
     "adrs/G-0015-devcontainer-per-repo-upstream-base.md": {
       "primary_audience": "agent",
@@ -116,15 +116,15 @@
       "primary_audience": "agent",
       "prompt_path": "explain-pass.md",
       "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
-      "source_sha256": "a2a2296e87150304ef5ecc0cd811b2627c216d50580aeff1f3dcc492f701d61c",
-      "translated_at": "2026-05-31T17:11:16Z"
+      "source_sha256": "43eb9279ae40eafa88b8ee8ab7655caa2469fe796ac5a1b7b3a7af71c9ddf920",
+      "translated_at": "2026-05-31T19:47:12Z"
     },
     "adrs/G-0018-workspace-merge-template-and-recovery-cap.md": {
       "primary_audience": "agent",
       "prompt_path": "explain-pass.md",
       "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
-      "source_sha256": "e49cfb870b2108739679b53dfa70ac0fe80d7724d3e625cf4e0217f3e7b3f89e",
-      "translated_at": "2026-05-31T17:11:16Z"
+      "source_sha256": "e9fc16c9c24ce5f1a9039fa30b9cd34866c6a4d64f6fefa492d53eebf93e24a6",
+      "translated_at": "2026-05-31T19:47:12Z"
     },
     "adrs/G-0019-tag-race-serialization.md": {
       "primary_audience": "agent",
@@ -165,8 +165,8 @@
       "primary_audience": "agent",
       "prompt_path": "explain-pass.md",
       "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
-      "source_sha256": "6a64dcb22c265929480ddf2e91f4c1513c3e0d6b825271969618a8e3e45dc31e",
-      "translated_at": "2026-05-31T17:11:16Z"
+      "source_sha256": "afc6de0a0580871d57397dc4531a3966ed25739169abb72a8be22c4b70bc7764",
+      "translated_at": "2026-05-31T19:47:12Z"
     },
     "adrs/G-0025-internal-ipc-typed-binary-encoding.md": {
       "primary_audience": "agent",

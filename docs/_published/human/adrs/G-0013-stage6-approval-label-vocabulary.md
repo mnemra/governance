@@ -16,7 +16,7 @@ The code workflow runs in numbered stages. Stage 6 is the maintainer-approval ga
 - **Q1 (canonical signal):** how does an approved chunk announce itself? A DB-canonical approach (a `stage6_approvals` table in the task DB) was rejected because the workspace CLI is in maintenance mode pending mnemra absorption. Investing in new schemas now is wasted work. The remaining candidates collapsed to PR labels.
 - **Q1+ (audit surface):** where does the approval get durably recorded so a future audit can answer "who approved chunk #N, when, in which mode"? The activity log table already exists. The question was whether to extend it with a typed approval row or use the generic surface.
 
-Discovery, the earlier-generation pass that fixes scope before a spec is written, locked the workflow stages and the principle of "fewer moving parts" (QA3 anchor). Both initial strawmen proposed label-canonical signaling. The open choice was which label vocabulary to use.
+[Discover](../glossary.md#discover), the earlier-generation pass that fixes scope before a spec is written, locked the workflow stages and the principle of "fewer moving parts" (QA3 anchor). Both initial strawmen proposed label-canonical signaling. The open choice was which label vocabulary to use.
 
 ## Decision
 
@@ -39,7 +39,7 @@ Stage 7 auto-merge logic reads labels via `gh api`. Absence or wrong-cardinality
 **Audit recording uses the existing workspace activity log surface** with no schema expansion. At approval time, Stage 7 emits:
 
 ```
-brain activity log --actor <maintainer> \
+<workspace-cli> activity log --actor <maintainer> \
   --action "stage6-approved chunk #<ref> mode <X> bump <Y>" \
   --task-id <chunk-task-id>
 ```

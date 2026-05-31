@@ -39,7 +39,7 @@ Stage 7 auto-merge logic reads labels via `gh api`; absence or wrong-cardinality
 **Audit recording uses the existing workspace activity log surface** with no schema expansion. At approval time, Stage 7 emits:
 
 ```
-brain activity log --actor <maintainer> \
+<workspace-cli> activity log --actor <maintainer> \
   --action "stage6-approved chunk #<ref> mode <X> bump <Y>" \
   --task-id <chunk-task-id>
 ```

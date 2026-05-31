@@ -100,7 +100,7 @@ Audit row in the workspace activity log carries the actor as a CLI argument; thi
 The audit-row action string captures all gating-label values:
 
 ```
-brain activity log --actor <maintainer> \
+<workspace-cli> activity log --actor <maintainer> \
   --action "stage6-approved chunk #<ref> mode <X> bump <Y>" \
   --task-id <chunk-task-id>
 ```
@@ -109,7 +109,7 @@ When reconstructing approval audit, query both surfaces and cross-check across a
 
 ```bash
 # 1. activity_log query — extract approval, mode, and bump values
-brain activity log --filter 'action LIKE "stage6-approved%"' --task-id <chunk>
+<workspace-cli> activity log --filter 'action LIKE "stage6-approved%"' --task-id <chunk>
 
 # 2. GitHub event log query — query all three label families
 gh api /repos/{owner}/{repo}/issues/<pr#>/events \
