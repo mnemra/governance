@@ -1,39 +1,242 @@
 {
   "entries": {
+    "adrs/G-0001-testing-philosophy.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "d743b40517c19ae601d213eed7803af7571be7abfbcc924cce20d1521bc1a845",
+      "translated_at": "2026-05-31T17:11:16Z"
+    },
+    "adrs/G-0002-no-compile-time-asset-embedding.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "f831c94dbee0f8eccb8f314554f1a85409393a5b4f71eae2da5b9505cfee8740",
+      "translated_at": "2026-05-31T17:11:16Z"
+    },
+    "adrs/G-0003-adr-two-tier-system.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "c0aae435eaa8c36e8c6f32e108ae71bcecfe131b3c6ec2073bbc184798739838",
+      "translated_at": "2026-05-31T17:11:16Z"
+    },
+    "adrs/G-0004-xml-agent-profiles.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "1ec89e0ec0b225992d1f5e37a80fb38b30d0d6d8eb304411948ece1192c27f8f",
+      "translated_at": "2026-05-31T17:11:16Z"
+    },
+    "adrs/G-0005-sql-file-migrations.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "fce983313fcee7b8a2a469b4d8274149e5f2966f2d8e995757c14ca327e24113",
+      "translated_at": "2026-05-31T17:11:16Z"
+    },
+    "adrs/G-0006-justfile-as-ci-contract.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "e9df0b4a5b183c831d8c4db8016e84b07a6574ce4d3d6494d211227dead5a362",
+      "translated_at": "2026-05-31T17:11:16Z"
+    },
+    "adrs/G-0007-knowledge-extraction-nudge-hook.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "b6bdb1c4da33d0fb835a0fddcbfe2dd015dbafc2ad09cd4984f3b9b817d269ea",
+      "translated_at": "2026-05-31T17:11:16Z"
+    },
+    "adrs/G-0008-knowledge-extraction-capture-schema.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "d6de2476c1e6826396ecb13ae00b03a3f3ddb502a190531729701b45336097a0",
+      "translated_at": "2026-05-31T17:11:16Z"
+    },
+    "adrs/G-0009-knowledge-extraction-duplicate-detection-scope.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "e913fb7bde2ccb7fa85e213b49cf909d466ad9ad956539428e3261c79581a87f",
+      "translated_at": "2026-05-31T17:11:16Z"
+    },
+    "adrs/G-0010-knowledge-extraction-worked-example-encoding.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "fa423117415ed27c88bbab0b8453cc715dc43c5e699a3dd63248c17ffca57819",
+      "translated_at": "2026-05-31T17:11:16Z"
+    },
+    "adrs/G-0011-knowledge-extraction-advisory-drift-detection.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "34970c5efef228173e30601ca352defeea63bd9cd0b623f031a0da1b362cad51",
+      "translated_at": "2026-05-31T17:11:16Z"
+    },
+    "adrs/G-0012-knowledge-extraction-safety-ceiling.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "6aa842e4f521ff1622b22049c1d52e4099835174ff8c89d128e7029bc587c355",
+      "translated_at": "2026-05-31T17:11:16Z"
+    },
+    "adrs/G-0013-stage6-approval-label-vocabulary.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "c5202d581d9e7b96b606f1e2dc140ae4a632e7efb4503e71d78b04307adaa588",
+      "translated_at": "2026-05-31T17:11:16Z"
+    },
+    "adrs/G-0014-review-finding-identity-and-persistence.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "9577485c0eaeaec8995e424d150f814b57fd3c38b2ac0b656141d5d18e3c5f7b",
+      "translated_at": "2026-05-31T17:11:16Z"
+    },
+    "adrs/G-0015-devcontainer-per-repo-upstream-base.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "c58a568c04c9d7b04ca850429de8772d0e5fe027e2f8fa4cba209adcb414fe34",
+      "translated_at": "2026-05-31T17:11:16Z"
+    },
+    "adrs/G-0016-layered-secret-detection.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "1863fccc0e78049a18e276d8a5d6a8b09daa1b15bbd973fe5b457b0b5c015f1a",
+      "translated_at": "2026-05-31T17:11:16Z"
+    },
+    "adrs/G-0017-feature-flags-flagprovider-trait.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "a2a2296e87150304ef5ecc0cd811b2627c216d50580aeff1f3dcc492f701d61c",
+      "translated_at": "2026-05-31T17:11:16Z"
+    },
+    "adrs/G-0018-workspace-merge-template-and-recovery-cap.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "e49cfb870b2108739679b53dfa70ac0fe80d7724d3e625cf4e0217f3e7b3f89e",
+      "translated_at": "2026-05-31T17:11:16Z"
+    },
+    "adrs/G-0019-tag-race-serialization.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "fd8b90b08e92993a24a2cd2d3fb02536b517b421f0857df0a24fb7c38125e49e",
+      "translated_at": "2026-05-31T17:11:16Z"
+    },
+    "adrs/G-0020-rust-release-automation-release-plz.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "bcd13cb24a86a21000a54078bdf765a0297c343e77c932ba5cc092fa25264976",
+      "translated_at": "2026-05-31T17:11:16Z"
+    },
+    "adrs/G-0021-monotonic-non-decreasing-version-policy.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "7e4bfeebcb3f14bd9298015fbbba2bbdde5b70f9f4fc2e61edbbb7ec5e5d9968",
+      "translated_at": "2026-05-31T17:11:16Z"
+    },
+    "adrs/G-0022-embargo-flow-architecture.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "366a8a24a5d415f8a178a82a455a0e023579505f0a413d6a0602493cf1a0c8e5",
+      "translated_at": "2026-05-31T17:11:16Z"
+    },
+    "adrs/G-0023-github-merge-queue.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "13ec3a829c4e19da96cb25b607b39390e398675af2dd70bf50fcd2014ac65bda",
+      "translated_at": "2026-05-31T17:11:16Z"
+    },
+    "adrs/G-0024-stage6-label-authorization.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "6a64dcb22c265929480ddf2e91f4c1513c3e0d6b825271969618a8e3e45dc31e",
+      "translated_at": "2026-05-31T17:11:16Z"
+    },
+    "adrs/G-0025-internal-ipc-typed-binary-encoding.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "4fcab21459f2aa6327220edac5666bce73a0e8b2f5bc5f596d6e17a3cffbb356",
+      "translated_at": "2026-05-31T17:11:16Z"
+    },
+    "adrs/G-0026-project-dev-docs-tooling.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "cb118fa1f63cbb5f03a7255a4d542eaf80a9851dd43ab5e76fc6a90cb992bdf2",
+      "translated_at": "2026-05-31T17:11:16Z"
+    },
+    "adrs/G-0027-agent-primary-source-artifacts.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "fefd9843820fc1e3b22c53737894755c3c9e66ace3d516201fcd03537d2b2a10",
+      "translated_at": "2026-05-31T17:11:16Z"
+    },
+    "adrs/G-0028-agent-first-workflow-shape.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "37c003ade60ee48cb136414f78a296eb3d51022aa831f5bb51c426a7c37718c2",
+      "translated_at": "2026-05-31T17:11:16Z"
+    },
+    "adrs/G-0029-publish-time-human-render.md": {
+      "primary_audience": "agent",
+      "prompt_path": "explain-pass.md",
+      "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
+      "source_sha256": "3c68bba7708c451e29deb7dfb001189625957e913498fb9424c3a7543a0128e9",
+      "translated_at": "2026-05-31T17:11:16Z"
+    },
     "adrs/README.md": {
       "primary_audience": "human",
       "prompt_path": "strip-pass.md",
       "prompt_sha256": "9a5cec0247acd96ea933ae89a5355c91d85a2f49cd89c9a7c5f2f582577a7a23",
-      "source_sha256": "6224ee39c7f145bf59281e141a52ef3b0dc1155331454b7de135aa9ce57c5a9a",
-      "translated_at": "2026-05-22T22:30:00Z"
+      "source_sha256": "f425c437da5b9205e5b03f079498c8e552991c3f263552cac077aa4cbd5e2a7f",
+      "translated_at": "2026-05-31T17:11:16Z"
     },
     "architecture-principles.md": {
       "primary_audience": "agent",
       "prompt_path": "explain-pass.md",
       "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
-      "source_sha256": "140df66730636b5165b263914036472af56691b49fd8ada8a0ec1adf590247bb",
-      "translated_at": "2026-05-22T22:30:00Z"
+      "source_sha256": "0242c99065892c47cca48d01dfe497a25a7d0e523e937a740a526b6e88a7b220",
+      "translated_at": "2026-05-31T17:11:16Z"
     },
     "architecture-values.md": {
       "primary_audience": "agent",
       "prompt_path": "explain-pass.md",
       "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
-      "source_sha256": "6a2ca6b31c09b1cd47f2e010d7fd0353b010a922ede4408cdb8e8962a4b787af",
-      "translated_at": "2026-05-22T22:30:00Z"
+      "source_sha256": "cda69722fe825f0ce6d7ef751fe4eb95637b5957d7e0b24dd89c22a9669d032f",
+      "translated_at": "2026-05-31T17:11:16Z"
     },
     "constraint-edges.md": {
       "primary_audience": "agent",
       "prompt_path": "explain-pass.md",
       "prompt_sha256": "b3712f684c0abfb5033eabaedfe39022385c751f3a99e3402504126972cdf8b4",
-      "source_sha256": "c4c68d2350f44fe588954fe04d9468e7ea84effe35104684c2a23bf1d64e217c",
-      "translated_at": "2026-05-22T22:30:00Z"
+      "source_sha256": "8e7caf0e9299981e7f07c5dadb1264ac0bb2553ca025a3a3c9b4fd82d5cb7c97",
+      "translated_at": "2026-05-31T17:11:16Z"
     },
     "index.md": {
       "primary_audience": "human",
       "prompt_path": "strip-pass.md",
       "prompt_sha256": "9a5cec0247acd96ea933ae89a5355c91d85a2f49cd89c9a7c5f2f582577a7a23",
-      "source_sha256": "3fee50330f916b266b057b256d54bfb4325a6ae436a90724b4b10e52203f3d57",
-      "translated_at": "2026-05-22T22:30:00Z"
+      "source_sha256": "6973b893d7f7908121b99278594971c5b708d7d5fa222e3b8388daf4752687f9",
+      "translated_at": "2026-05-31T17:11:16Z"
     }
   },
   "schema_version": 1
