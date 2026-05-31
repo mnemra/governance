@@ -20,7 +20,7 @@ Title-only flat grep over **5 destination types, 6 corpora** (project-scoped ADR
 | Destination | Scan target | Extraction |
 |---|---|---|
 | `feedback_memory` | Memory index | One-liner entries |
-| `skill` | `skills/*.md` | Frontmatter `name:` + top-level `#` header |
+| `skill` | Agent-skills library files | Frontmatter `name:` + top-level `#` header |
 | `adr` (workspace) | `adrs/G-*.md` | Filename slug + top-level `#` header |
 | `adr` (project) — conditional | `<current-project>/decisions/P-*.md` | Filename slug + top-level `#` header |
 | `about` | Architecture canon files | Filename + top-level `#` header |

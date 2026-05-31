@@ -40,7 +40,7 @@ An initial proposal suggested lefthook regex + GitHub-native + Stage 5 query as 
 | JWT signature | `eyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+` |
 | Private-key headers | `-----BEGIN (RSA |EC |OPENSSH |PGP )?PRIVATE KEY-----` |
 
-Workspace-shared regex lives at `skills/secret-detection-regex.md` (or per repo /spec template). Per-repo lefthook config references it.
+Workspace-shared regex lives in the agent-skills library (or per repo /spec template). Per-repo lefthook config references it.
 
 ### Layer 2 — GitHub-native (continuous, always-on)
 
@@ -105,4 +105,4 @@ Any open alert fails the build. This is a backstop: if Layer 1 missed it AND Lay
 - **Added:** Consequence stating Layer 1 is best-effort (locally bypassable via `--no-verify`); Layer 2 is the structural defense; Layer 3 is the deterministic backstop.
 - **Added:** Explicit out-of-scope statement — external-PR contributors are out of scope for v1; in-scope repos restrict PR creation to collaborators.
 - **Added:** Note acknowledging the closed-alerts gap — `state=open` filter means alerts auto-closed by GitHub won't fail the build; recovery rule R10c (rotate, don't rewrite history) is the operator anchor.
-- **Cross-reference:** Workspace skill `skills/secret-detection-regex.md` is the canonical home for the Layer 1 regex patterns.
+- **Cross-reference:** The workspace secret-detection-regex skill is the canonical home for the Layer 1 regex patterns.

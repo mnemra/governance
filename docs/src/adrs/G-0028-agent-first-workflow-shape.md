@@ -227,7 +227,7 @@ Rationale: `/brief` is the one mechanism every spec-producing change routes thro
 - `skill_run` telemetry update — per-stage flags within `/brief`
 - ADR-vs-design-note criterion codification — separate task
 - mdbook aggregation for ADRs — downstream of `/brief` Stage 3
-- **Add Maintainability as a core value** in `architecture-values.md`. The unit goal is **minimum-blast-radius fix**: when a change is needed, isolate it as much as possible; the codebase architecture supports isolation. Value sits in `architecture-values.md`; mechanism details live in the implementer skills/profiles — concrete rules on abstraction, locality, constants vs inline strings, module boundaries.
+- **Add Maintainability as a core value** in `architecture-values.md`. The unit goal is **minimum-blast-radius fix**: when a change is needed, isolate it as much as possible; the codebase architecture supports isolation. Value sits in `architecture-values.md`; mechanism details live in the implementer skills and profiles — concrete rules on abstraction, locality, constants vs inline strings, module boundaries.
 - **Add the meta-frame as a workspace value** in `architecture-values.md`: *"Apply structure at points where drift occurs. Blend the strengths of human and agent work; bound the failure modes of each."*
 
 ## Changelog

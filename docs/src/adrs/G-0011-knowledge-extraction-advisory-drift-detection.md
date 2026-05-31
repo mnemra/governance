@@ -1,10 +1,10 @@
 ---
 title: "G-0011: Knowledge-Extraction Skill — R7 Advisory-Drift Detection"
-summary: "New skills/operational-form.md skill: advisory phrase list + LLM self-check protocol for operational-form detection; reusable across /spec, /discover."
+summary: "New operational-form skill: advisory phrase list + LLM self-check protocol for operational-form detection; reusable across /spec, /discover."
 primary-audience: agent
 ---
 
-# G-0011: Knowledge-Extraction Skill — R7 Advisory-Drift Detection (new skills/operational-form.md)
+# G-0011: Knowledge-Extraction Skill — R7 Advisory-Drift Detection (new operational-form skill)
 
 **Status:** Accepted
 **Date:** 2026-04-24
@@ -15,7 +15,7 @@ R7 rejects candidate rule text that isn't in operational form (observable actor 
 
 ## Decision
 
-Create a new skill file **`skills/operational-form.md`** dedicated to operational-form detection. The knowledge-extraction skill references it; future consumers (`/spec`, `/discover`, etc.) can adopt it too.
+Create a new dedicated **operational-form skill** in the agent-skills library for operational-form detection. The knowledge-extraction skill references it; future consumers (`/spec`, `/discover`, etc.) can adopt it too.
 
 File contents (seed):
 
@@ -29,7 +29,7 @@ File contents (seed):
 
 ## Alternatives Considered
 
-- **Reuse `skills/no-ai-writing.md`** — rejected. Different domain entirely: no-ai-writing is external-writing style (marketing buzzwords, AI-detection signals); operational-form is requirements-language advisory drift. Near-zero vocabulary overlap. Merging would dilute both.
+- **Reuse the no-ai-writing skill** — rejected. Different domain entirely: no-ai-writing is external-writing style (marketing buzzwords, AI-detection signals); operational-form is requirements-language advisory drift. Near-zero vocabulary overlap. Merging would dilute both.
 - **Embed phrase list in knowledge-extraction skill** — rejected. First concrete consumer but operational-form is a reusable concern; embedding forces duplication when a second consumer lands.
 - **Config file at a separate path** — rejected. Phrase list is not pure data — the self-check protocol + worked examples belong with the list. Skill file is the right container.
 
