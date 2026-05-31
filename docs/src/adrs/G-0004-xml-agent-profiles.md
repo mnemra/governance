@@ -19,7 +19,7 @@ Use hybrid XML format for all team agent profiles: XML tags for structural secti
 
 Required top-level tags: `<role>`, `<model>`, `<persona>`, `<principles>`, `<instructions>`, `<command-scope>`. Subsections within `<principles>` use semantically named nested tags (`<testing>`, `<error-handling>`, etc.). Maximum two levels of nesting. Content inside tags stays as markdown (bullets, bold, code blocks).
 
-The format spec and conversion guide live in `skills/xml-profile.md`.
+The format spec and conversion guide live in the agent-skills library.
 
 ## Alternatives Considered
 

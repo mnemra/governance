@@ -54,8 +54,8 @@ jobs:
       - name: Verify labeler is in allowlist
         run: |
           if [[ "${{ github.event.sender.login }}" != "<maintainer-github-handle>" \
-             && "${{ github.event.sender.login }}" != "forge-bot" \
-             && "${{ github.event.sender.login }}" != "bolt-bot" ]]; then
+             && "${{ github.event.sender.login }}" != "<ci-bot-handle>" \
+             && "${{ github.event.sender.login }}" != "<release-bot-handle>" ]]; then
             echo "::error::Label ${{ github.event.label.name }} applied by unauthorized actor ${{ github.event.sender.login }}"
             exit 1
           fi
