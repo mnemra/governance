@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>G-0023: GitHub Merge Queue - mnemra-governance</title>
+        <title>G-0005: Devcontainer Per-Repo Upstream Base - mnemra-governance</title>
 
 
         <!-- Custom HTML head -->
@@ -35,10 +35,10 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-79642c4f.js";
+            window.path_to_searchindex_js = "../searchindex-c688843e.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-eb7d2461.js"></script>
+        <script src="../toc-92488165.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -177,130 +177,70 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="g-0023-github-merge-queue-for-r26b-enforcement-and-intermediate-state-ci"><a class="header" href="#g-0023-github-merge-queue-for-r26b-enforcement-and-intermediate-state-ci">G-0023: GitHub Merge Queue for R26b Enforcement and Intermediate-State CI</a></h1>
+                        <h1 id="g-0005-devcontainer-architecture--per-repo-upstream-from--registry-push"><a class="header" href="#g-0005-devcontainer-architecture--per-repo-upstream-from--registry-push">G-0005: Devcontainer Architecture — Per-Repo Upstream FROM + Registry Push</a></h1>
 <p><strong>Status:</strong> Accepted
 <strong>Date:</strong> 2026-04-30</p>
 <h2 id="context"><a class="header" href="#context">Context</a></h2>
-<p>Discovery, the earlier-generation pass that fixes scope before a spec is written, produced a numbered list of requirements. Requirement R26b states: “at most one PR may merge to main at a time.” The mechanism that would enforce it was deferred to the architecture stage. Round 1 review surfaced that it stayed unspecified across the locked ADR set.</p>
+<p>G-0002 fixed <code>just ci</code> as the CI contract and named devcontainer integration as adjacent, deferred to a follow-up ADR. This is that follow-up.</p>
+<p>The image-strategy question had three live options:</p>
 <ul>
-<li>Round 1 review of G-0019 flagged that R26b’s “single PR merging at a time” claim is not natively enforceable through GitHub branch protection alone. <code>required_linear_history</code> enforces rebase/squash, not single-merger semantics. The candidate mechanisms named were (a) GitHub Merge Queue, (b) auto-merge with rebase + required CI, where a failed rebase acts as an implicit serializer, and (c) a custom GitHub Actions per-repo lock.</li>
-<li>G-0018 (the auto-merge template plus recovery cap) assumes R26b is in effect but does not specify the substrate. Without an explicit mechanism, option (b) is the de facto behavior: rebase-failure as serializer. That’s slow under volume, fragile under concurrent activity, and silent when it serializes by way of a merge conflict.</li>
+<li><strong>A shared base image:</strong> one centrally-built image that per-repo Dockerfiles <code>FROM</code>. Lowest per-repo work; couples every repo to a central image-publish pipeline.</li>
+<li><strong>Per-repo, <code>FROM</code> an upstream language-native base:</strong> each repo owns its devcontainer and pulls e.g. <code>mcr.microsoft.com/devcontainers/rust</code> directly. Highest per-repo independence; no central pipeline.</li>
+<li><strong>Per-repo, <code>FROM</code> centrally-built thin language bases</strong> (a rust-base, python-base, ts-base layer): a middle ground where the shared layer owns thin language bases.</li>
 </ul>
-<p>GitHub Merge Queue (generally available since 2024) is the framework-native answer. It gives three things. Single-merge-at-a-time semantics are structural. Intermediate-state CI validation builds a temporary branch (main + earlier queued PRs + this PR), runs required checks against it, and evicts on failure. And the merge method is admin-configured per repo. It composes with G-0018’s auto-merge template and operates orthogonally to G-0019’s release-sub-flow concurrency.</p>
+<p>Simplicity and the goal of a self-owning multi-repo polyglot model point to per-repo independence: each repo should own its environment without depending on a central build pipeline that may not persist as tooling consolidates.</p>
 <h2 id="decision"><a class="header" href="#decision">Decision</a></h2>
-<p><strong>1. GitHub Merge Queue is enabled per in-scope repo as the R26b enforcement mechanism.</strong> The branch protection setting “Require merge queue” on the default branch (main) makes queueing structural. Direct merges without queue passage are rejected. Auto-merge (<code>gh pr merge --rebase --auto</code>) becomes “add to queue when required checks pass” rather than “merge immediately.”</p>
-<p><strong>2. Required checks run against the queue’s intermediate-state branch.</strong> When a PR is queued, GitHub creates a temporary branch (main + earlier queued PRs + this PR) and runs required status checks against it. Required checks split into two categories:</p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Category</th><th>Recipes (per G-0006 vocabulary)</th><th>Triggers needed</th></tr>
-</thead>
-<tbody>
-<tr><td>Required against intermediate state</td><td><code>verify-test</code>, <code>verify-build</code>, <code>verify-coverage</code></td><td><code>pull_request</code> AND <code>merge_group</code></td></tr>
-<tr><td>Branch-only (not required against intermediate state)</td><td><code>verify-lint</code>, <code>verify-type</code>, <code>verify-secrets</code></td><td><code>pull_request</code> (sufficient)</td></tr>
-</tbody>
-</table>
-</div>
-<p>Rationale: integration-sensitive checks (tests, build, coverage) need to validate the merged state because conflicts and integration failures only appear there. Static checks (lint, type, secret scan) are determined by the PR’s own diff and are not affected by other queued PRs landing first.</p>
-<p>The per-repo spec retrofit (the spec being the specification that defines what done looks like) decides which workflows listen for <code>merge_group</code> based on this split.</p>
-<p><strong>3. Maximum queue depth defaults to GitHub’s repo-level setting.</strong> Workspace volume is low. In-flight PR count is bounded by the active-worktrees circuit-breaker, so the default is sufficient. Trip-wire: if the queue regularly hits the configured cap, raise the limit and revisit the bound.</p>
-<p><strong>4. Admin queue bypass requires audit (R-pending-4 accepted-risk).</strong> GitHub permits admin override at the branch-protection level, so an admin can merge directly and skip the queue. Admin bypass requires a workspace activity log entry justifying the deviation, aligned with G-0013’s audit trail discipline. The activity action string is <code>merge-queue-bypass repo &lt;repo&gt; pr #&lt;n&gt; reason &lt;text&gt;</code>. Branch-protection setting: admin override stays permitted, and the audit row is the deterrent.</p>
-<p>The audit row itself is self-attested. It’s accepted as <strong>R-pending-4</strong> in the constraints summary’s accepted-risks table. Compensating control: GitHub’s own audit log records the merge-queue-bypass at the platform level, cryptographically attributed by way of <code>actor.login</code>, so a retrieval-time cross-reference detects forged or missing workspace-side audit rows. Same pattern as G-0024 Layer C for label-set actions. It’s documented separately here because the action surface differs.</p>
-<p><strong>5. Interaction with G-0018 auto-merge template, no template change required.</strong> <code>gh pr merge --rebase --auto</code> works with merge queue: when required checks pass, <code>--auto</code> adds the PR to the queue rather than merging directly. The merge queue is configured at the branch-protection level, not at the merge-command level.</p>
-<p>The <code>--rebase</code> flag becomes advisory under merge queue. The queue’s branch-protection-configured merge method governs the actual merge mechanic. To preserve Discovery requirements R16a/R16c (rebase mode locked for linear history), the per-repo retrofit MUST set the queue’s merge method to <strong>rebase</strong> in branch protection.</p>
-<p><strong>6. Trigger model under merge queue.</strong> PRs in the queue trigger <code>merge_group</code> workflow events, not <code>pull_request</code> events. Required-status-check workflows that must run against the intermediate state MUST listen for <code>merge_group</code>:</p>
-<pre><code class="language-yaml">on:
-  pull_request:
-  merge_group:
+<p><strong>Per-repo devcontainer, <code>FROM</code> an upstream language-native base, built and pushed to a container registry by the repo’s own CI workflow on <code>devcontainer.json</code> / <code>Dockerfile</code> change, SHA-pinned in the repo.</strong> No centrally-built shared base image.</p>
+<p>Concrete shape per Rust repo:</p>
+<pre><code class="language-dockerfile"># .devcontainer/Dockerfile
+FROM mcr.microsoft.com/devcontainers/rust:dev-1-bookworm@sha256:&lt;digest&gt;
+# repo-specific tooling layered after — pin EACH binary by version
+RUN cargo install --locked --version &lt;X.Y.Z&gt; release-plz \
+ &amp;&amp; cargo install --locked --version &lt;X.Y.Z&gt; cargo-audit
+# ... other repo-specific layers
 </code></pre>
-<p>Workflows triggered only by <code>pull_request</code> won’t fire for queued PRs and so will never report required-check status against the intermediate state. Per-repo retrofit must update workflow triggers as part of the migration.</p>
-<p><strong>Silent queue stall detection.</strong> If a required-status-check workflow is missing the <code>merge_group:</code> trigger, queued PRs will sit in the queue indefinitely waiting for a check that never reports. The queue does not time out on its own. Two detection mechanisms guard against this:</p>
-<ol>
-<li><strong>Per-repo retrofit verification.</strong> After enabling merge queue and adding required checks, the operator opens a test PR, adds it to the queue, and verifies it merges within expected latency. A stuck queue means a trigger is missing on a required check.</li>
-<li><strong>Stuck-queue alert via <code>gh api</code>.</strong> A workspace-level cron or hook periodically queries the queue for PRs sitting beyond N minutes (30 is the recommendation). The alert fires on stuck PRs. The per-repo spec configures the threshold.</li>
-</ol>
-<p><strong>7. Failure semantics tie to G-0018’s recovery counter.</strong> When intermediate-state CI fails for a queued PR, GitHub evicts the PR from the queue. The <code>gh pr merge --auto</code> enablement is reset.</p>
-<p><strong>Recovery path:</strong> the operator MUST re-invoke the full workspace template script (<code>bin/pr-create-with-automerge.sh</code>), not bare <code>gh pr merge --auto &lt;pr#&gt;</code>. The script’s step 1 detects the existing open PR, emits a <code>recovery-increment</code> activity row (per G-0018), and increments the <code>&lt;!-- recovery-attempts: N --&gt;</code> PR-description footer. Step 5 re-enables auto-merge, which re-adds the PR to the queue.</p>
-<p>Bare <code>gh pr merge --auto &lt;pr#&gt;</code> outside the workspace template skips both the audit and the counter increment. See G-0018’s “Bypass acknowledgment” for the explicit deferred-protection note.</p>
-<p>After 3 evictions (G-0018’s cap, count-all semantics), the workspace template script aborts and routes to a fresh PR.</p>
-<p><strong>8. Per-repo opt-in / opt-out.</strong> All in-scope repos, meaning those declaring <code>follows code-workflow</code> in their CLAUDE.md, enable merge queue as part of the workflow retrofit. Local-only repos that have not migrated to GitHub yet are not subject to this ADR until migration.</p>
+<p><strong>Note on the upstream tag.</strong> The upstream Rust devcontainer tags follow the <strong>devcontainer-image</strong> version scheme (e.g., <code>dev-1-bookworm</code>, <code>1.0.27-bookworm</code>, <code>latest</code>), NOT the Rust-toolchain version. Pin a specific Rust toolchain <strong>inside the per-repo Dockerfile</strong>, with <code>rust-toolchain.toml</code> as the canonical place (or a <code>rustup toolchain install &lt;ver&gt;</code> line if a Dockerfile-side install is required). Do not attempt to encode the Rust toolchain in the <code>FROM</code> tag; those tags do not exist upstream.</p>
+<p><strong>Layered binary pinning is mandatory.</strong> Every <code>cargo install</code> line in a devcontainer Dockerfile MUST pass both <code>--locked</code> and <code>--version &lt;X.Y.Z&gt;</code>. <code>--locked</code> protects against transitive churn for that install invocation; <code>--version</code> pins the top-level binary, closing the supply-chain window where a future patch release of a tool could be baked into a privileged-context image. The devcontainer is pushed to a registry and pulled by every CI run that handles registry and repository tokens. A dependency scanner’s Dockerfile parser tracks pinned <code>cargo install --version</code> lines; the per-repo dependency-scan config MUST include Dockerfile pattern coverage so binary-version bumps surface as PRs. Stretch goal once tools ship signed release artifacts: switch to <code>cargo binstall</code> with checksum verification.</p>
+<pre><code class="language-jsonc">// .devcontainer/devcontainer.json
+{
+  "name": "&lt;repo-name&gt;-dev",
+  "build": { "dockerfile": "Dockerfile" },
+  "features": { /* devcontainer features as needed */ }
+}
+</code></pre>
+<p>The repo’s CI workflow includes a job that, on changes to <code>.devcontainer/**</code>, builds the image and pushes it to the registry under <code>&lt;owner&gt;/&lt;repo&gt;-devcontainer:&lt;git-sha&gt;</code> plus <code>:latest</code>. CI runs (<code>just ci</code>) execute inside this image (pulled, not rebuilt) so local-vs-CI parity holds.</p>
+<p><strong>SHA-pinning is mandatory</strong> for the upstream <code>FROM</code> line. Tag-only references (<code>:1.86-bookworm</code> without <code>@sha256:...</code>) drift silently when the upstream refreshes the tag.</p>
+<p><strong>Polyglot repos</strong> layer additional language bases in their own Dockerfile (e.g., a repo with Rust + Python adds <code>apt-get install python3</code> or layers a Python base image). No shared polyglot base.</p>
 <h2 id="alternatives-considered"><a class="header" href="#alternatives-considered">Alternatives Considered</a></h2>
 <ul>
-<li><strong>Auto-merge with required CI but no queue (G-0018 status quo).</strong> Rejected. Without an explicit serializer, two PRs that pass required checks at the same time can both attempt to merge. The second’s rebase fails and the developer re-rebases. This is rebase-failure as implicit serializer: slow under volume, silent when it serializes, and fragile when CI flakes interact with rebase races.</li>
-<li><strong>External lock service / GitHub Actions mutex (custom workflow).</strong> Rejected. It reinvents what merge queue provides natively. Merge queue’s intermediate-state CI validation is also non-trivial to replicate.</li>
-<li><strong><code>required_linear_history: true</code> alone.</strong> Rejected. It forces rebase/squash but does not serialize merges. Two PRs can rebase to non-conflicting linear ancestors and both land in close succession.</li>
-<li><strong>Bors-style external bot (e.g., bors-ng, homu).</strong> Rejected. It’s an external dependency with its own auth, infrastructure, and operational surface. Merge queue provides equivalent intermediate-state-CI semantics natively.</li>
-<li><strong>Merge-commits with a required-linear-history exception.</strong> Rejected per Discovery requirements R16a/R16c. Rebase mode is locked.</li>
+<li><strong>A centrally-built shared base image.</strong> Rejected. It requires a central image-publish pipeline with no clear owner, couples repo CI cycles to a central artifact, and does not survive tooling consolidation. Each repo owning its own image is forward-compatible.</li>
+<li><strong>Per-repo <code>FROM</code> centrally-built thin language bases.</strong> Rejected. Same central-pipeline dependency at smaller scale; the upstream devcontainer images already provide the thin language base.</li>
+<li><strong>No devcontainer; rely on the host environment.</strong> Rejected. It defeats the local-vs-CI parity goal G-0002 was designed around.</li>
+<li><strong>Build-on-demand without a registry push.</strong> Rejected. Pulling and rebuilding per CI run wastes time and bandwidth; pushing the built image to the registry makes CI a pull-only operation.</li>
+<li><strong>Tag-only upstream references (no SHA pin).</strong> Rejected. Upstream tag drift is a silent supply-chain risk; SHA-pinning is cheap insurance, and upstream image refreshes become deliberate dependency-bump PRs.</li>
 </ul>
 <h2 id="consequences"><a class="header" href="#consequences">Consequences</a></h2>
 <ul>
-<li>
-<p><strong>Per-repo retrofit work</strong> (one-time, per spec migration):</p>
-<ul>
-<li>Branch protection: enable “Require merge queue” on the default branch; set the queue merge method to <strong>rebase</strong>; configure the required status checks list (the intermediate-state set per Decision 2).</li>
-<li>Workflow YAML: add <code>merge_group:</code> to triggers on every workflow that produces a required status check listed in the intermediate-state set.</li>
-<li>Verify by way of a PR walk-through: open a PR, observe the <code>merge_group</code> workflow run after <code>gh pr merge --auto</code> enables queueing.</li>
+<li><strong>Per-repo CI workflow includes a devcontainer-publish job.</strong> Triggered on a <code>.devcontainer/**</code> path filter. A workspace template ships this workflow. Required permissions on the calling job: <code>contents: read, packages: write, id-token: write, attestations: write</code> (packages:write for the registry push, id-token:write and attestations:write for OIDC-based provenance attestations). The workflow logs in to the registry, sets up buildx, and builds/pushes. <strong>Multi-arch posture:</strong> the SHA pin targets the upstream multi-arch manifest list; per-repo builds run amd64-only by default. An arm64 build matrix is added per-repo when an arm64 contributor or runner enters scope, not a default, to avoid doubling build cost without demand.</li>
+<li><strong>Registry retention is bounded by a template retention workflow, opt-in by default.</strong> The template ships a retention workflow with a keep-last-10 policy on the <code>&lt;repo&gt;-devcontainer</code> package. Repos opt out (e.g., a long-lived archival need); the default keeps registry storage bounded without per-repo manual cleanup.</li>
+<li><strong>Upstream image refresh follows the upstream cadence.</strong> SHA-pinning means refreshes are explicit PRs. The dependency scanner is configured to monitor the <code>FROM</code> line per G-0006 (supply-chain hygiene).</li>
+<li><strong>Registry storage cost is per-repo.</strong> Each devcontainer image lives under <code>&lt;owner&gt;/&lt;repo&gt;-devcontainer</code>. Old SHAs accumulate; a per-repo retention policy is a per-repo concern, not canon.</li>
+<li><strong>Polyglot needs are repo-local.</strong> A repo needing Rust + Python adds layers in its own Dockerfile. No central coordination required.</li>
+<li><strong>The CI pilot picks up this ADR:</strong> its devcontainer Dockerfile uses the upstream Rust base plus a SHA pin, and its CI workflow publishes to the registry.</li>
+<li><strong>Retrofit cost per repo:</strong> roughly one PR: <code>.devcontainer/Dockerfile</code>, <code>devcontainer.json</code>, the publish workflow, and a dependency-scan config update.</li>
+<li><strong>Local developer experience:</strong> <code>devcontainer up</code> pulls from the registry (cached after the first pull); rebuilds happen only on <code>.devcontainer/**</code> changes. Faster than rebuild-on-every-open.</li>
+<li><strong>No shared base means no central image-publish pipeline to maintain.</strong> Zero central infrastructure debt for this concern.</li>
 </ul>
-</li>
-<li>
-<p><strong>Two-layer serialization across the workflow:</strong></p>
-<ul>
-<li><strong>Merge gate (this ADR):</strong> merge queue serializes PR-to-main merges with intermediate-state CI validation.</li>
-<li><strong>Release sub-flow (G-0019 amended):</strong> GitHub Actions <code>concurrency:</code> on the release-pr job serializes release-PR creation and update across rapid main pushes.
-The two layers are independent and compose.</li>
-</ul>
-</li>
-<li>
-<p><strong>G-0018 template script unchanged.</strong> <code>gh pr merge --rebase --auto</code> works with merge queue; the queue is configured upstream at the branch-protection level. Per-repo retrofit MUST set the queue method to rebase to preserve R16a/R16c.</p>
-</li>
-<li>
-<p><strong>G-0024 interaction.</strong> G-0024 specifies a required status check that validates Stage 6 label cardinality at merge time. That check is part of the intermediate-state set. The queue evicts PRs whose label cardinality drifted between auto-merge enablement and queue head.</p>
-</li>
-<li>
-<p><strong>Embargo flow (G-0022) interacts cleanly.</strong> Queued PRs respect existing release sub-flow concurrency, and embargo coordination is human-driven per G-0022.</p>
-</li>
-<li>
-<p><strong>Recovery semantics:</strong> queue eviction, then the developer rebases, then re-invokes the workspace template script, then G-0018’s recovery counter increments (count-all). After 3 evictions, G-0018’s cap trips and the cycle bails to a fresh PR.</p>
-</li>
-<li>
-<p><strong>Mnemra migration:</strong> queue configuration is GitHub-native (branch-protection settings plus <code>merge_group</code> workflow triggers). It survives mnemra absorption unchanged.</p>
-</li>
-<li>
-<p><strong>Queueing latency:</strong> under serialized merges with intermediate-state CI, end-to-end PR-to-merged latency is <code>(queue position) × (intermediate-state CI duration) + (merge time)</code>. For workspace volume, worst-case latency is bounded at ~3× the CI cycle. Acceptable.</p>
-</li>
-<li>
-<p><strong>Branch-only check redundancy.</strong> A branch-only check that the developer fixes after queueing does not block the queue head, because the queue only watches required intermediate-state checks. The PR stays in queue and the fix lands as a follow-up.</p>
-</li>
-<li>
-<p><strong>Admin bypass auditability:</strong> an admin merge directly to main without the queue is structurally permitted. The compensating control is the workspace activity log <code>merge-queue-bypass</code> audit row required at bypass time.</p>
-</li>
-<li>
-<p><strong>In-flight verification items at lock time</strong> (verify before per-repo retrofit spec):</p>
-<ul>
-<li>Exact <code>gh api -X PATCH</code> shape for “Require merge queue” plus the queue merge method.</li>
-<li>Exact <code>gh pr merge --auto</code> interaction under the queue: verify by way of a test PR.</li>
-<li>Default queue depth and merge-limits values for the workspace’s GitHub plan tier.</li>
-</ul>
-</li>
-</ul>
-<h2 id="changelog"><a class="header" href="#changelog">Changelog</a></h2>
-<h3 id="2026-04-30--round-2-review-amendments"><a class="header" href="#2026-04-30--round-2-review-amendments">2026-04-30 — Round 2 review amendments</a></h3>
-<ul>
-<li><strong>Queue-eviction, bare <code>gh pr merge --auto</code> skips the counter:</strong> the original draft said queue-eviction increments the counter, but the counter is incremented at G-0018’s step 1, not step 5. <strong>Fixed:</strong> clarified that the canonical recovery path is re-invocation of the full workspace template script, which detects existing-PR state and increments.</li>
-<li><strong>Admin bypass audit row self-attestation (R-pending-4):</strong> the original ADR named the audit row as a deterrent without addressing self-attestation. <strong>Fixed:</strong> added the R-pending-4 acknowledgment with the compensating-control pattern (GitHub’s own audit log cross-reference).</li>
-<li><strong>Silent queue stall on a missing <code>merge_group:</code> trigger:</strong> added two detection mechanisms, per-repo retrofit verification plus a workspace-level stuck-queue alert via <code>gh api</code>.</li>
-</ul>
-<p>Status remains <strong>Proposed</strong> pending lock.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../adrs/G-0022-embargo-flow-architecture.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../adrs/G-0004-review-finding-identity-and-persistence.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="../adrs/G-0024-stage6-label-authorization.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../adrs/G-0006-layered-secret-detection.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -310,11 +250,11 @@ The two layers are independent and compose.</li>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../adrs/G-0022-embargo-flow-architecture.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../adrs/G-0004-review-finding-identity-and-persistence.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="../adrs/G-0024-stage6-label-authorization.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../adrs/G-0006-layered-secret-detection.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>

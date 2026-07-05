@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>G-0018: Workspace Merge Template and Recovery Cap - mnemra-governance</title>
+        <title>G-0002: Justfile as CI Contract - mnemra-governance</title>
 
 
         <!-- Custom HTML head -->
@@ -35,10 +35,10 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-79642c4f.js";
+            window.path_to_searchindex_js = "../searchindex-c688843e.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-eb7d2461.js"></script>
+        <script src="../toc-92488165.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -177,106 +177,76 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="g-0018-workspace-merge-template--auto-merge-recovery-cap"><a class="header" href="#g-0018-workspace-merge-template--auto-merge-recovery-cap">G-0018: Workspace Merge Template + Auto-Merge Recovery Cap</a></h1>
+                        <h1 id="g-0002-justfile-as-ci-contract"><a class="header" href="#g-0002-justfile-as-ci-contract">G-0002: Justfile as CI Contract</a></h1>
 <p><strong>Status:</strong> Accepted
-<strong>Date:</strong> 2026-04-30</p>
+<strong>Date:</strong> 2026-04-21</p>
 <h2 id="context"><a class="header" href="#context">Context</a></h2>
-<p>Two adjacent decisions converged into a single merge-flow contract. This is a governance ADR (a decision record that applies across the whole ecosystem, not to one project), and it covers the late lifecycle stages of a change: Stage 6 is the approval-labelling step, and Stage 7 is the auto-merge step.</p>
-<ul>
-<li><strong>Auto-merge invocation sequence:</strong> what’s the canonical sequence between Stage 6 approval and <code>gh pr merge --auto</code>? The sequence touches four things. It writes an activity-log row for audit, runs the git mechanics for a squash, sets the labels that act as the gating signal under G-0013, and invokes the merge mode. Stage 7 has multiple steps that must run in order. The open question was whether each repo re-implements that sequence or they all share one.</li>
-<li><strong>Auto-merge recovery cap:</strong> how many recovery attempts are allowed before the auto-merge cycle declares defeat and routes to a fresh PR? The candidates were 3 and 5. Both fit the simplicity anchor. The remaining question was count semantics, meaning count-all (any reset counts, whatever triggered it) versus conditional counting. That was settled as count-all on the predictable-mental-model principle.</li>
-</ul>
-<p>These two bundled together because the recovery cap is a property of the workspace merge template. The template is what increments the counter and what bails when the cap trips.</p>
+<p>Earlier CI work put gate logic in <code>.github/workflows/*.yml</code> per project, with some projects using justfiles for dev-only tasks in parallel. That produced three problems. First, local-vs-CI drift, because the two paths ran different commands. Second, runner lock-in, because swapping GitHub Actions for a self-hosted runner or <code>act</code> meant rewriting gate logic. Third, coverage and lint behavior that varied silently across projects.</p>
+<p>A research synthesis argued for a single contract: CI YAML becomes a launcher, and gate logic lives in a build tool invoked the same way locally and remotely. That collapses the runner-choice question, since any runner is equivalent once it calls the contract. It also closes the service-dependency gap, because a <code>docker-compose</code> step handles Postgres and pgvector inside the contract rather than as runner-specific <code>services:</code> config.</p>
 <h2 id="decision"><a class="header" href="#decision">Decision</a></h2>
-<p>A <strong>workspace template script</strong> lives at <code>&lt;workspace-root&gt;/bin/pr-create-with-automerge.sh</code> (or the equivalent path after the post-mnemra absorption). Each repo gets a copy through a <code>/spec</code> retrofit, where <code>/spec</code> is the workflow stage that produces the specification a change is built against. Per-repo customization (default branch, body template) lives in the repo’s own copy.</p>
-<p>Canonical sequence (post-Stage-6-approval, post-Stage-5-green, where Stage 5 is the review stage and “green” means it passed):</p>
-<pre><code class="language-bash"># 1. Durable approval audit (per G-0013)
-&lt;workspace-cli&gt; activity log --actor &lt;maintainer&gt; \
-  --action "stage6-approved chunk #&lt;ref&gt; mode &lt;X&gt;" \
-  --task-id &lt;chunk-task-id&gt;
-
-# 2. Squash intra-branch commits to one conventional-commits commit
-git -C &lt;wt&gt; reset --soft $(git -C &lt;wt&gt; merge-base HEAD main)
-git -C &lt;wt&gt; commit -m "&lt;conv-commits header&gt;" \
-  -m "&lt;body with release-mode + flag-id + chunk-ref&gt;"
-
-# 3. Push squashed branch
-git -C &lt;wt&gt; push origin &lt;branch&gt;
-
-# 4. Create PR with locked label set (per G-0013 cardinality)
-gh pr create --base main \
-  --title "&lt;conv-commits header&gt;" --body "&lt;body&gt;" \
-  --label "bump:&lt;level&gt;" \
-  --label "release-mode-&lt;X&gt;" \
-  --label "stage6-approved"
-
-# 5. Enable auto-merge in rebase mode
-gh pr merge --rebase --auto &lt;pr#&gt;
-</code></pre>
-<p>The <code>&lt;wt&gt;</code> placeholder above is the worktree, a separate working tree off the main branch that’s opened per code-modifying task so main stays stable.</p>
-<p><strong>Recovery cap = 3, count-all semantics.</strong> Any reset of the auto-merge cycle counts as one recovery attempt regardless of trigger. That includes a branch update, a commit amend, a force-push, a label re-application, or a manual <code>gh pr merge --auto</code> re-invocation. After 3 attempts the cycle bails: the PR is closed, and a fresh PR is opened with the corrected state.</p>
-<p>The recovery counter lives per-PR in the PR description as a parseable footer:</p>
-<pre><code>&lt;!-- recovery-attempts: &lt;N&gt; --&gt;
-</code></pre>
-<p>The workspace template script reads-and-increments at every step-1 invocation that targets an existing open PR. It emits to stderr and aborts when N &gt;= 3.</p>
-<p><strong>Recovery counter integrity is accepted-risk (R-pending-1).</strong> The PR description is editable by anyone with PR-edit permission, including through the GitHub web UI. The counter is convention, not enforcement. An actor who wants more than 3 attempts can edit the description to reset the counter. This is accepted as a workspace-private risk.</p>
-<p><strong>Compensating control.</strong> When the workspace template script detects an existing open PR at step 1, meaning a recovery cycle is in flight, it emits an additional <code>recovery-increment</code> activity row at the new counter value:</p>
-<pre><code>&lt;workspace-cli&gt; activity log --actor &lt;operator-or-automation&gt; \
-  --action "stage7-recovery-attempt N=&lt;count&gt; for PR #&lt;pr#&gt;" \
-  --task-id &lt;chunk-task-id&gt;
-</code></pre>
-<p>This produces a during-recovery audit trail. Suppose someone tampers with the counter, resetting <code>&lt;!-- recovery-attempts: N --&gt;</code> from 2 to 0. The recovery-increment activity rows still sit in the task DB at N=1 and N=2. The workspace-private audit log preserves the truth even when the GitHub-side substrate is mutated. A retrospective audit reconstruction joins the activity log’s recovery-increment rows to the PR’s final state to detect that tampering.</p>
-<p><strong>Bypass acknowledgment.</strong> An operator who invokes <code>gh pr merge --auto &lt;pr#&gt;</code> directly, outside the workspace template script, skips BOTH the step-1 audit row AND the counter increment. That’s intentional. The script is the canonical recovery path; bare CLI invocations forfeit both the audit and the recovery-cap protection. Document this in the per-repo retrofit runbook.</p>
-<p>There’s a trip-wire to upgrade the substrate. The options are moving the counter to a label family <code>recovery:1/2/3</code> under G-0024 authorization, or moving it to a workflow-protected GitHub Actions variable. The trip-wire fires if 3 or more counter-bypass incidents are observed in any rolling 6-month window.</p>
-<p><strong>R26b enforcement is delegated to G-0023 (GitHub Merge Queue).</strong> Branch protection alone has no native single-merge-at-a-time gate. G-0023 adopts GitHub Merge Queue as the structural enforcement. The G-0018 template script is unchanged. <code>gh pr merge --rebase --auto &lt;pr#&gt;</code> works under a merge queue: <code>--auto</code> becomes “add to queue when checks pass,” and the queue serializes the merges themselves.</p>
-<p><strong>Cardinality and label-set authorization are delegated to G-0024.</strong> G-0024 specifies the <code>verify-stage6-labeler</code> workflow and the <code>verify-stage6-labels</code> required-status-check. The template’s step 4 is unchanged in shape. The gates around it are added by G-0024.</p>
+<ol>
+<li>
+<p><strong>CI YAML invokes <code>just ci</code> and nothing else.</strong> Any gate logic in <code>.github/workflows/*.yml</code> beyond <code>checkout → devcontainer → just ci</code> is a contract violation. A ten-line workflow is the target shape.</p>
+</li>
+<li>
+<p><strong>One justfile per project.</strong> No <code>ci.justfile</code> split. At current scale the split is premature. It solves a problem that doesn’t exist yet.</p>
+</li>
+<li>
+<p>*<em>Fixed verify-</em> recipe names.** Every project implements the same vocabulary:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Recipe</th><th>Purpose</th></tr>
+</thead>
+<tbody>
+<tr><td><code>verify-test</code></td><td>Unit + integration tests</td></tr>
+<tr><td><code>verify-lint</code></td><td>Static lint checks (no <code>--fix</code>)</td></tr>
+<tr><td><code>verify-type</code></td><td>Type checks</td></tr>
+<tr><td><code>verify-coverage</code></td><td>Coverage threshold check</td></tr>
+<tr><td><code>verify-build</code></td><td>Production build produces artifacts</td></tr>
+<tr><td><code>verify-smoke</code></td><td>Fast smoke checks</td></tr>
+<tr><td><code>ci</code></td><td>Composite — runs all applicable verify-* in order</td></tr>
+</tbody>
+</table>
+</div>
+<p>Projects omit recipes that don’t apply. A pure-Rust project may have no <code>verify-type</code> distinct from <code>verify-build</code>. Omitted recipes are absent, not stubbed.</p>
+</li>
+<li>
+<p><strong>Gate-line stdout format.</strong> Each <code>verify-*</code> recipe SHALL emit, as the last line of stdout: <code>GATE &lt;name&gt; &lt;PASS|FAIL&gt; &lt;detail&gt;</code>. This is for human legibility only. The exit code is the source of truth. Tooling that scrapes gate lines does so as a convenience, never as authority.</p>
+</li>
+<li>
+<p><strong>No <code>--fix</code> side effects under verify-*.</strong> <code>verify-lint</code> checks; it doesn’t mutate. Auto-fix recipes live under <code>fix-*</code> (for example, <code>fix-lint</code>). This keeps CI deterministic and read-only.</p>
+</li>
+<li>
+<p><strong>Idempotent from any working directory.</strong> A <code>verify-*</code> or <code>ci</code> invocation SHALL produce the same result whether run from the repo root, a subdirectory, or a worktree. No implicit <code>cd</code> to a specific path.</p>
+</li>
+</ol>
 <h2 id="alternatives-considered"><a class="header" href="#alternatives-considered">Alternatives Considered</a></h2>
 <ul>
-<li><strong>Per-repo bespoke merge scripts.</strong> Rejected. Drift across repos defeats the workflow’s predictability. A workspace template plus per-repo copies is the canon.</li>
-<li><strong>No template; document the sequence only.</strong> Rejected. Manual execution invites step-skip mistakes: forgetting the audit, mis-labeling, or picking the wrong merge mode.</li>
-<li><strong>Recovery cap = 5.</strong> Considered. A looser cap lets work proceed when recovery is small. Rejected for v1. A cap of 3 forces a step-back when recovery isn’t converging, recovery PRs are cheap, and 5 invites trying-and-trying. Easy to relax later if 3 bites in practice.</li>
-<li><strong>Conditional counting</strong> (for example, only counting “real” failures and not config-tweak resets). Rejected. It adds judgment-call branches to a mechanical counter and defeats predictability. count-all is the simpler invariant.</li>
-<li><strong>Counter in task DB <code>recovery_attempts</code> column.</strong> Rejected. Same workspace-CLI-in-maintenance argument as G-0013 and G-0014. The PR description footer is the lean substrate.</li>
-<li><strong>Auto-merge in squash mode</strong> instead of rebase. Rejected. Discovery, the earlier scoping pass, locked rebase mode for linear history. Squash is disabled at the repo settings level.</li>
+<li><strong>GNU Make for <code>ci</code> + justfile for dev tasks</strong> (two-tool split). Rejected: two tools to maintain, an ambiguous boundary as recipes grow, and <code>just</code> is already in use. The universality argument for Make is negligible at current project count.</li>
+<li><strong>Separate <code>ci.justfile</code> in each project.</strong> Rejected: premature split. If a single justfile becomes unwieldy, revisit then. Splitting preemptively solves problems that don’t exist.</li>
+<li><strong>Leave gate logic in <code>.github/workflows/*.yml</code>.</strong> Rejected. That’s the status quo that created the drift. It defeats the contract.</li>
+<li><strong>Project-by-project recipe names.</strong> Rejected: a fixed vocabulary is the abstraction. Custom names per project reintroduce the drift the contract exists to remove.</li>
 </ul>
 <h2 id="consequences"><a class="header" href="#consequences">Consequences</a></h2>
 <ul>
-<li><strong>Per-repo retrofit:</strong> copy the workspace script as <code>bin/pr-create-with-automerge.sh</code> (or the repo equivalent), tailor the body template, commit. The operations engineer is dispatched per repo as part of the merge-mode migration runbook.</li>
-<li><strong>Workspace template re-renders:</strong> when this ADR or the template script changes, the <code>/spec</code> retrofit re-renders the per-repo copies.</li>
-<li><strong>Recovery cap trip is loud.</strong> The script aborts to stderr with the PR ref and the attempt count, so the operator sees it immediately. No silent failure modes.</li>
-<li><strong>Recovery footer is parseable.</strong> <code>grep -oP '(?&lt;=recovery-attempts: )\d+'</code> extracts the counter. Future tooling can read it.</li>
-<li><strong>Step 1 audit row precedes step 4 PR creation.</strong> Audit-before-PR ordering means a failed PR creation still leaves an audit trail of intent.</li>
-<li><strong>Stage 6 approval action ties to chunk task ID.</strong> The <code>--task-id &lt;chunk-task-id&gt;</code> argument links the approval to the originating spec chunk. Future audit reconstruction joins the activity log to tasks.</li>
-<li><strong>Squash to single conv-commits commit (step 2)</strong> is the linear-history mechanism. The PR body carries the detail, and the commit message is the single source of truth for release-plz CHANGELOG generation under G-0020.</li>
-<li><strong>Cross-repo:</strong> all in-scope repos share the canonical sequence. Per-repo divergence is a bug, not a feature.</li>
-<li><strong>Template script language:</strong> bash for v1, since it’s zero-dependency and universal. Revisit later if the script grows past roughly 50 lines or needs richer error handling, at which point bash moves to a Rust binary.</li>
-<li><strong>Squash + signed-commit attribution.</strong> Step 2’s <code>git reset --soft</code> to merge-base loses GPG signatures from intra-branch commits when those are present. If a per-repo signing policy emerges later, the template’s squash step will need a separate ADR to address signature handling. Acknowledged as known-future-work.</li>
+<li><strong>Runner swap is a one-file rewrite.</strong> GitHub Actions, self-hosted, <code>act</code>, and other CI runners all become substitutable because <code>just ci</code> is the contract. Runner choice collapses to convenience.</li>
+<li><strong>Per-project retrofits required.</strong> Each existing project adopts the contract; one project serves as the pilot.</li>
+<li><strong>Coverage threshold enforcement moves into <code>verify-coverage</code>.</strong> The coverage-floor default (see P-TDDPairs, the principle that pairs tests with implementation and sets the coverage floor) lives inside each project’s <code>verify-coverage</code> recipe, not in CI config. Threshold deviations still require a documented exception per that principle.</li>
+<li><strong><code>fix-*</code> recipes are a separate convention.</strong> Not mandated by this ADR, but the <code>verify-*</code> / <code>fix-*</code> split is implied by the no-side-effects rule. Projects MAY add <code>fix-*</code> recipes; they aren’t required.</li>
+<li><strong>Devcontainer integration is adjacent, not in this ADR.</strong> The <code>devcontainer → just ci</code> wiring is a separate stage of the CI-parity work. This ADR defines the contract; devcontainer and image-publication decisions are per-project or a follow-up ADR.</li>
+<li><strong>Gate-line scraping is a hook for future tooling.</strong> Nothing consumes <code>GATE &lt;name&gt; &lt;PASS|FAIL&gt; &lt;detail&gt;</code> today. Specifying the format now means dashboards, completion reports, or retry logic can parse it later without a second standardization pass.</li>
 </ul>
-<h2 id="changelog"><a class="header" href="#changelog">Changelog</a></h2>
-<h3 id="2026-04-30--round-2-review-amendments"><a class="header" href="#2026-04-30--round-2-review-amendments">2026-04-30 — Round 2 review amendments</a></h3>
-<ul>
-<li><strong>Compensating control widened:</strong> the original control caught creation-time tamper only. <strong>Fixed:</strong> added <code>recovery-increment</code> activity row emission at step 1 when the script detects an existing PR (a recovery cycle). The during-recovery audit trail is now preserved in the task DB even when the PR-body footer is mutated.</li>
-<li><strong>Bypass-acknowledgment clarification:</strong> operators who invoke <code>gh pr merge --auto</code> directly bypass the counter and the audit by design. Documented in the retrofit runbook and this ADR so the bypass is explicit.</li>
-</ul>
-<h3 id="2026-04-30--round-1-review-amendments"><a class="header" href="#2026-04-30--round-1-review-amendments">2026-04-30 — Round 1 review amendments</a></h3>
-<ul>
-<li><strong>Recovery counter integrity:</strong> the PR-body footer is mutable, so the cap is convention and not enforcement. <strong>Resolved as accepted risk</strong> per maintainer triage. The compensating control is the step-1 audit row plus a GitHub event log cross-reference. The trip-wire is 3 bypass incidents in 6 months.</li>
-<li><strong>R26b mechanism:</strong> <strong>Resolved by cross-reference to G-0023</strong> (GitHub Merge Queue). The template script is unchanged; the queue is the structural enforcement.</li>
-<li><strong>Label authorization + cardinality enforcement:</strong> <strong>Resolved by cross-reference to G-0024</strong> (Stage 6 label-set authorization).</li>
-<li><strong>Bash threshold:</strong> tightened the revisit threshold from 100 to 50 lines.</li>
-<li><strong>Squash signed-commit acknowledgment:</strong> added a Consequence noting GPG signature loss under <code>reset --soft</code>.</li>
-</ul>
-<p>Status remains <strong>Proposed</strong> pending r2 review.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../adrs/G-0017-feature-flags-flagprovider-trait.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../adrs/G-0001-adr-two-tier-system.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="../adrs/G-0019-tag-race-serialization.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../adrs/G-0003-merge-governance.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -286,11 +256,11 @@ gh pr merge --rebase --auto &lt;pr#&gt;
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../adrs/G-0017-feature-flags-flagprovider-trait.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../adrs/G-0001-adr-two-tier-system.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="../adrs/G-0019-tag-race-serialization.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../adrs/G-0003-merge-governance.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>

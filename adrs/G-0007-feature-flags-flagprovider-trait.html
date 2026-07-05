@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>G-0014: Review Finding Identity and Persistence - mnemra-governance</title>
+        <title>G-0007: Feature Flags — FlagProvider Trait - mnemra-governance</title>
 
 
         <!-- Custom HTML head -->
@@ -35,10 +35,10 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-79642c4f.js";
+            window.path_to_searchindex_js = "../searchindex-c688843e.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-eb7d2461.js"></script>
+        <script src="../toc-92488165.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -177,82 +177,76 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="g-0014-review-finding-identity-and-per-pr-per-round-persistence"><a class="header" href="#g-0014-review-finding-identity-and-per-pr-per-round-persistence">G-0014: Review Finding Identity and Per-PR Per-Round Persistence</a></h1>
+                        <h1 id="g-0007-feature-flags--flagprovider-trait-per-repo-crate-extract-when-common"><a class="header" href="#g-0007-feature-flags--flagprovider-trait-per-repo-crate-extract-when-common">G-0007: Feature Flags — FlagProvider Trait, Per-Repo Crate, Extract-When-Common</a></h1>
 <p><strong>Status:</strong> Accepted
 <strong>Date:</strong> 2026-04-30</p>
 <h2 id="context"><a class="header" href="#context">Context</a></h2>
-<p>Stage 4 is the review stage of a change’s life. It runs iterate-to-zero (a fix-and-review loop that repeats until no blocking finding remains) with a hard cap of 5 rounds. Across those rounds, the same finding can recur with cosmetic drift in its description. A different reviewer phrases it differently, or the same reviewer rewords it slightly on a re-read. Without a stable identity, the iterate-to-zero count drifts. Round 2 shows “5 issues remaining” not because 5 are unresolved, but because 3 are restatements of Round 1 findings the implementing developer already addressed.</p>
-<p>The question is what identity tuple lets Round N say “this is the same finding as in Round N-1, not a new issue.” And where round-by-round findings live, so a reviewer in Round N can see what Round N-1 surfaced.</p>
-<p>An initial proposal used <code>(location, severity)</code> as identity. A later proposal used <code>(location, severity, finding-text-hash)</code>. The hash version tightens identity but produces false negatives when a reviewer rephrases the same defect. The discussion locked on <code>(file, content-anchor, severity)</code>.</p>
+<p>A companion versioning decision decoupled release cadence from merge cadence by tying versioning to feature-flag activation: merge new code dark, flip the flag at release time, bump the version. The open question was which mechanism implements the flag layer per repo.</p>
+<p>Research found:</p>
+<ul>
+<li><strong>The OpenFeature Rust SDK is pre-1.0</strong> (v0.3.0, March 2026, marked WIP). No first-party vendor providers (LaunchDarkly, GoFeatureFlag, etc.) had shipped from the OpenFeature org for Rust as of April 2026; only flagd contrib had shipped a 0.x release. Eventing was not yet implemented. Not production-grade for the next 6 to 12 months unless the team upstreams contrib providers itself.</li>
+<li><strong>The hand-rolled env-var pattern</strong> is dominant in Rust services today: roughly five lines per flag, no dependency, no abstraction layer.</li>
+<li><strong>No mature Rust-native feature-flag-management library</strong> exists at OpenFeature’s vendor-bridging tier.</li>
+</ul>
+<p>The maintainer pushed back on an earlier inline-<code>LazyLock</code> proposal with “must be a library, abstracted, replaceable backend.” That conversation surfaced the operating rule: per-repo first, extract to a shared crate when commonality is observed (the rule of three).</p>
+<p>The shape question split into two options: a per-repo crate with a hand-rolled env-var backend (option A), or a workspace-shared crate from day one (option B). The analysis pointed at option A: per-repo today, extract later.</p>
 <h2 id="decision"><a class="header" href="#decision">Decision</a></h2>
-<p><strong>Finding identity = <code>(file, content-anchor, severity)</code> triple.</strong> Identity decouples from line numbers because line numbers shift when implementing developers insert or delete lines higher in the file between rounds. Under the older <code>(file:line-range, severity)</code> form, a fix-driven line shift made the same physical defect appear as a “new” finding in the next round, exhausting the 5-round cap on a single underlying issue.</p>
-<p><strong>Content-anchor:</strong> SHA-256 of a normalized window around the cited finding. The window is the cited line plus 2 lines of context above and below (5 lines total), with trailing whitespace stripped per line. Normalization produces a stable hash even when the line numbers around the defect change. The window is intentionally small. It’s large enough to disambiguate two findings on the same file from each other, and small enough that an unrelated edit two screens away doesn’t rotate the anchor.</p>
-<p><strong>Reviewer output format includes the anchor.</strong> Reviewers cite location AND emit the anchor inline so downstream dedup logic doesn’t need to re-read the file at the cited round’s commit:</p>
-<pre><code class="language-markdown"># &lt;reviewer&gt; review — PR &lt;pr-ref&gt; — round &lt;N&gt;
+<p><strong>Each in-scope repo defines its own feature-flag library</strong> as an internal crate (e.g., <code>&lt;repo&gt;/crates/feature-flags/</code>) implementing a small trait:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub trait FlagProvider: Send + Sync {
+    fn enabled(&amp;self, key: &amp;str) -&gt; bool;
+    fn enabled_with_default(&amp;self, key: &amp;str, default: bool) -&gt; bool {
+        self.enabled(key)
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong>The trait shape is canon</strong> (this ADR). The implementation is per-repo. The default backend is env-var-driven:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct EnvVarFlags;
 
-## blocker
-- `path/to/file.rs:42-58` (anchor `a3f9c1`) — &lt;description&gt;
-- `path/to/other.rs:120` (anchor `7e2d80`) — &lt;description&gt;
-
-## major
-- ...
-</code></pre>
-<p>Anchors render as the first 6 hex characters of the SHA-256 in the markdown for human readability. The full hash lives in a fenced YAML block at the bottom of each reviewer file for tooling. Reviewer profiles get the anchor-computation recipe in their dispatch brief, the context handed to a specialist when a scoped task is routed to them. The workspace template ships a <code>&lt;workspace-root&gt;/bin/finding-anchor.sh</code> reference script.</p>
-<p><strong>Whole-file findings</strong> (no line range) use a fixed-content-anchor of <code>whole-file</code>. Two file-level findings of the same severity on the same file collapse. That’s acceptable for v1, since file-level findings are rare. Reviewers should prefer line-anchored findings whenever a specific location is identifiable.</p>
-<p><strong>Location format:</strong> <code>&lt;path&gt;:&lt;start_line&gt;-&lt;end_line&gt;</code> for single-file ranges; <code>&lt;path&gt;:&lt;start_line&gt;</code> for point findings; <code>&lt;path&gt;</code> (file-level only) for whole-file findings.</p>
-<p><strong>Severity values:</strong> <code>blocker</code>, <code>major</code>, <code>minor</code>, <code>nit</code>. Stage 4 iterate-to-zero blocks on <code>blocker</code> + <code>major</code>. <code>minor</code> and <code>nit</code> are advisory and don’t block merge.</p>
-<p><strong>Severity mutation handling.</strong> Within a single PR’s review history, a defect may surface at different severities across rounds. Round 1 marks it <code>blocker</code>, then a Round 2 reviewer downgrades it to <code>major</code> after a partial fix. The iterate-to-zero set-difference uses the <strong>(file, content-anchor)</strong> pair as the dedup key, ignoring severity, when computing the “new findings” delta. But the gating decision uses the <strong>current-round severity</strong> to determine whether the finding still blocks merge. This split prevents two pathologies the older identity tuple introduced: (a) severity-flipped findings counted as new (cap exhaustion); (b) downgrade-to-<code>nit</code> producing a false-pass exit when the underlying defect at a <code>nit</code> severity is still present.</p>
-<p>Concretely, iterate-to-zero terminates when no <code>(file, content-anchor)</code> pair carries a <code>blocker</code> or <code>major</code> severity in the current round, regardless of what severity it carried in prior rounds. Reviewer downgrade has its intended meaning (“this is no longer blocking after the fix”) without leaking through as a false-pass.</p>
-<p><strong>Persistence path:</strong> <code>&lt;review-store&gt;/&lt;repo&gt;-pr&lt;N&gt;/r&lt;round&gt;/&lt;reviewer&gt;.md</code>, one markdown file per <code>(repo, PR, round, reviewer)</code> tuple. The repo prefix prevents collision when two concurrent PRs share the same PR number across different repos. The repo segment uses the canonical short name (e.g., <code>&lt;repo-a&gt;</code>, <code>&lt;repo-b&gt;</code>), not the GitHub owner/name pair, since the segment is workspace-private.</p>
-<p><strong>Round-read discipline (disambiguated).</strong> Reviewers in Round N+1 MUST read <strong>Round N-1 files only, never the current Round N+1 files for the same PR</strong>. The dispatch brief glob is <code>&lt;review-store&gt;/&lt;repo&gt;-pr&lt;N&gt;/r&lt;N&gt;/*.md</code> (where <code>&lt;N&gt;</code> is the prior-round counter, deliberately one less than the round being authored). This closes the same-round-dedup ambiguity. Concurrent reviewers in the same round MUST NOT read each other’s files mid-round, only the prior round’s files. Same-round dedup happens at round-end aggregation, after all reviewer files are written, by the dispatch coordinator.</p>
-<p><strong>Round counter increment rule.</strong> The Stage 4 round counter increments when at least one <code>(file, content-anchor)</code> pair newly carries a <code>blocker</code> or <code>major</code> severity in the current round (that is, absent from the prior round’s blocker+major set). Same-pair severity changes within blocker+major (blocker to major or vice versa) do not increment the counter. They’re considered “the same defect, different reviewer call.” Termination happens when the increment is zero across all reviewers for the round.</p>
+impl FlagProvider for EnvVarFlags {
+    fn enabled(&amp;self, key: &amp;str) -&gt; bool {
+        std::env::var(format!("FLAG_{}", key.to_uppercase().replace('-', "_")))
+            .map(|v| v == "1" || v.eq_ignore_ascii_case("true"))
+            .unwrap_or(false)
+    }
+}
+<span class="boring">}</span></code></pre>
+<p>Flag keys use kebab-case in source (<code>new-search-ranking</code>); env vars are screaming-snake-case with a <code>FLAG_</code> prefix (<code>FLAG_NEW_SEARCH_RANKING</code>).</p>
+<p><strong>Extract to a shared crate only when commonality emerges across three or more repos</strong> (the rule of three). Until then, per-repo copies are intentional duplication; drift between them is fine because backends differ per-repo deployment context.</p>
+<p><strong>Backend swap path:</strong> because <code>FlagProvider</code> is the seam, swapping <code>EnvVarFlags</code> for an <code>OpenFeatureFlags</code> impl (when OpenFeature Rust reaches 1.0) or a vendor impl (if adoption justifies it) is a per-repo decision: implement the trait against the new backend, swap the binding in the repo’s <code>main.rs</code> or DI container.</p>
 <h2 id="alternatives-considered"><a class="header" href="#alternatives-considered">Alternatives Considered</a></h2>
 <ul>
-<li><strong><code>(location, severity, hash(text))</code> triple.</strong> Rejected. The same defect described differently across rounds produces hash drift. Identity becomes too narrow and the dedup fails the use case it exists for.</li>
-<li><strong>Reviewer-assigned finding IDs (<code>F-0001</code>, <code>F-0002</code>).</strong> Rejected. Adds bookkeeping burden. Reviewer-side state-tracking across rounds is the failure mode iterate-to-zero is trying to remove.</li>
-<li><strong>DB-backed finding store</strong> (e.g., <code>findings</code> table in task DB). Rejected for v1. Same workspace-CLI-in-maintenance argument as G-0013, invest later in mnemra. Markdown-in-store is the lean substrate.</li>
-<li><strong>Per-PR single file (<code>&lt;review-store&gt;/&lt;pr-ref&gt;/findings.md</code>) updated each round.</strong> Rejected. Loses the per-round-per-reviewer attribution, makes rounds harder to diff, and concurrent reviewer dispatches would race on the file.</li>
-<li><strong>Finding text canonicalization</strong> (lowercase + whitespace-normalize before hashing). Rejected. Too fragile. Reviewers express the same defect with different vocabulary, not just whitespace differences.</li>
+<li><strong>Inline <code>LazyLock&lt;bool&gt;</code> per flag, no abstraction.</strong> Rejected per the maintainer’s pushback: “must be a library, abstracted, replaceable backend.” The inline pattern locks the backend choice into every call site.</li>
+<li><strong>Workspace-shared <code>feature-flags</code> crate from day one.</strong> Rejected. Premature extraction couples repos before commonality is observed. Per-repo first; extract later if three or more repos diverge in superficial ways but share the trait shape.</li>
+<li><strong>OpenFeature Rust SDK as the abstraction layer today.</strong> Rejected per the research finding: pre-1.0, eventing unimplemented, no vendor providers shipped. Adopting it now means inheriting upstream churn.</li>
+<li><strong>Cargo features (compile-time).</strong> Rejected. Runtime-toggled flags are required to support the dark-merge-then-flip release model. Compile-time is the wrong granularity.</li>
+<li><strong><code>features</code> or <code>env-flags</code> crates from crates.io.</strong> Rejected. Both are lightly maintained, low download volume, and offer thin wrappers around what is a five-line pattern. Direct <code>std::env</code> is leaner.</li>
+<li><strong>A vendor SDK from day one.</strong> Rejected. Vendor lock-in cost versus current usage volume (zero production flags) is a poor trade. The trait seam preserves the option to swap one in later.</li>
 </ul>
 <h2 id="consequences"><a class="header" href="#consequences">Consequences</a></h2>
 <ul>
-<li><strong>Duplicate findings collapse on (file, content-anchor) regardless of severity.</strong> Round N+1’s count of “new findings” is the set of <code>(file, content-anchor)</code> pairs at blocker+major severity not present in Round N’s blocker+major set. Same-pair severity flips don’t count as new. Severity drops from blocker+major to minor+nit count as resolutions. Severity rises from minor+nit to blocker+major count as new findings (the reviewer just discovered the worse impact).</li>
-<li><strong>Reviewer briefs include prior-round files.</strong> The Stage 4 dispatch envelope MUST include the path glob <code>&lt;review-store&gt;/&lt;repo&gt;-pr&lt;N&gt;/r&lt;N-1&gt;/*.md</code> (one round earlier than the round being authored) so reviewers see prior context before issuing findings.</li>
-<li><strong>Severity ordering is fixed.</strong> Reviewers MUST use the four-value enum. No custom severities. Mapping: <code>blocker</code> = merge-blocker requiring fix; <code>major</code> = should-fix this round; <code>minor</code> = nice-to-have, advisory; <code>nit</code> = style/preference.</li>
-<li><strong>Cross-repo namespace.</strong> The persistence path includes the repo segment (<code>&lt;review-store&gt;/&lt;repo&gt;-pr&lt;N&gt;/r&lt;N&gt;/&lt;reviewer&gt;.md</code>) so concurrent PRs sharing the same number across repos cannot collide.</li>
-<li><strong>Store hygiene:</strong> <code>&lt;review-store&gt;/&lt;repo&gt;-pr&lt;N&gt;/</code> directories accumulate during a PR’s life. Cleanup happens at PR close (merged or abandoned). The session-start archive sweep moves closed-PR directories to archive after merge.</li>
-<li><strong>Concurrent-round-write discipline.</strong> Within a single round, multiple reviewers dispatch in parallel and write their files at completion. Reviewers do NOT read each other’s same-round files. Same-round dedup happens at the dispatch-coordinator post-round aggregation. The dispatch brief explicitly cites the <code>r&lt;N-1&gt;</code> glob to prevent read-the-current-round mistakes.</li>
-<li><strong>Anchor computation is reviewer-side.</strong> Reviewers compute the SHA-256 over the 5-line normalized window using the workspace-template <code>&lt;workspace-root&gt;/bin/finding-anchor.sh</code> (or equivalent). The anchor must be computed against the commit-SHA at which the reviewer is reading the file (typically the PR’s HEAD at dispatch time). Round N+1 anchors against the new HEAD will produce different content-anchors only if the cited code itself changed. Line-shift drift in unrelated parts of the file does not rotate the anchor.</li>
-<li><strong>Whole-file findings caveat.</strong> Two file-level findings (anchor <code>whole-file</code>) of the same severity on the same file collapse. Reviewers preferring line-anchored findings reduce the chance of this collision. Acceptable corner case in v1.</li>
-<li><strong>Iterate-to-zero metric is exact:</strong> the new-findings-set difference produces a clean termination signal that survives line-range drift, severity flips, and reviewer-prose variation across rounds.</li>
-<li><strong>Mnemra migration invariant.</strong> Pre-mnemra, paths are store-relative under <code>&lt;review-store&gt;/&lt;repo&gt;-pr&lt;N&gt;/</code>. Post-mnemra, paths migrate to the mnemra content-plugin namespace. The <strong>(file, content-anchor, severity)</strong> identity tuple is invariant across the migration. The content-anchor is content-addressed by construction, so it survives substrate changes.</li>
-<li><strong>Anchor stability across reformatters.</strong> A defect that lives inside a region of code reformatted by <code>cargo fmt</code> (or equivalent) between rounds will rotate the anchor. The whitespace-stripped 5-line window changes when the formatting changes. In workspaces where format-on-edit is a harness hook for agent edits, this means every iterate-to-zero cycle involving agent edits will see anchor rotation across all touched files. The operational rule: the dispatch coordinator <strong>MUST</strong> perform a one-shot anchor remap at the start of each round AFTER the round’s agent edits + cargo fmt have landed but BEFORE reviewers read the prior-round findings file. The remap re-computes anchors for prior-round findings against the current round’s HEAD, writing the remapped findings to a sidecar file (<code>&lt;review-store&gt;/&lt;repo&gt;-pr&lt;N&gt;/r&lt;N-1&gt;/&lt;reviewer&gt;-remapped.md</code>) that reviewers read in place of the original. The re-mapping is mechanical but is bounded human-supervised. When a finding’s cited file no longer exists or the cited line range has been deleted (the defect was actually fixed structurally), the remap entry says “FIXED: finding resolved by structural change” and the reviewer doesn’t need to re-flag.</li>
+<li><strong>Per-repo crate copy is the v1 cost.</strong> Roughly 50 lines per repo: trait + <code>EnvVarFlags</code> impl + tests. Acceptable under the extract-when-common principle.</li>
+<li><strong>Trait shape locked in canon</strong> (this ADR). Per-repo implementations conform; a deviation is either trivial (an extra method) or signals the trait needs revision in this ADR.</li>
+<li><strong>Flag-key naming is enforced by env-var derivation.</strong> Source key <code>new-search-ranking</code> maps to env var <code>FLAG_NEW_SEARCH_RANKING</code>, avoiding per-repo bikeshed.</li>
+<li><strong>The OpenFeature seam is preserved.</strong> When OpenFeature Rust reaches 1.0 with vendor providers, an individual repo can adopt it by writing an <code>OpenFeatureFlags: FlagProvider</code> impl. The trait stays; the backend swaps. No re-architecture.</li>
+<li><strong>Polyglot signal.</strong> If a non-Rust repo adopts the workflow, it implements its own <code>FlagProvider</code> equivalent in its language. The trait shape is the canon; the language is per-repo.</li>
+<li><strong>Versioning interaction.</strong> The bump-on-flag-permanent-activation model reads activation events from the <code>FlagProvider</code> boundary; the flag’s lifecycle (created → off-default → on-default → permanent → removed) is the bump trigger. Release tooling does not need to know about flags directly; the conventional-commit message at the flag-permanent commit declares the bump.</li>
+<li><strong>Cleanup discipline.</strong> Flags are intended to be transient. A cap on flag count or age is a per-project spec concern, not canon.</li>
+<li><strong>Consolidation path.</strong> When shared tooling consolidates and per-repo independence still holds, the <code>FlagProvider</code> trait migrates to a shared crate if the rule of three has fired by then. If not, per-repo crates persist.</li>
 </ul>
-<h2 id="changelog"><a class="header" href="#changelog">Changelog</a></h2>
-<h3 id="2026-04-30--round-2-review-amendments"><a class="header" href="#2026-04-30--round-2-review-amendments">2026-04-30 — Round 2 review amendments</a></h3>
-<ul>
-<li><strong>Anchor rotation as common case (cargo-fmt):</strong> the original round 1 amendment treated reformatter rotation as a rare edge. In workspaces where cargo fmt runs after every agent edit cycle, anchor rotation is the common case, not the edge. <strong>Fixed:</strong> rewrote the “Anchor stability across reformatters” Consequence to spell out the one-shot anchor-remap rule (dispatch coordinator regenerates prior-round anchors after agent edits + fmt land), with a sidecar file pattern (<code>&lt;reviewer&gt;-remapped.md</code>) that reviewers read.</li>
-</ul>
-<h3 id="2026-04-30--round-1-review-amendments"><a class="header" href="#2026-04-30--round-1-review-amendments">2026-04-30 — Round 1 review amendments</a></h3>
-<p>Round 1 review (test-author + security + editor review) surfaced five issues with the original <code>(location, severity)</code> identity:</p>
-<ul>
-<li><strong>Line-range drift:</strong> dev-edits shift line numbers, so the same defect appeared as new in each round, exhausting the 5-round cap on one underlying issue. <strong>Fixed:</strong> identity is now <code>(file, content-anchor, severity)</code> with the content-anchor a SHA-256 of a normalized 5-line window. Survives line shifts.</li>
-<li><strong>Concurrent reviewer race on Round N files:</strong> the wording “Read Round N files” was ambiguous. It could mean prior round (intended) or current round (mistaken same-round dedup). <strong>Fixed:</strong> explicit “Read Round N-1 only, never current round.” Same-round dedup is dispatch-coordinator responsibility, not reviewer.</li>
-<li><strong>Cross-repo <code>&lt;pr-ref&gt;</code> collision:</strong> <code>&lt;review-store&gt;/pr-17/...</code> collides for two repos concurrently at the same PR number. <strong>Fixed:</strong> path is <code>&lt;review-store&gt;/&lt;repo&gt;-pr&lt;N&gt;/...</code>.</li>
-<li><strong>Severity-mutation false-pass + cap exhaustion:</strong> the identity tuple included severity, so flips between rounds counted as new findings (cap exhaustion) AND downgrades to nit produced a false-pass exit (the underlying defect remained). <strong>Fixed:</strong> dedup uses (file, content-anchor) regardless of severity; the gating decision uses current-round severity.</li>
-<li><strong>Workspace-to-mnemra migration unspecified:</strong> the ADR mentioned migration without naming the invariant. <strong>Fixed:</strong> explicit “(file, content-anchor, severity) identity invariant across migration.”</li>
-</ul>
-<p>Status remains <strong>Proposed</strong> pending r2 review on the amended Decision + Consequences sections.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../adrs/G-0013-stage6-approval-label-vocabulary.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../adrs/G-0006-layered-secret-detection.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="../adrs/G-0015-devcontainer-per-repo-upstream-base.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../adrs/G-0008-pr-merge-apparatus.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -262,11 +256,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../adrs/G-0013-stage6-approval-label-vocabulary.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../adrs/G-0006-layered-secret-detection.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="../adrs/G-0015-devcontainer-per-repo-upstream-base.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../adrs/G-0008-pr-merge-apparatus.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>

@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>G-0008: Knowledge-Extraction Capture Schema - mnemra-governance</title>
+        <title>G-0011: Internal IPC Typed Binary Encoding - mnemra-governance</title>
 
 
         <!-- Custom HTML head -->
@@ -35,10 +35,10 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-79642c4f.js";
+            window.path_to_searchindex_js = "../searchindex-c688843e.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-eb7d2461.js"></script>
+        <script src="../toc-92488165.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -177,59 +177,52 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="g-0008-knowledge-extraction-skill--capture-table-schema-and-partial-state-recovery"><a class="header" href="#g-0008-knowledge-extraction-skill--capture-table-schema-and-partial-state-recovery">G-0008: Knowledge-Extraction Skill — Capture Table Schema and Partial-State Recovery</a></h1>
+                        <h1 id="g-0011-internal-ipc-uses-typed-binary-encoding-by-default-json-for-stored-state-and-external-surfaces"><a class="header" href="#g-0011-internal-ipc-uses-typed-binary-encoding-by-default-json-for-stored-state-and-external-surfaces">G-0011: Internal IPC Uses Typed Binary Encoding by Default; JSON for Stored State and External Surfaces</a></h1>
 <p><strong>Status:</strong> Accepted
-<strong>Date:</strong> 2026-04-24</p>
+<strong>Date:</strong> 2026-05-04</p>
 <h2 id="context"><a class="header" href="#context">Context</a></h2>
-<p>Several requirements drive this decision. R15 and R16a want per-capture observability: capture_type, destination, convergence rounds, event tallies, and round summaries. R3a adds linked captures, which need more than one row per skill run. Q7 wants partial-state recovery, which means keeping the trigger context and transcript around so a capture can resume on the next invocation.</p>
-<p>The existing <code>skill_runs</code> table is already live, and it’s orchestration-generic. It isn’t tied to any one skill. This ADR decides where the knowledge-extraction-specific capture data should live instead.</p>
+<p>Default toolchain conventions push systems toward JSON-everywhere on internal boundaries. Extism’s Rust PDK (plugin development kit) uses <code>Json&lt;T&gt;</code> as the path of least resistance, host-function registration in the plugin runtime is <code>Json&lt;T&gt;</code> end to end, and the JSON-RPC shape of MCP (Model Context Protocol) leaks one boundary further inward than it needs to. JSON’s value (introspectability, tooling, human-readable diffs) attaches to surfaces that are persisted, user-facing, or cross trust domains. None of those properties pay off on a host↔plugin or service↔service path where both ends control the contract; the marshalling cost is the entire price, with no value returned.</p>
+<p>This decision was triggered by plugin-runtime architecture work in the mnemra ecosystem, but it generalizes: every project with multiple components communicating in-process or across plugin boundaries faces the same call.</p>
 <h2 id="decision"><a class="header" href="#decision">Decision</a></h2>
-<p>Add a child table <strong><code>skill_run_captures</code></strong>, with a foreign key to <code>skill_runs(id)</code> and <code>ON DELETE CASCADE</code>. The migration target is the task DB. A future mnemra metrics layer will inherit this schema when it copy-and-freezes from the current implementation. That layer doesn’t exist yet at /architect time, so its sequencing is TBD per the project plan.</p>
-<p>Columns:</p>
-<ul>
-<li><code>state</code> CHECK-constrained to <code>partial | complete | abandoned</code></li>
-<li><code>capture_type</code> CHECK-constrained to <code>rule | pattern | preference | heuristic-transformed | underspecified-revisit | linked-capture | abandoned | no-context</code></li>
-<li><code>destination_type</code> CHECK-constrained to the five G-0009 destination types (<code>feedback_memory | skill | adr | about | research</code>)</li>
-<li><code>destination_path</code> TEXT</li>
-<li><code>trigger_context</code> TEXT. The full text that triggered this capture, kept for resume lookup.</li>
-<li><code>trigger_summary</code> TEXT. A one-line digestible preview, used in the resume-list UX so the carrier gets a recall cue without reading the whole trigger.</li>
-<li><code>transcript</code> TEXT. The elicitation turns so far, as markdown or JSON; the exact format is settled in /spec.</li>
-<li><code>event_tallies</code> TEXT. JSON, with <code>CHECK (json_valid(event_tallies))</code>. It has 10 named fields: <code>heuristic_transformed</code>, <code>split_proposed</code>, <code>linked_capture</code>, <code>underspecified_revisit</code>, <code>advisory_rejected</code>, <code>nudge_declined</code>, <code>ceiling_exceeded</code>, <code>r17_scanned</code>, <code>r17_overlap_detected</code>, <code>no_context</code>. The last two boolean R17 fields give R17 observability regardless of how the overlap judgment comes out (per test-author review round 1). <code>no_context</code> was added in spec r2; it’s set when the carrier invokes the skill without trigger context and can’t supply one when prompted. It stays distinct from <code>nudge_declined</code> so analytics queries can separate the two abandon reasons.</li>
-<li><code>round_summary_log</code> TEXT. JSON array, with <code>CHECK (json_valid(round_summary_log))</code>. Per-round fields: <code>fields_populated</code>, <code>counter_cases_added</code>, <code>advisory_phrases_removed</code> (the R16a convergence observable).</li>
-<li>Standard <code>summary</code>, <code>convergence_rounds</code>, <code>created_at</code>, <code>updated_at</code></li>
-</ul>
-<p><strong>Invariant:</strong> <code>state = 'abandoned' IFF capture_type = 'abandoned'</code>. This is biconditional: one holds exactly when the other does. The <code>abandoned</code> value in <code>capture_type</code> is reserved for ceiling-exceeded or underspecified-revisit failures, and those are the only paths that set <code>state='abandoned'</code>. Non-abandoned <code>state</code> values (<code>partial</code>, <code>complete</code>) pair with the other <code>capture_type</code> values (<code>rule</code>, <code>pattern</code>, and so on). /spec (the specification that defines what done looks like) enforces this invariant through a CHECK constraint or trigger, with the exact mechanism settled in /spec.</p>
-<p><strong>Run-level token accumulator:</strong> add a column <code>run_token_estimate INTEGER</code> (or an equivalent counter) to the parent <code>skill_runs</code> table to hold the aggregated char-count-estimate across every capture in the run. This is the field G-0012’s M_run ceiling reads from. /spec picks between “column on parent” and “computed-on-demand from children.” The architecture commitment is only this: the value is observable without scanning transcripts.</p>
-<p><strong>Writer ownership:</strong> the orchestrator (the role that routes and coordinates work, dispatching to specialists and integrating results) is the only writer to <code>skill_run_captures</code>. Rows are inserted at capture start (<code>state='partial'</code>), updated after each elicitation round (which updates <code>transcript</code>, <code>round_summary_log</code>, and <code>convergence_rounds</code>), and transitioned to <code>state='complete'</code> or <code>state='abandoned'</code> at exit. A session-drop produces a natural <code>state='partial'</code> row via the last successful per-round write. Hooks never write to this table. That follows from composition integrity: hooks detect and deliver, they don’t capture.</p>
-<p><strong>Partial-state resume (carrier-picks):</strong> at invocation, the skill lists every <code>state='partial'</code> row. These rows are DB-resident and session-independent, so partials from prior <code>session_id</code> values are still visible. The list shows <code>trigger_summary</code> previews, timestamps, and probe counts, and the carrier picks one to resume or starts fresh. Abandoned captures, whether from a ceiling hit or an underspecified-revisit, are filed with their full transcript but are not auto-offered for resume. This is a deliberate shift away from /discover’s Failure Modes row, which implied auto-match. See the constraints-summary Feedback to Requirements for the reconciliation.</p>
-<p><strong>/clear mid-capture orphan path:</strong> partials live in <code>skill_run_captures</code>, not in the state file. So a <code>/clear</code> that resets <code>session_id</code> doesn’t orphan the partial, because the next invocation’s resume-list query is session-independent. The carrier sees the partial in the list even though the new session’s <code>session_id</code> differs from the one that created the partial row.</p>
-<p>Cleanup of partials is manual via the workspace CLI’s skill-run capture commands (<code>list-partials</code> plus <code>abandon &lt;id&gt;</code>) for v1.</p>
+<p>Internal IPC (inter-process communication) defaults to a typed binary encoding (Protocol Buffers or FlatBuffers). JSON is reserved for stored state and external surfaces.</p>
+<p><strong>Internal</strong> means: both endpoints are under the same project or team’s control, the payload is not persisted as the canonical record, and the boundary does not cross a trust domain. Examples: host↔plugin host-function calls, plugin↔plugin via mediated invocation, in-process service↔service calls when crossing a process or sandbox boundary, internal RPC between services in the same deployment.</p>
+<p><strong>External / stored</strong> means: user-visible APIs, persisted records (DB columns, files, event tables), cross-trust-domain protocols (third-party APIs, public webhooks, MCP-on-the-wire), or surfaces where introspectability is itself the value (config files, logs, debugging tools). JSON remains the right answer here.</p>
+<p>The choice between Protocol Buffers and FlatBuffers is per-use-case: protobuf for typical request/response with cross-language tooling depth; FlatBuffers for read-heavy zero-copy / mmap-able payloads. Pick per shape; both are acceptable defaults under this ADR.</p>
 <h2 id="alternatives-considered"><a class="header" href="#alternatives-considered">Alternatives Considered</a></h2>
-<ul>
-<li><strong>Add columns to <code>skill_runs</code>.</strong> Rejected. It pollutes the generic orchestration table with domain-specific fields that stay sparse for other skills. Composition with future skill domains only gets worse as more columns accrete.</li>
-<li><strong>Generic <code>skill_run_artifacts</code> with a JSON blob.</strong> Rejected. Blob-schema queries turn into JSON-path soup. Mnemra absorption (the F0 posture) favors clean domain tables over blobs.</li>
-<li><strong>Resume by trigger-context hash match.</strong> Rejected. It’s brittle, since a slight rewording fails the match. It also creates a magic-matching path that violates composition integrity; the carrier should choose explicitly.</li>
-<li><strong>Resume via a UUID resume-token.</strong> Rejected. Carrier-picks from a list is simpler and avoids token management.</li>
-<li><strong>Transcript in a file (<code>.claude/hooks/state/...md</code>).</strong> Rejected. In-DB TEXT keeps all state in one migratable place, and SQLite handles multi-KB text fine.</li>
-</ul>
+<p><strong>JSON everywhere.</strong> The current default of most ecosystems on the stack (MCP, the plugin runtime PDK). Rejected: the marshalling cost has no offsetting value on internal boundaries; encoding-level schema enforcement is stronger than JSON-schema-as-discipline (which drifts silently); typed contracts are clearer at the boundary itself.</p>
+<p><strong>Component Model + WIT typed-native passing.</strong> On WASM Component Model targets, this eliminates encoding entirely; values cross the boundary with no marshalling. (WIT is WebAssembly Interface Types, the Component Model’s interface-description language.) Considered as the truly cleanest path on WASM substrates. Not chosen as the universal default because (a) it is only available on Component Model targets, not in-process service↔service or subprocess IPC; and (b) toolchain maturity in 2026 is still uneven across non-Rust PDKs. Where applicable, the Component Model is the preferred encoding-free alternative; this ADR does not preclude a project from choosing it over typed binary.</p>
+<p><strong>Custom encodings (msgpack, cbor, raw structs).</strong> Rejected as the default: they lose the schema-level versioning and cross-language codegen tooling that protobuf and FlatBuffers provide. Ad-hoc encodings re-introduce the drift surface this ADR removes.</p>
+<p><strong>FlatBuffers exclusively.</strong> Considered. Rejected as the universal default: protobuf has broader language support and better ergonomics for typical request/response shapes. FlatBuffers wins for read-heavy zero-copy / mmap-friendly payloads but is not a fit for everything.</p>
 <h2 id="consequences"><a class="header" href="#consequences">Consequences</a></h2>
+<p><strong>Positive:</strong></p>
 <ul>
-<li>A full capture query needs a join. That’s acceptable; the <code>skill_run_retros</code> precedent already established it.</li>
-<li>The migration is forward-only: a new table, no changes to existing columns.</li>
-<li>Mnemra absorption exports three tables cleanly: <code>skill_runs</code>, <code>skill_run_retros</code>, and <code>skill_run_captures</code>.</li>
-<li>Partial and abandoned semantics are meaningfully distinct. Partial means the carrier intends to continue. Abandoned means a prior attempt didn’t converge, so fresh framing is usually the right next step.</li>
-<li>Composition integrity holds: the carrier picks the resume target, and the agent never auto-matches.</li>
+<li>The marshalling tax is removed from hot internal paths.</li>
+<li>Schema-as-contract is enforced at the encoding layer; typed deserialization fails loudly, where JSON-schema-as-discipline drifts silently.</li>
+<li>Multi-language plugin and service authoring gets typed contracts at the wire format, not only at the application layer.</li>
+<li>Boundary classification (internal vs. external/stored) becomes an explicit design step rather than a default entrenched by toolchain convention.</li>
+</ul>
+<p><strong>Negative / accepted:</strong></p>
+<ul>
+<li>Plugin authors and service authors learn one more tool (protobuf or FlatBuffers schemas + codegen).</li>
+<li>Debugging needs a decoder (<code>protoc --decode</code>, <code>flatc</code>, <code>grpcurl</code>, and the like) versus <code>cat</code> for JSON. Build a story for this in projects with non-trivial IPC volume.</li>
+<li>Schema repositories and codegen pipelines become build-time concerns for any project that hits the internal-IPC threshold.</li>
+<li>The classification is a judgment call at the margin. A boundary that <em>might</em> one day be persisted or exposed externally is awkward; default to the actual current shape, document the rationale, and migrate if the boundary changes character.</li>
+</ul>
+<p><strong>Project-level guidance:</strong></p>
+<ul>
+<li>A project may legitimately stay JSON-only at V0 when internal IPC volume is low and codegen overhead exceeds the marshalling cost being paid. Record a project-level ADR override citing G-0011 with the V0 cost-benefit rationale.</li>
+<li>Mnemra’s V0 internal wire-format choice inherits from this ADR; the mnemra-side ADR references G-0011.</li>
 </ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../adrs/G-0007-knowledge-extraction-nudge-hook.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../adrs/G-0010-embargo-flow-architecture.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="../adrs/G-0009-knowledge-extraction-duplicate-detection-scope.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../adrs/G-0012-project-dev-docs-tooling.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -239,11 +232,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../adrs/G-0007-knowledge-extraction-nudge-hook.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../adrs/G-0010-embargo-flow-architecture.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="../adrs/G-0009-knowledge-extraction-duplicate-detection-scope.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../adrs/G-0012-project-dev-docs-tooling.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>

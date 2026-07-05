@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>G-0026: Project Dev Docs Tooling - mnemra-governance</title>
+        <title>G-0012: Project Dev Docs Tooling - mnemra-governance</title>
 
 
         <!-- Custom HTML head -->
@@ -35,10 +35,10 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-79642c4f.js";
+            window.path_to_searchindex_js = "../searchindex-c688843e.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-eb7d2461.js"></script>
+        <script src="../toc-92488165.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -177,61 +177,61 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="g-0026-project-dev-docs-use-mdbook--d2--mermaid-product-surfaces-unaffected"><a class="header" href="#g-0026-project-dev-docs-use-mdbook--d2--mermaid-product-surfaces-unaffected">G-0026: Project Dev Docs Use mdBook + D2 + Mermaid; Product Surfaces Unaffected</a></h1>
+                        <h1 id="g-0012-project-dev-docs-use-mdbook--d2--mermaid-product-surfaces-unaffected"><a class="header" href="#g-0012-project-dev-docs-use-mdbook--d2--mermaid-product-surfaces-unaffected">G-0012: Project Dev Docs Use mdBook + D2 + Mermaid; Product Surfaces Unaffected</a></h1>
 <p><strong>Status:</strong> Accepted
 <strong>Date:</strong> 2026-05-04</p>
 <h2 id="context"><a class="header" href="#context">Context</a></h2>
-<p>Mermaid’s <code>C4Container</code> and <code>classDef</code>-styled flowcharts ran into reliability limits while someone was drafting a system overview. Rendering came out inconsistent across renderers. Dark mode needed defensive overrides to look right. A survey of where project-level dev-docs tooling and diagramming stood in 2026 fed into this decision.</p>
-<p>This decision record captures the choice for the whole workspace. It applies to <strong>project-level developer documentation</strong>: ADRs, system overviews, architecture docs, READMEs, and design notes that live in project git repos and render to GitHub Pages or an equivalent. It’s separate from product-level surfaces such as a marketing site, which run on different stacks and stay out of scope here.</p>
+<p>Mermaid <code>C4Container</code> and <code>classDef</code>-styled flowcharts hit reliability limits during system-overview drafting in the mnemra ecosystem: rendering was inconsistent across renderers, and dark mode required defensive overrides. A research survey of the 2026 state of project-level dev-docs tooling and diagramming informed the choice recorded here.</p>
+<p>This ADR captures the ecosystem-wide choice. It applies to <strong>project-level developer documentation</strong>: ADRs, system overviews, architecture docs, READMEs, and design notes that live in project git repos and render to GitHub Pages or equivalent. It is distinct from product-level surfaces (e.g., the mnemra.dev marketing site), which run on different stacks and remain out of scope here.</p>
 <h2 id="decision"><a class="header" href="#decision">Decision</a></h2>
 <p><strong>Static-site generator:</strong> mdBook (Apache-2.0 / MIT, rust-lang official). Each project repo gets its own <code>book.toml</code> + <code>SUMMARY.md</code>; CI deploys to GitHub Pages via <code>peaceiris/actions-mdbook</code> + <code>peaceiris/actions-gh-pages</code>.</p>
-<p><strong>Diagrams: tool pair by surface.</strong></p>
+<p><strong>Diagrams: a tool pair by surface.</strong></p>
 <ul>
-<li><strong>D2</strong> (MPL-2.0, text DSL) for architecture-grade diagrams in built docs sites. First-class C4 since v0.7, dark mode without <code>classDef</code> overrides, three layout engines (Dagre default, ELK, paid TALA).</li>
-<li><strong>Mermaid</strong> (MIT, text DSL) for diagrams in committed <code>.md</code> read in the GitHub web UI. Only diagrams-as-code tool natively rendered by GitHub since 2022. Use for sequence / flow / state-machine; avoid <code>C4Container</code> (experimental, brittle).</li>
+<li><strong>D2</strong> (MPL-2.0, text DSL) for architecture-grade diagrams in built docs sites. First-class C4 (the C4 model for visualizing software architecture) since v0.7, dark mode without <code>classDef</code> overrides, three layout engines (Dagre default, ELK, and the paid TALA).</li>
+<li><strong>Mermaid</strong> (MIT, text DSL) for diagrams in committed <code>.md</code> read in the GitHub web UI. It is the only diagrams-as-code tool natively rendered by GitHub (since 2022). Use it for sequence, flow, and state-machine diagrams; avoid <code>C4Container</code> (experimental, brittle).</li>
 </ul>
-<p><strong>Integration:</strong> mdBook + a custom <code>mdbook-d2</code> preprocessor (small Rust crate, tracked separately) + <code>mdbook-mermaid</code> for dual rendering. Reference pattern: TigerBeetle’s mdBook custom preprocessors (<code>docs.tigerbeetle.com</code>).</p>
-<p><strong>Claude-driven authoring:</strong> install <code>i2y/d2mcp</code> (MIT, off-the-shelf, 10 tools including the Oracle API for incremental edits). Mermaid skips MCP. A direct file-write is lighter.</p>
+<p><strong>Integration:</strong> mdBook + a custom <code>mdbook-d2</code> preprocessor (a small Rust crate, tracked separately) + <code>mdbook-mermaid</code> for dual rendering. Reference pattern: TigerBeetle’s mdBook custom preprocessors (<code>docs.tigerbeetle.com</code>).</p>
+<p><strong>Agent-driven authoring:</strong> install <code>i2y/d2mcp</code> (MIT, off-the-shelf, ten tools including the Oracle API for incremental edits). Mermaid skips MCP; direct file-write is lighter.</p>
 <h2 id="alternatives-considered"><a class="header" href="#alternatives-considered">Alternatives Considered</a></h2>
-<p><strong>mkdocs-material.</strong> Best-in-class polish in 2026, but it entered maintenance mode in November 2025, with critical bug fixes only through November 2026. Picking it commits the workspace to a forced migration on a known schedule. It’s defensible as a stopgap if you budget the migration up front. Rejected as a long-term default.</p>
-<p><strong>Zensical.</strong> The official squidfunk successor to mkdocs-material. Rust core with a Python frontend, MIT, mkdocs.yml-compatible, and 4x to 5x faster builds through differential compilation. It’s in beta as of May 2026, and its third-party module ecosystem is opening in early 2026 with uncertain coverage. Rejected for now. Running a beta tool on top of a beta ecosystem during the workspace-to-mnemra migration is uncomfortable. Reconsider once it’s stable.</p>
-<p><strong>Docusaurus, Astro Starlight, VitePress.</strong> TS/JS stacks. Rejected per the workspace preference to stay on one stack; none is decisively better for the docs use case in a way that would override that preference.</p>
-<p><strong>Antora.</strong> A multi-repo aggregation specialist with native cross-repo support and branch/tag-aware versioning. Best-in-class for that specific need. Rejected unless multi-repo aggregation becomes a hard requirement. The cost is AsciiDoc and a JS-built toolchain. Per-repo mdBook plus a workspace-level link-out is enough at the current scale.</p>
-<p><strong>Hugo, Zola.</strong> Hugo is in Go; Zola is Rust as a single binary. Both are solid generators, but less docs-specialized than mkdocs-material was. Rejected because mdBook is more docs-focused and is rust-lang’s official tool.</p>
-<p><strong>Diagram alternatives.</strong> Structurizr-DSL (the C4 reference implementation, model-first) was the runner-up. Rejected at the current scale because the model-first overhead doesn’t earn its keep across one to three architecture diagrams. The trigger to migrate: the second time a component is named differently across two diagrams. PlantUML is rejected because GPL-3.0 is RED-tier under the workspace dependency policy, the tier the policy forbids by license. Excalidraw is rejected for its opaque JSON diffs. draw.io is rejected because its GUI dependency conflicts with the CLI-first stack and with Claude-driven authoring.</p>
+<p><strong>mkdocs-material.</strong> Best-in-class polish in 2026, but it entered maintenance mode in November 2025; critical bug fixes only until November 2026. Picking it commits to a forced migration on a known schedule. Defensible as a stopgap with an explicit migration budget; rejected as a long-term default.</p>
+<p><strong>Zensical.</strong> The official successor to mkdocs-material. Rust core with a Python frontend, MIT, <code>mkdocs.yml</code>-compatible, 4 to 5× faster builds via differential compilation. Beta as of May 2026; third-party module ecosystem opening in early 2026 with uncertain coverage. Rejected for now: beta-on-beta during a period of tooling consolidation is uncomfortable. Reconsider when stable; same-team continuity makes the future migration cheap.</p>
+<p><strong>Docusaurus, Astro Starlight, VitePress.</strong> TS/JS stacks. Rejected per the stack-alignment preference; none is decisively better for the docs use case to override that preference.</p>
+<p><strong>Antora.</strong> A multi-repo aggregation specialist (native cross-repo, branch/tag-aware versioning). Best-in-class for that specific need. Rejected unless multi-repo aggregation becomes a hard requirement; its cost is AsciiDoc and a JS-built toolchain. Per-repo mdBook plus a top-level link-out is sufficient at current scale.</p>
+<p><strong>Hugo, Zola.</strong> Hugo (Go) and Zola (Rust, single binary) are solid generators, but less docs-specialized than mkdocs-material was. Rejected: mdBook is more docs-focused and is rust-lang’s official tool.</p>
+<p><strong>Diagram alternatives.</strong> Structurizr-DSL (the C4 reference implementation, model-first) was the runner-up; rejected at current scale because model-first overhead does not earn its keep at one to three architecture diagrams. Migration trigger: the second time a component is named differently across two diagrams. PlantUML rejected: GPL-3.0 is RED-tier under the dependency policy. Excalidraw rejected (opaque JSON diffs). draw.io rejected (a GUI dependency conflicts with the CLI-first stack and agent-driven authoring).</p>
 <h2 id="consequences"><a class="header" href="#consequences">Consequences</a></h2>
 <p><strong>Positive:</strong></p>
 <ul>
-<li>Stack-aligned (Rust toolchain throughout: mdBook, D2 CLI, the future preprocessor crate).</li>
-<li>No EOL on chosen tools; active upstream maintenance, official rust-lang status for mdBook.</li>
+<li>Stack-aligned (Rust toolchain throughout: mdBook, the D2 CLI, and the future preprocessor crate).</li>
+<li>No EOL on the chosen tools; active upstream maintenance, and official rust-lang status for mdBook.</li>
 <li>Diagrams render cleanly in dark mode without per-renderer theme overrides.</li>
 <li>D2-by-surface is honest about both targets: ADRs viewed in GitHub get diagrams natively via Mermaid; built docs sites get architecture-grade visuals via D2.</li>
-<li>MCP-server access for D2 (<code>i2y/d2mcp</code>) supports Claude-driven authoring with no wrap effort.</li>
-<li>Production exemplar (TigerBeetle’s custom mdBook preprocessors) gives a known-good reference for the approach.</li>
+<li>MCP-server access for D2 (<code>i2y/d2mcp</code>) supports agent-driven authoring with no wrap effort.</li>
+<li>A production exemplar (TigerBeetle’s custom mdBook preprocessors) gives a known-good reference for the approach.</li>
 </ul>
 <p><strong>Negative / accepted:</strong></p>
 <ul>
-<li>mdBook’s D2-preprocessor ecosystem is thin in May 2026. Bounded mitigation: a Rust wrapper crate of roughly 200 to 400 lines. Side quest, not blocking on the first ADR drafts.</li>
-<li>Multi-repo docs aggregation is not native. Per-repo sites plus workspace-level link-out is the current answer; revisit if Antora becomes a hard requirement.</li>
+<li>mdBook’s D2-preprocessor ecosystem is thin in May 2026. Bounded mitigation: a roughly 200-to-400-line Rust wrapper crate, tracked separately. A side quest, not blocking on the first ADR drafts.</li>
+<li>Multi-repo docs aggregation is not native. Per-repo sites plus a top-level link-out is the current answer; revisit if Antora becomes a hard requirement.</li>
 <li>mkdocs-material familiarity does not carry; mdBook’s idiom (<code>book.toml</code> + <code>SUMMARY.md</code>) is a small but real learning curve.</li>
 <li>Existing native-themed Mermaid diagrams in committed <code>.md</code> carry forward unchanged. Architecture-grade ones migrate to D2 once a docs site stands up.</li>
 </ul>
 <p><strong>Project-level guidance:</strong></p>
 <ul>
-<li>Each project repo gets its own mdBook; ADRs follow the two-tier ADR shape, where <code>P-*</code> records hold project-level decisions and <code>G-*</code> records hold ecosystem-wide ones (cf G-0003).</li>
-<li>The <code>mdbook-d2</code> preprocessor crate, once written, lives in a workspace-shared location (mnemra-core workspace or a workspace-level home) to avoid duplication across project repos.</li>
-<li>A project may stay on a different generator if the deliverable timing or product context warrants. Out of scope: product-level surfaces (e.g., a marketing site) which run on their own stack.</li>
+<li>Each project repo gets its own mdBook; ADRs follow the two-tier P-/G- shape (cf. G-0001).</li>
+<li>The <code>mdbook-d2</code> preprocessor crate, once written, lives in a shared location to avoid duplication across project repos.</li>
+<li>A project may stay on a different generator if deliverable timing or product context warrants. Out of scope: product-level surfaces (e.g., mnemra.dev), which run on their own stack.</li>
 </ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../adrs/G-0025-internal-ipc-typed-binary-encoding.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../adrs/G-0011-internal-ipc-typed-binary-encoding.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="../adrs/G-0027-agent-primary-source-artifacts.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../adrs/G-0013-agent-first-workflow-shape.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -241,11 +241,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../adrs/G-0025-internal-ipc-typed-binary-encoding.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../adrs/G-0011-internal-ipc-typed-binary-encoding.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="../adrs/G-0027-agent-primary-source-artifacts.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../adrs/G-0013-agent-first-workflow-shape.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>

@@ -1,0 +1,390 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>G-0003: Merge Governance - mnemra-governance</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-c688843e.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-92488165.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">mnemra-governance</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/mnemra/governance" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="g-0003-merge-governance--shift-left-review-on-the-governing-artifact-verified-at-merge-the-orchestrator-lands-every-pr"><a class="header" href="#g-0003-merge-governance--shift-left-review-on-the-governing-artifact-verified-at-merge-the-orchestrator-lands-every-pr">G-0003: Merge Governance — Shift-Left Review on the Governing Artifact, Verified at Merge; the Orchestrator Lands Every PR</a></h1>
+<p><strong>Status:</strong> Accepted
+<strong>Date:</strong> 2026-06-22</p>
+<blockquote>
+<p><strong>Consolidated ADR.</strong> This is the single merge-governance decision. It consolidates what was previously a chain of separate ADRs (an approval-label vocabulary, label-set authorization, a post-plan-approval autonomous loop, and a “merge-is-mechanics” statement) by promoting the self-contained model and folding in the operative mechanics of the earlier layers.</p>
+</blockquote>
+<ul>
+<li><strong>Rides on, does not restate:</strong> the <strong>PR-merge apparatus</strong> (<a href="G-0008-pr-merge-apparatus.html">G-0008</a>: merge template, recovery cap, tag-race serialization, merge queue) and the <strong>Rust release apparatus</strong> (<a href="G-0009-rust-release-apparatus.html">G-0009</a>). These are the unchanged mechanics this governance model rides on.</li>
+<li><strong>Builds on</strong> the agent-first workflow (<a href="G-0013-agent-first-workflow-shape.html">G-0013</a>). The brief workflow’s spec-exit gate is where a spec’s review-marker is stamped.</li>
+<li><strong>Reconciles</strong> the durability-tier rule (<code>P-CompositionBridge</code>, the principle governing composition across durability tiers): a verified-met acceptance-criterion (AC) flip is mechanics (a free orchestrator edit); changing an AC’s <em>claim</em> is substance (routes to the maintainer’s review surface).</li>
+</ul>
+<h2 id="context-and-problem-statement"><a class="header" href="#context-and-problem-statement">Context and Problem Statement</a></h2>
+<p>Merge authority had drifted to gating on the maintainer <strong>re-reviewing the PR</strong>, at the point where the PR is pure mechanics. The trigger was a three-file documentation-deletion PR executing an already-locked decision, routed to the maintainer for merge. Nothing in that diff needed his eyes; the substance was his decision, made when he locked the governing artifact. The merge was mechanical execution of an approved decision, yet it waited on a human merge action.</p>
+<p>This exposed a conflation between <strong>reviewing substance</strong> and <strong>landing mechanics</strong>, sitting on an unreconciled trajectory the chain had built up layer by layer:</p>
+<ul>
+<li><strong>Label vocabulary + authorization:</strong> Stage 6 (the approval-labelling step) = the maintainer approves <em>each PR</em> by applying closed-enum labels; Stage 7 (auto-merge) merges on those labels. Approval happened <em>at the PR</em>.</li>
+<li><strong>Autonomous loop:</strong> for <em>plan-tasks under an in-force plan</em>, the approval signal <strong>shifted upstream</strong>, from per-PR labeling to plan-ratification; automation applies the label after the gate stack passes; the orchestrator merges (review-by-exception). Off-plan work still required per-PR maintainer labeling.</li>
+</ul>
+<p>The maintainer’s framing closes the gap: <strong>the PR + merge is mechanics by definition; the only review question is whether the <em>substance</em> was already reviewed, and that is decided upstream, at the artifact, not at PR time.</strong> This ADR generalizes the autonomous-loop move from plan-tasks to every PR.</p>
+<h2 id="decision-drivers"><a class="header" href="#decision-drivers">Decision Drivers</a></h2>
+<ul>
+<li><strong>Review belongs where substance is decided</strong>, the spec / plan / ADR, not at PR mechanics.</li>
+<li><strong>The maintainer must not be a per-PR bottleneck</strong> for changes whose substance he already approved.</li>
+<li><strong>The approval signal must be verifiable</strong>: a durable marker, not an assumption that “it was probably reviewed.”</li>
+<li><strong>Reversibility sets the gate timing.</strong> A public push of sensitive code is irreversible → review precedes the push. A merge of revertable work is not → announce-and-land, with a hold lever.</li>
+<li><strong>One coherent rule</strong>, not a fourth thin diff against three prior ADRs.</li>
+</ul>
+<h2 id="considered-options"><a class="header" href="#considered-options">Considered Options</a></h2>
+<ol>
+<li><strong>Status-quo split.</strong> Plan-tasks autonomous; everything else per-PR maintainer labeling.</li>
+<li><strong>The orchestrator lands every PR; review is shift-left on the governing artifact, verified by a marker at merge.</strong></li>
+<li><strong>Retire human approval entirely.</strong> A CI-only merge gate.</li>
+</ol>
+<h2 id="decision-outcome"><a class="header" href="#decision-outcome">Decision Outcome</a></h2>
+<p><strong>Chosen: Option 2.</strong></p>
+<p><strong>The rule.</strong> The <strong>governing artifact</strong> (spec / plan / ADR / decision) carries the maintainer’s review. The merge pipeline <strong>verifies that marker; it does not re-review.</strong> The orchestrator performs the mechanical <strong>push + PR + merge</strong> for every PR.</p>
+<p><strong>The pipeline</strong> (one flow, the orchestrator drives it, a single conditional gate):</p>
+<pre><code>create branch → squash → [ governing-artifact review-marker present + PR conforms? ] → create PR → merge (CI validates as it lands)
+                              │
+                  no/stale/deviation/security → gate fires → maintainer reviews the ARTIFACT or DEVIATION (never the PR mechanics)
+                  yes ────────────────────────────────────────────────────────────────→ orchestrator merges
+</code></pre>
+<ul>
+<li><strong>Gate skips</strong> (mechanics → the orchestrator merges): the governing artifact carries the maintainer’s review-marker, the PR conforms to it, and CI is green. It also skips for changes with no governing artifact that are themselves mechanical (docs, bookkeeping, generated code, sub-threshold fixes).</li>
+<li><strong>Gate fires</strong> (the maintainer reviews): the marker is <strong>absent or stale</strong>, or the PR <strong>deviates</strong> from the artifact (a novel decision, or scope beyond it). What the maintainer reviews is the <strong>artifact or the deviation, never the PR mechanics.</strong> <em>(Security surfaces no longer fire the gate routinely; the pre-push security review carries it, see Amendment.)</em></li>
+<li><strong>Timing by reversibility:</strong> the pre-push review of a security-sensitive diff is mandatory, before the push reaches any remote (exposure is irreversible); findings are fixed in-loop, and only a finding the loop <strong>can’t resolve</strong> (or a deliberate <strong>won’t-fix</strong>) escalates to the maintainer pre-push (stop-condition 6). Every other gate firing is pre-merge.</li>
+<li><strong>Announce-no-hold:</strong> every PR is announced before it merges; a hold instruction opts a PR into the maintainer’s review after announcement. This is the safety net that makes “the orchestrator always merges” safe: the window to catch substance that leaked into a PR its artifact did not cover.</li>
+</ul>
+<p><strong>The review-marker.</strong> Where it lives depends on the carrier:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Carrier</th><th>Marker home</th><th>Fields</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Spec</strong></td><td>frontmatter (document-status convention)</td><td><code>status</code> (e.g. <code>approved</code>) · <code>reviewed_by</code> · <code>reviewed_date</code></td></tr>
+<tr><td><strong>Spec — git provenance</strong></td><td>the bill-of-materials (<code>.bom.toml</code>) sidecar’s audit chain</td><td>the approved-state commit, stamped <strong>post-commit</strong> by tooling</td></tr>
+<tr><td><strong>Plan</strong></td><td>plan-ratification</td><td>per the autonomous-loop gate stack below</td></tr>
+<tr><td><strong>Decision</strong></td><td>the accepted ADR itself</td><td>status <code>accepted</code> + decision-maker</td></tr>
+</tbody>
+</table>
+</div>
+<p>The commit SHA is <strong>not</strong> in frontmatter (hash-circularity: a file cannot carry the hash of the commit that contains it). Git provenance lives in the sidecar audit chain (stamped after the commit exists), which is also what lets the merge tooling detect a <strong>stale marker</strong>: if the spec’s substantive content changed since the approved-state commit, the marker is no longer valid and the gate re-fires.</p>
+<h3 id="incorporated-layer--closed-enum-label-vocabulary"><a class="header" href="#incorporated-layer--closed-enum-label-vocabulary">Incorporated layer — closed-enum label vocabulary</a></h3>
+<p>The Stage-6 approval signal is carried by <strong>closed-enum PR labels</strong> across three families: approval, release-mode, version-bump (<code>bump:major|minor|patch|none</code>). Cardinality is enforced <strong>ABORT-on-violation</strong> (exactly one label per family where the family is required); violations halt the merge queue rather than guessing. Label application is audited in the activity log. A separate “staged” merge mode no longer exists; it is simply “the gate fired” (a pre-PR/pre-push review of the squashed diff); a plain merge is “the gate skipped.” The classification, not a mode flag, decides.</p>
+<p><strong>The closed-enum label table.</strong> Three families, each a fixed value set:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Family</th><th>Values</th><th>Cardinality</th></tr>
+</thead>
+<tbody>
+<tr><td>Approval</td><td><code>stage6-approved</code></td><td>0 or 1</td></tr>
+<tr><td>Release mode</td><td><code>release-mode-A</code>, <code>release-mode-B</code>, <code>release-mode-A-exception</code></td><td>exactly 1 (when <code>stage6-approved</code> present)</td></tr>
+<tr><td>Version bump</td><td><code>bump:patch</code>, <code>bump:minor</code>, <code>bump:major</code>, <code>bump:none</code></td><td>exactly 1 (when <code>stage6-approved</code> present)</td></tr>
+</tbody>
+</table>
+</div>
+<p><code>bump:none</code> is for docs-only / internal-only / CHANGELOG-edit-only merges where no version change applies (honor-system plus Stage-4 reviewer responsibility per <a href="G-0009-rust-release-apparatus.html">G-0009</a>; no tool-side path-coverage gate).</p>
+<p><strong>Cardinality-failure mode = ABORT, never “last label wins.”</strong> When the cardinality check sees zero or two-plus labels in a required-cardinality family, the gate fails loud with a message identifying the conflicting labels and the rule violated; the PR’s check status reads “failure” until the labels are corrected. The gate never silently disambiguates. That would let an actor with label-write permission append <code>bump:none</code> after an approved <code>bump:patch</code> to suppress a version bump on a security-relevant change. The cardinality check runs at every relevant moment (PR open, label change, merge-queue entry per <a href="G-0008-pr-merge-apparatus.html">G-0008</a>, and merge attempt) so post-creation drift cannot escape the gate. No free-form labels are honored in the gating logic; teams may add other labels for tracking, but they have no semantic effect on the gate.</p>
+<h3 id="incorporated-layer--label-set-authorization"><a class="header" href="#incorporated-layer--label-set-authorization">Incorporated layer — label-set authorization</a></h3>
+<p>Three enforcement layers sit under the label signal: <strong>Layer A</strong>, label-set permission (a ruleset or a labeler-allowlist check controls <em>who/what</em> may apply the approval labels); <strong>Layer B</strong>, a required-status-check (the labels are a merge-blocking check); <strong>Layer C</strong>, audit cross-reference (the applied labels reconcile against the activity log). Under this consolidated model, Layer A authorization <strong>derives from the governing-artifact review-marker</strong> (automation applies the approval label after verifying the marker); Layer B cardinality is unchanged.</p>
+<p><strong>Layer A: restrict label-set permission.</strong> For each in-scope repo, a repository ruleset (or, where the platform tier does not expose label rules, a labeler-verification workflow on label add/remove) restricts who may apply or remove the gating-family labels:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Label family</th><th>Permitted actors</th></tr>
+</thead>
+<tbody>
+<tr><td><code>stage6-approved</code> (presence)</td><td>the maintainer (single-actor allowlist; a multi-collaborator future state uses an explicit approver allowlist)</td></tr>
+<tr><td><code>release-mode-*</code></td><td>the maintainer; automation accounts MAY apply during the merge-template invocation, never independently</td></tr>
+<tr><td><code>bump:*</code></td><td>the maintainer; automation accounts MAY apply during the merge-template invocation</td></tr>
+</tbody>
+</table>
+</div>
+<p>Under the consolidated model, Layer A authorization <strong>derives from the governing-artifact review-marker</strong>: automation applies the <code>stage6-approved</code> label after verifying the marker (the merge gate above), rather than the maintainer applying it per-PR. The allowlist still bounds <em>who/what</em> may apply the label; the marker is <em>when</em> it is authorized.</p>
+<p><strong>Layer B: a required-status-check tying cardinality to branch protection.</strong> Branch protection on <code>main</code> includes a required status check that validates exactly-one-of in each required family. <strong>Both</strong> the labeler-authorization check (Layer A) AND the cardinality check (Layer B) sit in the required-status-check set. Listing Layer A as a required check is what makes it <strong>preventive</strong>, not merely detective (a spoofed-labeler PR with valid cardinality would otherwise still merge). With both required, the host’s merge-UI button respects the same gate as the merge template. <strong>Fail-closed under CI out-of-quota:</strong> a missing required check reads as “blocked,” so quota exhaustion blocks merges rather than letting them slip. The cardinality-failure mode is ABORT-fail-loud across all families (same rule as the vocabulary section above).</p>
+<p><strong>Layer C: audit cross-reference at retrieval time.</strong> The activity-log approval row carries the actor as self-attestation (which cannot, on its own, survive a token compromise). Mitigation: the audit action string captures all three gating-label values; audit reconstruction queries both the activity log and the host’s event log (cryptographically attributed) and cross-checks the actor across all three label families. A mismatch flags inconsistency, catching a forged audit row whose host-side labeler differs. Query the event log only after the merge time plus a small margin (eventual-consistency hygiene), and only as a human-initiated retrieval, never a hot path.</p>
+<blockquote>
+<p><strong>Scoping note.</strong> The per-repo implementation workflows (label-authorization and label-cardinality checks) are retrofit detail. They live with each repo’s CI, not in this governance ADR. This section captures the locked mechanism and rules. Two recorded risks carry forward: allowlist-by-name token compromise (mitigated by fine-grained scoped tokens, 90-day rotation, and app tokens where feasible) and external-PR contributors (out of scope for single-maintainer repos; amend with a fork-PR policy if forks enter scope).</p>
+</blockquote>
+<h3 id="incorporated-layer--autonomous-merge-loop-gate-stack--stop-conditions"><a class="header" href="#incorporated-layer--autonomous-merge-loop-gate-stack--stop-conditions">Incorporated layer — autonomous merge loop: gate stack + stop conditions</a></h3>
+<p>For a work item under an <strong>in-force plan</strong> (a locked and verified spec AND a maintainer-approved plan, standing policy for any repo with an in-force plan), the plan-task pipeline (branch push → PR open → rebase-and-merge once the gate stack is green) is pre-approved as one workflow. Discipline: <strong>announce-no-hold</strong> (every PR announced before merging; a hold instruction opts it into review); a <strong>push gate</strong> (a new PR pushes only after the previous PR merged and main built green, with the branch rebased onto that main); <strong>one PR in flight</strong>; and a <strong>verify-signal guard</strong> (a degraded or false-negative verify signal blocks autonomous merge rather than merging on an unreliable green). Force-push, direct-push-to-main, releases/tags/deploys, and PR comments/closes/reopens remain separately gated.</p>
+<p><strong>Per-merge gate stack: ALL green before an autonomous merge:</strong></p>
+<ol>
+<li><strong>Dispatch-verify:</strong> scope clean (no scope violation), declared verify recipes green. <em>(When the hook-recorded row from the multi-agent fleet is unreliable, this gate is established by independent verification: the orchestrator runs the declared verify recipe (<code>just ci</code>) in the task worktree and reads the exit directly, and diffs the worktree against the dispatch envelope’s <code>touch_scope</code> / <code>forbid_scope</code>. If the orchestrator cannot independently establish both, the merge is a stop, never an auto-merge on an unverified green.)</em></li>
+<li><strong>Plan-mandated review gates</strong> at their sequence points: code+security review and operational review dispatches run where the plan places them; routine findings are fixed under the quality-gate carve-out (up to three rounds); test-integrity re-review passes where the plan mandates red/green pairing.</li>
+<li><strong>CI green</strong> on the PR: remediation commits go on the branch; never merge on pending or red.</li>
+<li><strong>Dependencies:</strong> permissively-licensed only (MIT/Apache/BSD/ISC auto-proceed).</li>
+<li><strong>Completion report:</strong> <code>success</code>, or <code>done_with_concerns</code> whose concerns the dispatcher can close under the runtime-verify-gap rule; any concern that survives closure attempts is a stop.</li>
+<li><strong>Main is green.</strong> The previous merge’s own main-branch build completed green before the next PR merges (a PR passing CI does not imply main is green); a red main freezes the merge line for <strong>all</strong> PRs until restored.</li>
+</ol>
+<p><strong>Stop conditions: escalate to the maintainer even under trust-then-retro</strong> (trust-then-retro is the pattern where the maintainer sets direction, the team executes, and the batch is reviewed afterward; these compose with <a href="G-0013-agent-first-workflow-shape.html">G-0013</a>’s pause-and-escalate triggers, principle conflict, intent ambiguity, novel decision, substrate pivot, restated for the execution phase):</p>
+<ol>
+<li><strong>Spec gap surfaced mid-implementation.</strong> Returns to the spec author/maintainer; never patched in plan or code by inference.</li>
+<li><strong>Architectural deviation from plan or spec.</strong> A library swap beyond a mechanical permissive-license addition, a change to an interface/layout/naming the spec fixed, or a design deviation a completion report enumerates.</li>
+<li><strong>Test-integrity signal.</strong> Test deletion, suppression, or assertion relaxation (a stuck-detector trip); never re-dispatch past this without maintainer review.</li>
+<li><strong>Iteration cap hit.</strong> Iterate-to-zero (the fix-and-review loop that runs until no blocking finding remains) or revision caps; the cap is a design-signal, not a budget to exhaust.</li>
+<li><strong>A restrictively-licensed dependency.</strong> A license-tier escalation.</li>
+<li><strong>Unresolved security finding.</strong> A Critical/High security finding the quality-gate fix loop cannot resolve (or a deliberate won’t-fix) blocks merge pending maintainer disposition; routine Critical/High findings are fixed in-loop like any other finding (see Amendment).</li>
+<li><strong>Scope violation at finalize.</strong> A dispatch finalized with a scope violation does not merge.</li>
+<li><strong>Plan-structure change.</strong> Re-sequencing, task split/merge, or a new task; plan amendments loop back through the maintainer like spec amendments.</li>
+<li><strong>Anything beyond the merge.</strong> Releases, tags, deploys, force-push, direct-push-to-main, closes/re-opens of others’ PRs, external announcements: all remain separately maintainer-gated. The autonomous loop adds no action class beyond the merge itself; the merge it performs is governed by the merge gate above.</li>
+<li><strong>Novel decision.</strong> Any judgment call without precedent in spec, plan, ADRs, or the skills canon.</li>
+</ol>
+<p>Every autonomous merge is logged (an activity row plus dispatch events carry the gate evidence: verify results, review outcomes, PR link); mid-run judgment calls go to a live decisions log per the strong-autonomy discipline. The retro half of trust-then-retro: at each plan-named review gate the maintainer receives the batch of autonomously merged PRs since the last gate (links, deviations enumerated, gate evidence). Trust without the retro is not this model.</p>
+<p><strong>Unchanged, still separately gated:</strong> force-push, direct-push-to-main, releases / tags / deploys, PR comments / closes / reopens, and non-code external publishing (blog, social, registries). This ADR generalizes the <strong>PR pipeline</strong> only.</p>
+<h3 id="consequences"><a class="header" href="#consequences">Consequences</a></h3>
+<p><strong>Good:</strong> the maintainer reviews substance <strong>once</strong>, at the artifact, shift-left; mechanical PRs land without a per-PR gate; the approval signal is <strong>verifiable</strong> (marker present + conformance), not assumed; one coherent rule replaces per-PR-vs-plan-task bucketing and a multi-ADR read.</p>
+<p><strong>Bad / trade-offs:</strong> it requires the marker mechanism end-to-end (spec-template frontmatter fields, a spec-exit stamp, a provenance stamp, a verify-marker-and-conformance merge step). Until those land, the gate falls back to maintainer judgment; it removes the old off-plan per-PR-labeling fallback (an off-plan change with no reviewed artifact and non-mechanical substance fires the gate, the intended forcing function toward shift-left review).</p>
+<h2 id="pros-and-cons-of-the-options"><a class="header" href="#pros-and-cons-of-the-options">Pros and Cons of the Options</a></h2>
+<ul>
+<li><strong>Option 1 (status-quo split).</strong> Pro: no change; the autonomous loop already works for plan-tasks. Con: it leaves the conflation that routed a mechanical PR to a human merge; two rules where one suffices; the off-plan path re-reviews mechanics.</li>
+<li><strong>Option 2 (chosen).</strong> Pro: review where substance is; no per-PR bottleneck; a verifiable signal; one rule; it completes the label-vocabulary → autonomous-loop trajectory. Con: it needs the marker mechanism; a one-time reconciliation of the ADR cluster (this consolidation).</li>
+<li><strong>Option 3 (CI-only).</strong> Pro: maximal automation. Con: it discards the maintainer’s substance review; CI cannot attest a change matches intent, only that it builds and passes. The shift-left review is the point, not a cost to remove.</li>
+</ul>
+<h2 id="amendment--security-surfaces-no-longer-fire-the-maintainer-gate"><a class="header" href="#amendment--security-surfaces-no-longer-fire-the-maintainer-gate">Amendment — security surfaces no longer fire the maintainer gate</a></h2>
+<p>Extends review-by-exception to security-sensitive surfaces, completing full PR-merge autonomy.</p>
+<p><strong>Change.</strong> A diff touching a security-sensitive surface (auth, crypto, secrets, tenancy) <strong>no longer fires the maintainer gate by default.</strong> Security <em>substance</em> is decided shift-left at the spec/plan; the maintainer’s routine code-level review between spec and merge added little.</p>
+<p><strong>The relocated net</strong> (security assurance after the change; the net relocates, it does not vanish):</p>
+<ol>
+<li><strong>Shift-left.</strong> Security design is reviewed at spec/plan time (the governing artifact), where the maintainer’s review already happens.</li>
+<li><strong>Mandatory pre-push security review.</strong> A security-surface diff requires a code+security review on the worktree <em>before</em> push, regardless of whether the plan explicitly named it; the security surface itself triggers it. Findings are addressed in the reviewer→implementer fix loop (quality-gate carve-out, up to three rounds) like any other review finding; once the review is clean, the orchestrator merges autonomously. This is the per-PR code-level net that replaces the maintainer’s eyes.</li>
+<li><strong>Escalate the exception, not the severity (refines stop-condition 6).</strong> A Critical/High finding is <em>first addressed</em> in the fix loop; severity alone is <strong>not</strong> an escalation trigger. It reaches the maintainer pre-push only when the loop <strong>can’t resolve it</strong> within the cap, or the team makes a deliberate <strong>decide-not-to-fix</strong> judgment (a false-positive call, or a fix needing a design tradeoff). A Critical/High the loop clears merges autonomously and surfaces in the trust-then-retro batch: visibility without a pre-merge gate.</li>
+<li><strong>Announce-no-hold plus the hold lever.</strong> Unchanged.</li>
+</ol>
+<p><strong>Scope: all repos, public and private, identically.</strong> The irreversible-exposure concern for public repos is carried by the pre-push security review plus stop-condition 6, not by the maintainer’s routine review. <strong>Tripwire:</strong> revisit this uniformity if a public-repo security miss ever occurs.</p>
+<p><strong>Net:</strong> the maintainer’s <em>routine</em> per-security-PR review is retired; the security reviewer runs the pre-push review and only Critical/High reaches the maintainer, the same review-by-exception model the rest of this ADR applies, now extended to security surfaces.</p>
+<h2 id="more-information"><a class="header" href="#more-information">More Information</a></h2>
+<ul>
+<li><strong>Marker convention shared with the document-editor project.</strong> That project homes document <em>status</em> in frontmatter with a state-vs-schema split. A spec is a reviewable document; “approved by the maintainer” is a status value, so the spec review-marker is an instance of document-approval-via-frontmatter, and conforms to that concrete status schema when it locks. (Convergence tripwire.)</li>
+<li><strong>Origin:</strong> an over-ceremonious merge (a doc deletion executing a locked decision) surfaced the merge-vs-review conflation; the maintainer’s reconciliation: “the orchestrator always does the mechanical merge + PR; my review is before the PR, on the items already classified as needing it, or a hold.”</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../adrs/G-0002-justfile-as-ci-contract.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../adrs/G-0004-review-finding-identity-and-persistence.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../adrs/G-0002-justfile-as-ci-contract.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../adrs/G-0004-review-finding-identity-and-persistence.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

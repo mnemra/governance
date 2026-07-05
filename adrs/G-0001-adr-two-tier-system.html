@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>G-0019: Tag-Race Serialization - mnemra-governance</title>
+        <title>G-0001: Two-Tier Architecture Decision Records - mnemra-governance</title>
 
 
         <!-- Custom HTML head -->
@@ -35,10 +35,10 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-79642c4f.js";
+            window.path_to_searchindex_js = "../searchindex-c688843e.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-eb7d2461.js"></script>
+        <script src="../toc-92488165.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -177,114 +177,68 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="g-0019-tag-race-serialization--gha-concurrency-directive--r26b"><a class="header" href="#g-0019-tag-race-serialization--gha-concurrency-directive--r26b">G-0019: Tag-Race Serialization — GHA Concurrency Directive + R26b</a></h1>
+                        <h1 id="g-0001-two-tier-architecture-decision-records"><a class="header" href="#g-0001-two-tier-architecture-decision-records">G-0001: Two-Tier Architecture Decision Records</a></h1>
 <p><strong>Status:</strong> Accepted
-<strong>Date:</strong> 2026-04-30</p>
+<strong>Date:</strong> 2026-04-05</p>
 <h2 id="context"><a class="header" href="#context">Context</a></h2>
-<p>This is a governance ADR (<code>G-</code> series, an ecosystem-wide decision recorded as MADR: Context, Decision, Alternatives Considered, Consequences). It covers two ways a repo can cut a release. Mode A opens a release pull request and tags when that PR merges. Mode B deploys as the release and creates the tag at release time. Mode B opens a race that Mode A doesn’t: two PRs merging close together can each start a release sub-flow, and both will try to read the current tag, compute the next one, and push a new tag. The bad outcomes range from duplicate tags, when both runs compute the same next version, to orphaned commits between tags, when one push wins and the other run’s commits get mis-attributed in the CHANGELOG.</p>
-<p>Discovery R26b is a finding from the earlier scope-shaping pass (the role the brief workflow now covers). It already serializes the upstream merge step itself: at most one PR may merge to main at a time. What’s left is the race between a merge completing and the release sub-flow’s tag push. Two adjacent merges can trigger two release runs that overlap.</p>
-<p>Three candidates for the serialization mechanism:</p>
-<ul>
-<li><strong>release-plz lock</strong> (or equivalent tool-level mutex). Couples to the release tool.</li>
-<li><strong>GHA <code>concurrency:</code> directive</strong> scoped to the repo.</li>
-<li><strong>External lock</strong> (e.g., a workspace-side queue). Adds infrastructure.</li>
-</ul>
-<p>GitHub Actions ships <code>concurrency:</code> natively. release-plz doesn’t provide its own lock. Simplicity points to the GHA-native option.</p>
+<p>Design decisions were scattered across notes, task descriptions, and conversation history. None of those forms are readable architectural documentation. Projects published to public repositories need self-contained decision records that don’t reference internal structure. General standards, like a testing philosophy or a build pattern, apply across projects but were being rediscovered project by project.</p>
+<p>One framing needs correcting up front. “Projects published to a public repository need self-contained decision records” reads as if having a repo were a defining property of being a project. It isn’t. Self-containment-when-published is a property of the published form of a project, its materialized repo. It’s not a property of being a project. A project exists, and homes its knowledge, with or without a repo.</p>
 <h2 id="decision"><a class="header" href="#decision">Decision</a></h2>
-<p><strong>Per-repo release sub-flow workflow uses GHA <code>concurrency:</code> directive scoped to the <em>release-pr</em> job (Mode A), NOT the release job, with <code>cancel-in-progress: false</code>.</strong> Combined with discovery R26b (“at most one PR may merge to main at a time”), enforced through G-0023’s GitHub Merge Queue for Mode B repos, this gives two-layer serialization. G-0023’s merge queue guards the merge gate. GHA concurrency guards the release-PR-update path.</p>
-<p>Per-repo workflow YAML pattern (Mode A — release-PR mode):</p>
-<pre><code class="language-yaml">name: Release
-on:
-  push:
-    branches: [main]
-
-# NO workflow-level concurrency. Concurrency is scoped per-job below.
-
-jobs:
-  release-pr:
-    # release-plz "open/update release-PR" invocation per G-0020.
-    # Concurrency on this job: serialise release-PR updates so feature-PR
-    # merges don't race release-PR updates against the eventual release-PR merge.
-    concurrency:
-      group: release-pr-${{ github.repository }}
-      cancel-in-progress: false
-    # ... release-plz invocation (Mode A)
-
-  release:
-    # release-plz "tag + publish on release-PR merge" invocation per G-0020.
-    # NO concurrency block here — see note below. release-plz upstream
-    # quickstart explicitly advises against concurrency on the release job
-    # because GHA concurrency cancels the *pending* run when a third trigger
-    # arrives, which under rapid Mode B merges drops releases on the floor.
-    needs: release-pr
-    # ... release-plz invocation (release/publish step)
-</code></pre>
-<p><strong>Why concurrency lives only on <code>release-pr</code>.</strong> The release-plz quickstart (<a href="https://release-plz.dev/docs/github/quickstart">https://release-plz.dev/docs/github/quickstart</a>) explicitly advises against concurrency on the release job. GHA’s concurrency semantic is “one running plus one pending; a third arrival cancels the pending one.” Three rapid Mode B merges would cause the middle run to be cancelled, NOT queued, the opposite of “queue, don’t cancel.” The release-PR-update path is where concurrency genuinely helps. Feature-PR merges trigger release-plz to update an open release-PR, and serialising those updates prevents racey CHANGELOG state. The release job itself, when it fires on release-PR merge, runs after Stage 6 / G-0023 has already serialised the merge. (Stage 6 is the approval-labelling step in the numbered life of a change.) So it inherits serialisation upstream and doesn’t need its own.</p>
-<p><strong>Mode B (deploy-as-release) serialization is partially provided by G-0023 (GitHub Merge Queue) — but a rapid-merge release-job race remains as a known limitation.</strong> Mode B repos have no release-PR. The release fires on each main push. The merge queue serialises the merges themselves, and the release job runs once-per-merge after the queue admits. But the queue does NOT space out the resulting <code>push: main</code> events, and adding <code>concurrency:</code> to the release job introduces a different pathology.</p>
-<p>Verification against primary GitHub Actions and merge queue documentation confirmed:</p>
+<h3 id="what-a-project-is"><a class="header" href="#what-a-project-is">What a project is</a></h3>
+<p><strong>A project is a unit of work with associated data; a repo is optional (0, 1, or many).</strong> A repo is one kind of associated data. ADRs, tasks, and research are others. The unit is the “project,” not the “product” (which smuggles in “has a repo”). This aligns with the existing project registry, where projects without a repo already exist. A project may be tagged with one or more subject facets. A subject is an orthogonal axis, <strong>not</strong> a project. Governance, for instance, is a cross-cutting concern living inside projects, not a project of its own.</p>
+<p><strong>General-vs-project test.</strong> An ADR (architecture decision record, MADR format) is <strong>general</strong> when it states a rule you’d reuse building other projects: ecosystem governance, or a hard-to-reverse fork every project follows. It’s <strong>project-specific</strong> when it’s specific to one project. Location follows the test, not the reverse. A decision that governs only one project is a project ADR even if it currently has no repo to live in.</p>
+<p><strong>General ADRs include cross-project conditional defaults.</strong> A rule of the form “if a project needs X, use Y” (for example, “if you need a relational DB, Postgres”) is a general ADR. It’s reusable across projects and hard to reverse, and it projects into each qualifying project rather than living in one. It’s general because the rule is reusable. It’s conditional because it applies only to projects that meet its predicate. How a project knows it “qualifies” to receive a conditional default is a mechanism left unbuilt until two projects actually disagree about whether a default applies. That disagreement can’t arise without someone raising it, so the need announces itself and no detector is required in advance.</p>
+<h3 id="where-a-projects-knowledge-lives-the-home-rule"><a class="header" href="#where-a-projects-knowledge-lives-the-home-rule">Where a project’s knowledge lives (the home rule)</a></h3>
+<p>There’s one rule, not a special case: <strong>a project’s knowledge home is a persistent per-project location.</strong> Its details, research, status, and decisions live there from the moment the project exists, with or without a repo. This home is persistent. A repo never replaces it and never decides where a project’s information lives. This is a recovered convention, already in practice: the project knowledge home holds both projects with repos and projects without. A project may live there before any repo exists and continue to after one is created.</p>
+<p>The split of what goes where is by <strong>what the artifact governs</strong>, and the project-to-repo shift activates <strong>when a repo is created</strong>:</p>
 <ul>
-<li>GHA docs verbatim: <em>“Any existing pending job or workflow in the same concurrency group, if it exists, will be canceled and the new queued job or workflow will take its place.”</em> <code>cancel-in-progress: false</code> does NOT change this. It only protects the running slot.</li>
-<li>Merge queue admits PRs in FIFO but does not space the resulting <code>push: main</code> events. Three rapid Mode B merges produce three rapid <code>release.yml</code> triggers in close succession.</li>
-<li>Under those conditions, <code>concurrency:</code> on the release job would still drop the middle run (cancellation of pending), the exact pathology release-plz’s quickstart warns about.</li>
+<li><strong>General project information</strong> (research, status, exploration, details) stays in the project’s knowledge home, repo or not.</li>
+<li><strong>Project-specific (P-) ADRs</strong> govern how the code is written, so they belong where the implementation is worked on. While there’s no repo, they home in the project’s knowledge home under a <code>docs/src/adrs/</code> path (nowhere else to go). When a repo is created they <strong>shift</strong> into the repo (<code>docs/src/adrs/</code>); after the shift, the repo is their home. The pre-repo path <strong>mirrors</strong> the repo path so the shift is a clean move, not a re-layout.</li>
+<li><strong>Qualifying general (G-) ADRs</strong> project into the repo’s <code>DEFAULTS.md</code> at repo-creation, only the ones the project needs. Pre-repo, the project reads general ADRs from the central location directly and carries <strong>no</strong> <code>DEFAULTS.md</code>.</li>
 </ul>
-<p><strong>v1 posture: accept as known limitation + fail-loud monitoring.</strong> No <code>concurrency:</code> block on the release job. Operators monitor for missing release runs:</p>
+<p><strong>Materialization trigger.</strong> At repo-creation (and thereafter as needed), the repo receives, as a single repo-bootstrap step, (a) the projected qualifying general ADRs as <code>DEFAULTS.md</code> and (b) its own project-specific P-ADRs shifted from the project’s knowledge home.</p>
+<p><strong>Store form.</strong> Filesystem markdown under the project’s knowledge home, the same store the general ADRs themselves live in. A content database is not the home. That option was considered and superseded by this recovered filesystem convention (see Alternatives Considered).</p>
+<h3 id="the-three-tiers-for-a-project-that-has-a-repo"><a class="header" href="#the-three-tiers-for-a-project-that-has-a-repo">The three tiers (for a project that has a repo)</a></h3>
+<p>The three-tier mechanism below describes how decisions live in a project that has a repo. A project with no repo yet homes its general information and its P-ADRs per the home rule above, reads general ADRs from the central location directly, and carries no <code>DEFAULTS.md</code> until a repo is born.</p>
+<ol>
+<li><strong>General standards</strong> (<code>G-NNNN-&lt;slug&gt;.md</code> in a central location) are full ADRs with context, alternatives, and consequences. These are the canonical source of reasoning.</li>
+<li><strong>Project projection</strong> (<code>&lt;project&gt;/docs/src/adrs/DEFAULTS.md</code>) is a one-time concise snapshot of the qualifying general standards applied to the project. It contains only the decision statement (one to three sentences), no rationale chain. It’s self-contained, with no references back to the central store. It materializes at repo-creation; a repo-less project carries none.</li>
+<li><strong>Project-specific ADRs</strong> (<code>&lt;project&gt;/docs/src/adrs/P-NNNN-&lt;slug&gt;.md</code>) are full ADRs for decisions scoped to one project. They include full context and rationale, since they’re meaningful to external readers. Pre-repo they home in the project’s knowledge home; they shift to the repo at repo-creation.</li>
+</ol>
+<p>Key rules:</p>
 <ul>
-<li><strong>Per-release expected-tag check:</strong> after each Stage 8 merge expected to bump the version, sweep <code>gh api /repos/{owner}/{repo}/git/refs/tags/v&lt;expected&gt;</code> and verify the tag landed. A missing tag means investigate the workflow history.</li>
-<li><strong>release-plz workflow-history audit:</strong> <code>gh run list --workflow=release.yml</code> periodically. A gap between expected and actual run counts flags drops.</li>
-<li>Documented in the per-repo retrofit runbook.</li>
+<li><code>DEFAULTS.md</code> is a snapshot. Once projected, it belongs to the project. General-ADR updates don’t auto-sync.</li>
+<li>Overrides are explicit. A project-specific ADR states “Overrides G-NNNN” in its status field.</li>
+<li>The ADR-recording tooling handles both recording and projection.</li>
 </ul>
-<p><strong>v2 hardening path (deferred).</strong> Merge-queue batching with <code>merge_method: squash</code> plus queue limits ≥ 2 collapses N successive PRs into one merge group, one <code>push: main</code> event, one release run. That eliminates the race structurally. Adoption requires a separate spike on release-plz’s multi-version-bump-per-push tolerance. release-plz expects one bump per push by default, and batching changes that. <strong>Trip-wire to v2:</strong> any rapid-merge race incident observed in production, OR Mode B repo volume increases such that the race becomes likely.</p>
-<p>For Mode A (release-PR pattern), the release-pr-job concurrency above stays the correct mechanism. Mode A’s “release event = release-PR merge” is itself a single-PR-at-a-time event under merge queue, which composes cleanly with concurrency on the release-pr job.</p>
-<p>The <code>cancel-in-progress: false</code> setting on the release-pr job is mandatory. A release-PR update that’s writing CHANGELOG / Cargo.toml MUST NOT be cancelled mid-flight by a newer trigger. Instead, the newer trigger queues until the in-flight update completes.</p>
+<h3 id="open-consequence--the-genericization-boundary-the-shift-crosses"><a class="header" href="#open-consequence--the-genericization-boundary-the-shift-crosses">Open consequence — the genericization boundary the shift crosses</a></h3>
+<p>The <strong>shift</strong> of a P-ADR from the project’s knowledge home into a repo crosses the publish-time genericization boundary (P-WriteTimeAudience, the principle that strips workspace-internal taxonomy from repo-destined artifacts at write time), and that boundary’s two-profile model doesn’t cleanly classify the case. A pre-repo P-ADR is at once private-to-the-workspace, which argues for identity-preserving, and repo-destined, which argues for generic-at-write. How the write-time-audience discipline should handle a repo-destined-but-currently-private artifact is undecided. This decision doesn’t pick a horn. It’s named here as a real open architectural point, to be resolved at the next genericization-boundary friction.</p>
 <h2 id="alternatives-considered"><a class="header" href="#alternatives-considered">Alternatives Considered</a></h2>
 <ul>
-<li><strong>release-plz lock / tool-level mutex.</strong> Rejected. release-plz provides no native lock. Bolting one on is custom work outside the tool’s surface. GHA concurrency is the framework-native answer.</li>
-<li><strong><code>cancel-in-progress: true</code>.</strong> Rejected. Cancelling an in-flight release at tag-push time produces partial state: tag pushed but GitHub release notes not generated, or the reverse.</li>
-<li><strong>External queue / mutex</strong> (Redis lock, etcd, etc.). Rejected. Adds infrastructure for a problem GHA’s concurrency directive solves natively.</li>
-<li><strong>R26b alone</strong> (no GHA concurrency). Rejected. R26b serializes the merge gate. The release sub-flow runs after merge, with timing controlled by GitHub’s webhook delivery, so two near-simultaneous merges could still produce two release runs in flight.</li>
-<li><strong>No serialization</strong> (accept rare double-tag attempts). Rejected. Even rare double-tag is messy: CHANGELOG drift, version skew, on-call surprise. The cost of <code>concurrency:</code> is one YAML stanza.</li>
+<li><strong>Symlinks from a project to the central store.</strong> Rejected: symlinks break across git clones and agents may not follow them. Not self-contained.</li>
+<li><strong>Full ADR copies in every project.</strong> Rejected: this duplicates rationale that’s only relevant internally and creates sync overhead across projects.</li>
+<li><strong>A reference file pointing back to the central store.</strong> Rejected: projects need to be self-contained for public repos. External references leak internal structure.</li>
+<li><strong>A content database as the repo-less project’s ADR home.</strong> A pre-repo project’s P-ADRs and deferred <code>DEFAULTS.md</code> projection could have lived as content-database rows keyed to the project, with the repo path as a pure rendering target. Superseded by the recovered filesystem convention: project knowledge already homes as filesystem markdown (the same store as the general ADRs), and that home is persistent and pre-existing. The content database is a projection/materialization surface, not the home. Kept visible per P-PreserveDecisionSpace (the principle that keeps rejected alternatives recorded rather than erased).</li>
 </ul>
 <h2 id="consequences"><a class="header" href="#consequences">Consequences</a></h2>
 <ul>
-<li><strong>Per-repo workflow YAML adds the per-job <code>concurrency:</code> block on <code>release-pr</code> only.</strong> The workspace template ships the stanza on the release-PR job exclusively. The release job stays concurrency-free. Concurrency on the release job is a bug per release-plz upstream guidance.</li>
-<li><strong>Two-layer serialization for Mode A:</strong> G-0023 merge queue (single PR merging to main at a time) plus GHA <code>concurrency:</code> on the release-pr job (single release-PR-update at a time). The layers are independent.</li>
-<li><strong>Mode B serialization is provided by G-0023 merge queue, not by GHA <code>concurrency:</code> directives.</strong> The release job runs once-per-merge after the merge queue has admitted the merge. Concurrency on the release job is explicitly NOT used.</li>
-<li><strong>workflow_dispatch escape hatch.</strong> When a hung release run blocks the queue, operators may cancel via the GitHub Actions UI or <code>gh run cancel &lt;run-id&gt;</code>. The per-repo retrofit runbook documents the manual-cancel path.</li>
-<li><strong>Workflow permissions stanza.</strong> The release workflow declares its minimum required permissions explicitly: <code>permissions: { contents: write, id-token: write, packages: write }</code>. No workflow-level <code>permissions: write-all</code>.</li>
-<li><strong>Queueing latency:</strong> under serial release-PR-update flows, two near-simultaneous feature-PR merges produce two queued release-pr-job runs. The second run starts after the first completes (~30-90s for a typical Rust release-plz cycle). Acceptable.</li>
-<li><strong>No release-plz coupling</strong> for serialization. release-plz operates per-PR. Concurrency-control is a workflow-level concern.</li>
-<li><strong>Per-repo scope</strong> of the concurrency group (<code>release-pr-${{ github.repository }}</code>) means cross-repo releases run in parallel. The goal is to serialize within a repo, not across the workspace.</li>
-<li><strong>Cross-namespace concurrency edge (acknowledged limitation, no fix).</strong> The group name includes the owner. If a repo is transferred or renamed, in-flight queued runs reference the old <code>github.repository</code> value while new runs reference the new one. Very low probability for the current workspace state.</li>
-<li><strong>Mnemra migration:</strong> when mnemra absorbs the workspace, the per-repo workflow YAML stays. The concurrency group naming may shift if mnemra changes the repo identity model.</li>
-<li><strong>Alternative workload trigger paths</strong> (manual <code>workflow_dispatch</code>, scheduled releases) for the release-pr job MUST share the same concurrency group <code>release-pr-${{ github.repository }}</code> regardless of trigger source.</li>
-</ul>
-<h2 id="changelog"><a class="header" href="#changelog">Changelog</a></h2>
-<h3 id="2026-04-30--round-2-review-amendments"><a class="header" href="#2026-04-30--round-2-review-amendments">2026-04-30 — Round 2 review amendments</a></h3>
-<p>Round 2 review flagged that under merge queue, the release-pr-only concurrency leaves Mode B repos with no serializer for parallel <code>release.yml</code> runs that fire when the queue admits multiple PRs in succession.</p>
-<ul>
-<li><strong>Verification spike</strong> confirmed against primary GHA + merge queue docs: the hypothesis “restore concurrency on release job under merge queue” does NOT hold. The concurrency cancellation pathology applies under merge queue too. <strong>Confidence: high.</strong></li>
-<li><strong>Pivoted G-0019 Mode B posture to accept as known limitation + fail-loud monitoring.</strong> Per-release expected-tag check plus release-plz workflow-history audit added as monitoring mechanisms.</li>
-<li><strong>v2 hardening trip-wire added:</strong> merge-queue batching (queue limits ≥ 2 collapsing N PRs into one push) eliminates the race structurally. Deferred until first incident OR Mode B volume increase.</li>
-</ul>
-<h3 id="2026-04-30--round-1-review-amendments"><a class="header" href="#2026-04-30--round-1-review-amendments">2026-04-30 — Round 1 review amendments</a></h3>
-<ul>
-<li><strong>Fixed (structural):</strong> Moved the <code>concurrency:</code> block from the release job to the <code>release-pr</code> job per release-plz upstream quickstart guidance. GHA’s concurrency semantic would drop releases under rapid Mode B merges if applied to the release job.</li>
-<li><strong>Added:</strong> Mode B serialization is provided by G-0023 (GitHub Merge Queue), NOT by GHA <code>concurrency:</code> on the release job.</li>
-<li><strong>Added:</strong> Consequence documenting the <code>workflow_dispatch</code> escape hatch.</li>
-<li><strong>Added:</strong> Workflow-permissions Consequence. The release workflow declares minimum permissions; no workflow-level <code>permissions: write-all</code>.</li>
-<li><strong>Added:</strong> Trip-wire. If mnemra adopts a cross-crate dependency where two crates share a release cadence, a workspace-level concurrency group becomes necessary.</li>
-<li><strong>Added:</strong> Cross-namespace concurrency edge (repo transfer / rename) acknowledged as a known limitation.</li>
+<li>General decisions are recorded once, with full reasoning, in a single location.</li>
+<li>Projects get concise, self-contained summaries that work on public repos without exposing internal structure.</li>
+<li>Projection is a one-time operation per project. No ongoing sync maintenance.</li>
+<li>Project-specific overrides are visible and traceable.</li>
+<li>“Self-contained for a public repo” is a property of the published form of a project, its materialized repo, not a defining property of being a project. A repo-less project is a full project. It homes its knowledge in the project knowledge home, reads general ADRs from the central store directly, and materializes the repo-bound artifacts (<code>DEFAULTS.md</code>, the P-ADR tree) only when a repo is born.</li>
+<li>Making “project” repo-optional dissolves the prior taxonomy gap where some general-numbered ADRs fit neither the general bucket nor a project bucket: a decision specific to one repo-less project is a project P-ADR of that project, homed per the home rule above, with no new ADR class required.</li>
 </ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../adrs/G-0018-workspace-merge-template-and-recovery-cap.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../adrs/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="../adrs/G-0020-rust-release-automation-release-plz.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../adrs/G-0002-justfile-as-ci-contract.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -294,11 +248,11 @@ jobs:
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../adrs/G-0018-workspace-merge-template-and-recovery-cap.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../adrs/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="../adrs/G-0020-rust-release-automation-release-plz.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../adrs/G-0002-justfile-as-ci-contract.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>

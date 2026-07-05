@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>G-0016: Layered Secret Detection - mnemra-governance</title>
+        <title>G-0004: Review Finding Identity and Persistence - mnemra-governance</title>
 
 
         <!-- Custom HTML head -->
@@ -35,10 +35,10 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-79642c4f.js";
+            window.path_to_searchindex_js = "../searchindex-c688843e.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-eb7d2461.js"></script>
+        <script src="../toc-92488165.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -177,113 +177,68 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="g-0016-layered-secret-detection--pre-commit--github-native--stage-5-alerts-query"><a class="header" href="#g-0016-layered-secret-detection--pre-commit--github-native--stage-5-alerts-query">G-0016: Layered Secret Detection — Pre-Commit + GitHub-Native + Stage 5 Alerts Query</a></h1>
+                        <h1 id="g-0004-review-finding-identity-and-per-pr-per-round-persistence"><a class="header" href="#g-0004-review-finding-identity-and-per-pr-per-round-persistence">G-0004: Review Finding Identity and Per-PR Per-Round Persistence</a></h1>
 <p><strong>Status:</strong> Accepted
 <strong>Date:</strong> 2026-04-30</p>
 <h2 id="context"><a class="header" href="#context">Context</a></h2>
-<p>A secret-detection gate is a per-repo concern: each repository decides for itself how to add one. The open questions were which detection mechanism to use, where in the workflow it should run, and what it costs to operate.</p>
-<p>Secrets can be caught at three points in the change lifecycle. Each point is a chance to stop a leaked credential before it gets further:</p>
-<ul>
-<li><strong>Pre-commit (Stage 2, the commit step in the numbered change lifecycle):</strong> catch secrets before they enter local history.</li>
-<li><strong>Server-side push protection / scanning (continuous):</strong> catch what slipped past local hooks at push time and continuously after.</li>
-<li><strong>Stage 5 (<code>just ci</code>, the continuous-integration step):</strong> an explicit fail-the-build query for any open secret-scanning alert.</li>
-</ul>
-<p>Verification confirmed all current GitHub-hosted workspace repos are PUBLIC. That matters because a GitHub Advanced Security (GHAS) subscription isn’t required for native secret-scanning and push protection on public repos. Local-only repos need GitHub migration as an execution-stage prerequisite, and they default to public unless flagged otherwise.</p>
-<p>An initial proposal suggested lefthook regex plus GitHub-native scanning plus a Stage 5 query as the simplest defense in depth. gitleaks (entropy-based plus custom patterns) was a richer alternative. It was rejected for v1 on simplicity grounds.</p>
-<p><strong>External-PR contributors are out of scope for v1.</strong> All in-scope repos restrict PR creation to collaborators. Fork-PR posture (the <code>pull_request_target</code> vs <code>pull_request</code> distinction in workflow triggers, the rule that excludes secrets from fork-originated runs, and the first-time-contributor approval gate) is revisited only if a future external-contributor scenario arises. At that point this ADR and the related governance ADRs G-0015 and G-0020 are amended together.</p>
+<p>Stage 4 review is iterate-to-zero (the fix-and-review loop that runs fix-and-review rounds until no blocking finding remains) with a five-round hard cap. Across rounds, the same finding can recur with cosmetic drift in its description (different reviewer phrasing, slight rewording on a re-read). Without a stable identity, the iterate-to-zero count drifts: Round 2 shows “5 issues remaining” not because 5 are unresolved but because 3 are restatements of Round 1 findings already addressed.</p>
+<p>The question is twofold: what identity tuple lets Round N say “this is the same finding as in Round N-1, not a new issue,” and where do round-by-round findings live so a reviewer in Round N can see what Round N-1 surfaced?</p>
+<p>One candidate identity was <code>(location, severity)</code>; a tighter candidate added a hash of the finding text, but the text-hash version produces false negatives when a reviewer rephrases the same defect. The decision locked on a content-anchored tuple.</p>
+<p>This ADR’s testing-standard dependency is <code>depends-on P-TDDPairs</code> (the TDD-pairs principle, the coverage-floor and pyramid standard).</p>
 <h2 id="decision"><a class="header" href="#decision">Decision</a></h2>
-<p><strong>Three layers, each with a distinct trigger and tool. All three apply per in-scope repo.</strong></p>
-<h3 id="layer-1--pre-commit-stage-2"><a class="header" href="#layer-1--pre-commit-stage-2">Layer 1 — Pre-commit (Stage 2)</a></h3>
-<p><code>lefthook</code> <code>commit-msg</code> and <code>pre-commit</code> hooks run a workspace-shared narrow regex covering common patterns:</p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Pattern class</th><th>Example trigger</th></tr>
-</thead>
-<tbody>
-<tr><td>AWS access key</td><td><code>AKIA[0-9A-Z]{16}</code></td></tr>
-<tr><td>GitHub PAT</td><td><code>ghp_[A-Za-z0-9]{36}</code>, <code>gho_...</code>, <code>ghs_...</code>, <code>ghr_...</code></td></tr>
-<tr><td>Common API token prefixes</td><td><code>sk_live_</code>, <code>sk_test_</code>, <code>xoxb-</code>, <code>xoxp-</code></td></tr>
-<tr><td>JWT signature</td><td><code>eyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+</code></td></tr>
-<tr><td>Private-key headers</td><td><code>-----BEGIN (RSA |EC |OPENSSH |PGP )?PRIVATE KEY-----</code></td></tr>
-</tbody>
-</table>
-</div>
-<p>The workspace-shared regex lives in the agent-skills library (or the per-repo spec template that the decomposer writes before implementation). Each repo’s lefthook config references it.</p>
-<h3 id="layer-2--github-native-continuous-always-on"><a class="header" href="#layer-2--github-native-continuous-always-on">Layer 2 — GitHub-native (continuous, always-on)</a></h3>
-<p>For every in-scope GitHub-hosted repo:</p>
-<ul>
-<li><code>secret_scanning</code> enabled (free for public repos, GHAS-required for private)</li>
-<li><code>secret_scanning_push_protection</code> enabled (same applicability)</li>
-</ul>
-<p>These run continuously without per-repo CI configuration. Push protection blocks pushes containing detected provider secrets at the GitHub edge.</p>
-<h3 id="layer-3--stage-5-just-ci"><a class="header" href="#layer-3--stage-5-just-ci">Layer 3 — Stage 5 (<code>just ci</code>)</a></h3>
-<p><code>just ci</code> includes a <code>verify-secrets</code> recipe that queries the secret-scanning alerts API. Recipe spec:</p>
-<ol>
-<li>
-<p>The calling GHA job MUST declare <code>permissions.security-events: read</code>. Without it, the token has no scope to read alerts and the API returns 404 (indistinguishable from “no alerts” in a naive <code>--jq</code> invocation).</p>
-</li>
-<li>
-<p>The recipe MUST use <code>gh api -i</code> and check the response status explicitly. Non-200 (404 disabled, 403 forbidden, 5xx transient) fails the build with a loud diagnostic; only a 200 with empty <code>state=open</code> filtered output passes.</p>
-</li>
-<li>
-<p>Reference shape:</p>
-<pre><code class="language-bash"># just ci recipe: verify-secrets
-response="$(gh api -i /repos/{owner}/{repo}/secret-scanning/alerts)"
-status="$(printf '%s\n' "$response" | head -1 | awk '{print $2}')"
-if [ "$status" != "200" ]; then
-  echo "::error::secret-scanning API returned $status (expected 200); check permissions.security-events: read"
-  exit 1
-fi
-open="$(printf '%s\n' "$response" | sed '1,/^$/d' | jq '[.[] | select(.state=="open")] | length')"
-if [ "$open" != "0" ]; then
-  echo "::error::$open open secret-scanning alert(s); rotate per R10c then resolve before merge"
-  exit 1
-fi
+<p><strong>Finding identity = the <code>(file, content-anchor, severity)</code> triple.</strong> Identity decouples from line numbers because line numbers shift when lines are inserted or deleted higher in the file between rounds. Under a <code>(file:line-range, severity)</code> form, a fix-driven line shift made the same physical defect appear as a “new” finding in the next round, exhausting the five-round cap on a single underlying issue.</p>
+<p><strong>Content-anchor:</strong> a SHA-256 of a normalized window around the cited finding. The window is the cited line plus two lines of context above and below (five lines total), with trailing whitespace stripped per line. Normalization produces a stable hash even when the line numbers around the defect change. The window is intentionally small: large enough to disambiguate two findings on the same file from each other, small enough that an unrelated edit two screens away does not rotate the anchor.</p>
+<p><strong>Reviewer output format includes the anchor.</strong> Reviewers cite the location AND emit the anchor inline, so downstream dedup logic does not need to re-read the file at the cited round’s commit:</p>
+<pre><code class="language-markdown"># &lt;reviewer&gt; review — PR &lt;pr-ref&gt; — round &lt;N&gt;
+
+## blocker
+- `path/to/file.rs:42-58` (anchor `a3f9c1`) — &lt;description&gt;
+- `path/to/other.rs:120` (anchor `7e2d80`) — &lt;description&gt;
+
+## major
+- ...
 </code></pre>
-</li>
-</ol>
-<p>Any open alert fails the build. This is a backstop. If Layer 1 missed the secret AND Layer 2 didn’t auto-block it (for example, a new pattern not yet in GitHub’s catalog), Stage 5 catches it before merge.</p>
-<p><strong>Closed-alerts gap (acknowledged behavior, not a fix).</strong> The query filters on <code>state=open</code>, so alerts that GitHub auto-closed on key revocation, or that someone closed manually, won’t fail the build. The secret can still be present in repo history for the rotation window. Recovery rule R10c is the operator’s anchor here: rotate the credential, don’t merely rewrite history.</p>
+<p>Anchors render as the first six hex characters of the SHA-256 in the markdown for human readability; the full hash lives in a fenced YAML block at the bottom of each reviewer file for tooling. Reviewers receive the anchor-computation recipe in their dispatch brief (a reference anchor-computation script ships with the review tooling).</p>
+<p><strong>Whole-file findings</strong> (no line range) use a fixed content-anchor of <code>whole-file</code>. Two file-level findings of the same severity on the same file collapse, acceptable for v1, since file-level findings are rare; reviewers should prefer line-anchored findings whenever a specific location is identifiable.</p>
+<p><strong>Location format:</strong> <code>&lt;path&gt;:&lt;start_line&gt;-&lt;end_line&gt;</code> for single-file ranges; <code>&lt;path&gt;:&lt;start_line&gt;</code> for point findings; <code>&lt;path&gt;</code> (file-level only) for whole-file findings.</p>
+<p><strong>Severity values:</strong> <code>blocker</code>, <code>major</code>, <code>minor</code>, <code>nit</code>. Stage 4 iterate-to-zero blocks on <code>blocker</code> and <code>major</code>; <code>minor</code> and <code>nit</code> are advisory and do not block merge.</p>
+<p><strong>Severity mutation handling.</strong> Within a single PR’s review history, a defect may surface at different severities across rounds (Round 1 marks it <code>blocker</code>, Round 2 downgrades to <code>major</code> after a partial fix). The iterate-to-zero set-difference uses the <strong><code>(file, content-anchor)</code></strong> pair as the dedup key, ignoring severity, when computing the “new findings” delta. But the gating decision uses the <strong>current-round severity</strong> to decide whether the finding still blocks merge. This split prevents two pathologies the severity-in-identity form introduced: (a) severity-flipped findings counted as new (cap exhaustion); and (b) a downgrade-to-<code>nit</code> producing a false-pass exit while the underlying defect is still present.</p>
+<p>Concretely, iterate-to-zero terminates when no <code>(file, content-anchor)</code> pair carries a <code>blocker</code> or <code>major</code> severity in the current round, regardless of what severity it carried in prior rounds. A reviewer downgrade then has its intended meaning (“this is no longer blocking after the fix”) without leaking through as a false-pass.</p>
+<p><strong>Persistence:</strong> one markdown file per <code>(repo, PR, round, reviewer)</code> tuple, in a per-PR working area namespaced by the repo’s canonical short name. The repo namespace prevents collision when the same PR number is concurrently in flight across two different repos (concurrent PRs across different repos are allowed). The namespace uses the canonical short name, not the host owner/name pair, since it is an internal working area.</p>
+<p><strong>Round-read discipline.</strong> Reviewers in Round N+1 MUST read <strong>Round N files only — never the current Round N+1 files for the same PR</strong>. The dispatch brief points reviewers at the prior round’s files (one less than the round being authored). This closes a same-round dedup ambiguity: concurrent reviewers in the same round MUST NOT read each other’s files mid-round, only the prior round’s files. Same-round dedup happens at round-end aggregation, after all reviewer files are written, by the dispatch coordinator.</p>
+<p><strong>Round counter increment rule.</strong> The Stage 4 round counter increments when at least one <code>(file, content-anchor)</code> pair newly carries a <code>blocker</code> or <code>major</code> severity in the current round (that is, absent from the prior round’s blocker+major set). Same-pair severity changes within blocker+major (blocker → major or vice versa) do not increment the counter; they are “the same defect, a different reviewer call.” Termination happens when the increment is zero across all reviewers for the round.</p>
 <h2 id="alternatives-considered"><a class="header" href="#alternatives-considered">Alternatives Considered</a></h2>
 <ul>
-<li><strong>gitleaks (entropy-based + custom patterns).</strong> Rejected for v1 on simplicity grounds (no new tool to install or maintain). <strong>Trip-wire:</strong> if any incident slips through Layers 1, 2, and 3, switch Layer 1 from lefthook regex to gitleaks. gitleaks is a Go single-binary with low add-cost, preserved as a fallback path.</li>
-<li><strong>trufflehog.</strong> Same rejection rationale as gitleaks. gitleaks is the lighter-touch fallback if one is needed.</li>
-<li><strong>GHAS subscription for entropy-based scanning + non-provider patterns.</strong> Rejected for v1. All current repos are public, so the free tier covers the provider-pattern catalog. Revisit if a private repo enters scope.</li>
-<li><strong>Pre-commit-only (no Stage 5 query).</strong> Rejected. Pre-commit relies on every contributor having lefthook configured locally; Stage 5 is the deterministic backstop that doesn’t.</li>
-<li><strong>Stage 5-only (no pre-commit).</strong> Rejected. Stage 5 catches the secret after it’s in branch history; pre-commit catches it before. The local hook is the cheap first line.</li>
+<li><strong><code>(location, severity, hash(text))</code> triple.</strong> Rejected. The same defect described differently across rounds produces hash drift; identity becomes too narrow and the dedup fails the use case it exists for.</li>
+<li><strong>Reviewer-assigned finding IDs (<code>F-0001</code>, <code>F-0002</code>).</strong> Rejected. It adds bookkeeping burden; reviewer-side state-tracking across rounds is exactly the failure mode iterate-to-zero is trying to remove.</li>
+<li><strong>A database-backed finding store.</strong> Rejected for v1. A richer relational substrate is deferred; markdown files are the lean substrate for now.</li>
+<li><strong>A per-PR single file updated each round.</strong> Rejected. It loses per-round-per-reviewer attribution, is harder to diff across rounds, and races when concurrent reviewer dispatches write it.</li>
+<li><strong>Finding-text canonicalization</strong> (lowercase and whitespace-normalize before hashing). Rejected. Too fragile; reviewers express the same defect with different vocabulary, not just whitespace differences.</li>
 </ul>
 <h2 id="consequences"><a class="header" href="#consequences">Consequences</a></h2>
 <ul>
-<li><strong>Per-repo retrofit:</strong> a lefthook config update, plus workflow setting changes (<code>secret_scanning</code>, <code>secret_scanning_push_protection</code>), plus a <code>verify-secrets</code> recipe addition. An operations-engineer dispatch handles each repo as part of the merge-mode migration runbook.</li>
-<li><strong>Workspace-shared regex</strong> lives in one place; updates ripple to all repos via a spec retrofit (re-running the spec stage to pick up the new pattern). The regex is conservative, favoring false negatives over false positives. False positives in commit-msg hooks degrade dev velocity fast.</li>
-<li><strong>Layer 2 enablement requires <code>gh api -X PATCH</code> calls</strong> per repo. These are listed in the retrofit runbook.</li>
-<li><strong>Local-only repos</strong> must migrate to GitHub before Layer 2 and Layer 3 apply. Until migrated, they have only Layer 1. This is acceptable given their local-only state and is named in the retrofit runbook.</li>
-<li><strong>Private-repo case</strong> (none today; possible later): the GHAS subscription cost versus the gitleaks fallback gets evaluated at that point. Not a v1 concern.</li>
-<li><strong>Image-vuln scanning</strong> is out of scope for this ADR. It’s flagged at G-0015 if it becomes a need (Trivy or similar would attach to the GHCR image-publish job).</li>
-<li><strong>Cross-tool cost:</strong> zero new tools (lefthook is already in the workspace; the <code>gh</code> CLI is already in CI). This stays aligned with the Simplicity value the canon anchors on.</li>
-<li><strong>Detection latency:</strong> Layer 1 is on the order of milliseconds (commit time); Layer 2 is seconds (push time); Layer 3 is minutes (CI run). The earlier the layer fires, the cheaper the remediation.</li>
-<li><strong>Layer 1 is best-effort, not a security boundary.</strong> <code>git commit --no-verify</code> skips lefthook entirely, and that’s by design (a developer-velocity aid). Layer 2, GitHub-native push protection, is the structural defense at the trust boundary: it runs server-side and a local flag can’t bypass it. Layer 3, the Stage 5 query, is the deterministic backstop that runs in CI regardless of local hook state.</li>
-</ul>
-<h2 id="changelog"><a class="header" href="#changelog">Changelog</a></h2>
-<h3 id="2026-04-30--round-1-review-amendments"><a class="header" href="#2026-04-30--round-1-review-amendments">2026-04-30 — Round 1 review amendments</a></h3>
-<ul>
-<li><strong>Updated:</strong> the Layer 3 (<code>verify-secrets</code>) recipe spec now requires <code>permissions.security-events: read</code> on the calling job; uses <code>gh api -i</code> with an explicit response-status check; and fails loudly on non-200 to differentiate “no alerts” from “API forbidden / disabled”. A reference shell shape was added.</li>
-<li><strong>Added:</strong> a consequence stating Layer 1 is best-effort (locally bypassable via <code>--no-verify</code>); Layer 2 is the structural defense; Layer 3 is the deterministic backstop.</li>
-<li><strong>Added:</strong> an explicit out-of-scope statement. External-PR contributors are out of scope for v1; in-scope repos restrict PR creation to collaborators.</li>
-<li><strong>Added:</strong> a note acknowledging the closed-alerts gap. The <code>state=open</code> filter means alerts auto-closed by GitHub won’t fail the build; recovery rule R10c (rotate, don’t rewrite history) is the operator anchor.</li>
-<li><strong>Cross-reference:</strong> the workspace secret-detection-regex skill is the canonical home for the Layer 1 regex patterns.</li>
+<li><strong>Duplicate findings collapse on <code>(file, content-anchor)</code> regardless of severity.</strong> Round N+1’s count of “new findings” is the set of <code>(file, content-anchor)</code> pairs at blocker+major severity not present in Round N’s blocker+major set. Same-pair severity flips do not count as new; drops from blocker+major to minor+nit count as resolutions; rises from minor+nit to blocker+major count as new findings (the reviewer just discovered the worse impact).</li>
+<li><strong>Reviewer briefs include prior-round files.</strong> The Stage 4 dispatch envelope MUST include the prior round’s reviewer files (one round earlier than the round being authored) so reviewers see prior context before issuing findings.</li>
+<li><strong>Severity ordering is fixed.</strong> Reviewers MUST use the four-value enum; no custom severities. <code>blocker</code> = merge-blocker requiring a fix; <code>major</code> = should-fix this round; <code>minor</code> = nice-to-have, advisory; <code>nit</code> = style/preference.</li>
+<li><strong>Cross-repo namespace.</strong> The persistence area includes the repo namespace so concurrent PRs sharing a number across repos cannot collide.</li>
+<li><strong>Working-area hygiene.</strong> Per-PR working directories accumulate during a PR’s life. Cleanup happens at PR close (merged or abandoned); a session-start sweep archives closed-PR directories after merge.</li>
+<li><strong>Concurrent-round-write discipline.</strong> Within a single round, multiple reviewers dispatch in parallel and write their files at completion. Reviewers do NOT read each other’s same-round files; same-round dedup happens at the dispatch coordinator’s post-round aggregation. The dispatch brief explicitly cites the prior-round files to prevent read-the-current-round mistakes.</li>
+<li><strong>Anchor computation is reviewer-side.</strong> Reviewers compute the SHA-256 over the five-line normalized window. The anchor must be computed against the commit at which the reviewer is reading the file (typically the PR’s HEAD at dispatch time). Round N+1 anchors against the new HEAD produce different content-anchors only if the cited code itself changed; line-shift drift elsewhere in the file does not rotate the anchor. That is the whole point.</li>
+<li><strong>Whole-file findings caveat.</strong> Two file-level findings (anchor <code>whole-file</code>) of the same severity on the same file collapse. Reviewers preferring line-anchored findings reduce the chance of this collision. An acceptable corner case in v1.</li>
+<li><strong>The iterate-to-zero metric is exact.</strong> The new-findings set-difference produces a clean termination signal that survives line-range drift, severity flips, and reviewer-prose variation across rounds.</li>
+<li><strong>Content-addressed identity survives substrate migration.</strong> The <code>(file, content-anchor, severity)</code> tuple is invariant if the persistence area later moves to a richer store; the content-anchor is content-addressed by construction, so it survives substrate changes.</li>
+<li><strong>Anchor stability across reformatters.</strong> A defect inside a region reformatted by an auto-formatter (for example, <code>cargo fmt</code>) between rounds will rotate the anchor; the whitespace-stripped five-line window changes when the formatting changes. Because the formatter runs after every implementer/test-author edit cycle, anchor rotation is the common case, not the edge case: every iterate-to-zero cycle that involves agent edits sees anchor rotation across all touched files. The operational rule: the dispatch coordinator performs a one-shot anchor remap at the start of each round, after the round’s agent edits and formatting have landed but before reviewers read the prior-round findings. The remap re-computes anchors for prior-round findings against the current round’s HEAD, writing the remapped findings to a sidecar file that reviewers read in place of the original. The remap is mechanical (find the cited file and line, recompute the anchor on the new content) but bounded and supervised: when a finding’s cited file no longer exists or the cited range has been deleted (the defect was fixed structurally), the remap entry reads “FIXED — finding resolved by structural change” and the reviewer need not re-flag it.</li>
 </ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../adrs/G-0015-devcontainer-per-repo-upstream-base.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../adrs/G-0003-merge-governance.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="../adrs/G-0017-feature-flags-flagprovider-trait.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../adrs/G-0005-devcontainer-per-repo-upstream-base.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -293,11 +248,11 @@ fi
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../adrs/G-0015-devcontainer-per-repo-upstream-base.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../adrs/G-0003-merge-governance.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="../adrs/G-0017-feature-flags-flagprovider-trait.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../adrs/G-0005-devcontainer-per-repo-upstream-base.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>

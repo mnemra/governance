@@ -35,10 +35,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-79642c4f.js";
+            window.path_to_searchindex_js = "searchindex-c688843e.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-eb7d2461.js"></script>
+        <script src="toc-92488165.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -184,13 +184,13 @@
 <h2 id="how-to-use-this-doc"><a class="header" href="#how-to-use-this-doc">How to use this doc</a></h2>
 <p>Three audiences read these edges:</p>
 <ul>
-<li><strong>The decomposer</strong> (the role that figures out what to build before execution: framing a design session, drafting an ADR, writing a spec, cutting scope) consults during the Frame stage of a brief. Frame is the stage that elicits and synthesizes the problem shape before a spec is written. The graph walk traverses these edges to surface constraints that bear on a proposed decision.</li>
-<li><strong>The agentic team</strong> (the specialists the orchestrator dispatches to) consults at every review pass. Finding identity, the tuple that decides whether two review findings are the same defect, often resolves to “X conflicts with Y per this edge,” and recommendations cite the edge that grounds them.</li>
-<li><strong>Future maintainers</strong> consult when extending a principle, adding an ADR, or adopting a new value. The existing edges show where the new artifact fits structurally.</li>
+<li><strong>The decomposer</strong> consults during the Frame stage of a brief; the graph walk traverses these edges to surface constraints that bear on a proposed decision.</li>
+<li><strong>The agentic team</strong> consults at every review pass; finding identity often resolves to “X conflicts with Y per this edge”; recommendations cite the edge that grounds them.</li>
+<li><strong>Future maintainers</strong> consult when extending a principle, adding an ADR, or adopting a new value; the existing edges show where the new artifact fits structurally.</li>
 </ul>
-<p>Nodes stay primary in their existing locations: the values doc, the principles doc, and <code>adrs/G-*.md</code>. This file is the <strong>edges view</strong> over those primaries, per the source-of-truth pattern set in G-0028 (the governance ADR that defines the agent-first workflow shape and the edge-graph conventions). A Markdown table is the format for now. Promotion to something more structured, a graph database or a query language, waits until friction forces it.</p>
+<p>Nodes remain primary in their existing locations (values doc, principles doc, <code>adrs/G-*.md</code>). This file is the <strong>edges view</strong> over those primaries, per G-0013’s source-of-truth pattern (the agent-first workflow ADR). Markdown table is the format for now; promotion to a more structured representation (graphdb, query language) defers to friction-driven need.</p>
 <h2 id="edge-types"><a class="header" href="#edge-types">Edge types</a></h2>
-<p>Per G-0028:</p>
+<p>Per G-0013 (agent-first workflow):</p>
 <div class="table-wrapper">
 <table>
 <thead>
@@ -204,49 +204,60 @@
 </tbody>
 </table>
 </div>
-<p>Traversal rule (per G-0028): the most-specific node applies when there’s no conflict (per-task &gt; project ADR &gt; workspace ADR &gt; principle). Conflicts escalate at intersection points.</p>
+<p>Traversal rule (per G-0013): most-specific applies when no conflict (per-task &gt; project ADR &gt; workspace ADR &gt; principle). Conflicts escalate at intersection points.</p>
 <h2 id="specializes"><a class="header" href="#specializes">Specializes</a></h2>
 <h3 id="principle--value-from-each-principles-anchors-header"><a class="header" href="#principle--value-from-each-principles-anchors-header">Principle → Value (from each principle’s “Anchors” header)</a></h3>
-<p>The source of each edge is a principle. The target is an architecture value or, in a few cases, another principle. The values the rows point at include the eight core values plus supporting ones like Reversibility (keeping a change easy to undo) and Migration cost (the cost of moving to or away from a chosen mechanism). Each principle code below is glossed inline on its first appearance.</p>
 <div class="table-wrapper">
 <table>
 <thead>
 <tr><th>Source</th><th>Target</th><th>Rationale</th></tr>
 </thead>
 <tbody>
-<tr><td>P-Defer (defer the mechanism choice until evidence forces it)</td><td>Simplicity</td><td>“Defer mechanism until evidence forces the choice” is a specific case of “smallest mechanism that solves the problem.”</td></tr>
-<tr><td>P-Defer</td><td>Reversibility</td><td>Deferred mechanisms keep options open. The mitigation path includes “don’t adopt yet.”</td></tr>
-<tr><td>P-PerRepoFirst (keep a thing per-repo until reuse is observed)</td><td>Simplicity</td><td>Per-repo-first avoids the workspace artifact every reader has to reason about.</td></tr>
-<tr><td>P-PerRepoFirst</td><td>Migration cost</td><td>Premature extraction inflates migration cost. Per-repo-first defers extraction until reuse shows up.</td></tr>
-<tr><td>P-LockContract (lock the interface so implementations can vary)</td><td>Simplicity</td><td>Contract locking lets implementations vary without rippling through callers. It’s the smallest stable interface.</td></tr>
+<tr><td>P-Defer</td><td>Simplicity</td><td>“Defer mechanism until evidence forces the choice” is a specific case of “smallest mechanism that solves the problem.”</td></tr>
+<tr><td>P-Defer</td><td>Reversibility</td><td>Deferred mechanisms preserve optionality — the mitigation path includes “don’t adopt yet.”</td></tr>
+<tr><td>P-PerRepoFirst</td><td>Simplicity</td><td>Per-repo-first avoids the workspace artifact every reader has to reason about.</td></tr>
+<tr><td>P-PerRepoFirst</td><td>Migration cost</td><td>Premature extraction inflates migration cost; per-repo-first defers extraction until reuse is observed.</td></tr>
+<tr><td>P-LockContract</td><td>Simplicity</td><td>Contract locking lets implementations vary without rippling through callers — the smallest stable interface.</td></tr>
 <tr><td>P-LockContract</td><td>Migration cost</td><td>Stable contracts let implementations migrate without coordinating consumers.</td></tr>
 <tr><td>P-LockContract</td><td>Rust-ecosystem alignment</td><td>Trait-based contract locking is idiomatic Rust.</td></tr>
-<tr><td>P-StackDiscipline (reject tooling that misaligns with the stack)</td><td>Rust-ecosystem alignment</td><td>Direct operationalization. Reject ecosystem-misaligned tooling.</td></tr>
-<tr><td>P-SecurityLayered (compose security in independent layers)</td><td>Security</td><td>Direct operationalization. Security composes by layer.</td></tr>
-<tr><td>P-InstrumentBefore (ship instrumentation before first user-touch)</td><td>Observability</td><td>Direct operationalization. Instrumentation ships before first user-touch.</td></tr>
-<tr><td>P-Worktrees (do code-modifying work in a discardable worktree)</td><td>Reversibility</td><td>Worktrees keep main stable. Failed work is discardable.</td></tr>
-<tr><td>P-Worktrees</td><td>Decomposition</td><td>Worktrees enable parallel dispatch, and the dispatch model decomposes work across agents.</td></tr>
-<tr><td>P-MainProtected (gate main behind PR plus CI)</td><td>Reversibility</td><td>The PR plus CI gate keeps the mitigation surface intact.</td></tr>
+<tr><td>P-StackDiscipline</td><td>Rust-ecosystem alignment</td><td>Direct operationalization — reject ecosystem-misaligned tooling.</td></tr>
+<tr><td>P-SecurityLayered</td><td>Security</td><td>Direct operationalization — security composes by layer.</td></tr>
+<tr><td>P-InstrumentBefore</td><td>Observability</td><td>Direct operationalization — instrumentation ships before first user-touch.</td></tr>
+<tr><td>P-Worktrees</td><td>Reversibility</td><td>Worktrees keep main stable; failed work is discardable.</td></tr>
+<tr><td>P-Worktrees</td><td>Decomposition</td><td>Worktrees enable parallel dispatch; the dispatch model decomposes work across agents.</td></tr>
+<tr><td>P-MainProtected</td><td>Reversibility</td><td>PR + CI gate preserves the mitigation surface.</td></tr>
 <tr><td>P-MainProtected</td><td>Quality</td><td>The gate exists to enforce quality before main.</td></tr>
-<tr><td>P-ShiftLeft (catch problems at intent-time, not merge-time)</td><td>Reversibility</td><td>Catching at intent-time is cheaper than catching at merge-time.</td></tr>
-<tr><td>P-ShiftLeft</td><td>Decomposition</td><td>The decomposer’s eye is the structural-intent check automated gates can’t make.</td></tr>
-<tr><td>P-TDDPairs (split a task into a test-writer and an impl-writer)</td><td>Quality</td><td>Spec-derived tests catch impl-vs-spec drift that single-agent TDD doesn’t.</td></tr>
-<tr><td>P-TDDPairs</td><td>Decomposition</td><td>A TDD pair is a decomposition of one task into test-writing and impl-writing dispatches.</td></tr>
-<tr><td>P-IterateToZero (run fix-and-review rounds until no blocking finding remains)</td><td>Quality</td><td>Convergent fix loops with stable identity drive defect counts to zero.</td></tr>
-<tr><td>P-IterateToZero</td><td>Reversibility</td><td>The round cap is itself a reversal trigger. Escalate rather than grind.</td></tr>
-<tr><td>P-HeterogeneousReviewers (review with distinct lenses, not one repeated)</td><td>Honesty</td><td>Multiple distinct lenses surface different findings. Single-lens reviews launder blind spots.</td></tr>
+<tr><td>P-ShiftLeft</td><td>Reversibility</td><td>Catching at intent-time is cheaper than catching at merge-time.</td></tr>
+<tr><td>P-ShiftLeft</td><td>Decomposition</td><td>The decomposer’s eye is the structural-intent check that automated gates can’t make.</td></tr>
+<tr><td>P-TDDPairs</td><td>Quality</td><td>Spec-derived tests catch impl-vs-spec drift that single-agent TDD doesn’t.</td></tr>
+<tr><td>P-TDDPairs</td><td>Decomposition</td><td>TDD pair is a decomposition of one task into test-writing and impl-writing dispatches.</td></tr>
+<tr><td>P-IterateToZero</td><td>Quality</td><td>Convergent fix loops with stable identity drive defect counts to zero.</td></tr>
+<tr><td>P-IterateToZero</td><td>Reversibility</td><td>The round cap is itself a reversal trigger — escalate rather than grind.</td></tr>
+<tr><td>P-HeterogeneousReviewers</td><td>Honesty</td><td>Multiple distinct lenses surface different findings — single-lens reviews launder blind spots.</td></tr>
 <tr><td>P-HeterogeneousReviewers</td><td>Quality</td><td>Distinct lenses catch defects each lens alone would miss.</td></tr>
-<tr><td>P-PreserveDecisionSpace (keep rejected alternatives visible)</td><td>Honesty</td><td>Erasing rejected alternatives makes future decisions blind, which is a form of dishonesty about the decision space.</td></tr>
+<tr><td>P-PreserveDecisionSpace</td><td>Honesty</td><td>Erasing rejected alternatives makes future decisions blind — a form of dishonesty about the decision space.</td></tr>
 <tr><td>P-PreserveDecisionSpace</td><td>Decomposition</td><td>Decomposition relies on the option space being visible at framing time.</td></tr>
-<tr><td>P-WriteTimeAudience (write each artifact for its durability profile at write-time)</td><td>Honesty</td><td>Genericizing repo artifacts at write-time prevents publish-leak. Preserving attribution on workspace-private artifacts prevents pattern-signal loss.</td></tr>
-<tr><td>P-WriteTimeAudience</td><td>Dogfooding</td><td>The dual durability profile is what makes workspace artifacts useful as a forcing function.</td></tr>
-<tr><td>P-TrustThenRetro (set direction up-front, review outcomes after)</td><td>Dual-audience</td><td>The principle is <em>about</em> the composition. Direction is set up-front, and the team executes within it.</td></tr>
-<tr><td>P-TrustThenRetro</td><td>Quality</td><td>Concentrating review on outcomes, not on each flag, is what makes the workflow sustainable.</td></tr>
-<tr><td>P-TrustThenRetro</td><td>Composition</td><td>Direct operationalization. It’s the protocol mechanism for the Composition value, paired with P-CompositionBridge’s substrate mechanism.</td></tr>
-<tr><td>P-CompositionBridge (carry session-level signal into durable, reloadable artifacts)</td><td>Composition</td><td>Direct operationalization. It’s the substrate mechanism for the Composition value, paired with P-TrustThenRetro’s protocol mechanism.</td></tr>
-<tr><td>P-CompositionBridge</td><td>Dogfooding</td><td>The two-durability-profile discipline (workspace-private vs publish-ready artifacts) is what makes the substrate work as a forcing function.</td></tr>
-<tr><td>P-MinBlastRadius (isolate a fix to the smallest surface)</td><td>Maintainability</td><td>Direct operationalization. The minimum-blast-radius fix is the value’s stated unit goal.</td></tr>
-<tr><td>P-MinBlastRadius</td><td>Reversibility</td><td>Bounded change cost keeps the mitigation surface intact. Small changes are easier to revert.</td></tr>
+<tr><td>P-WriteTimeAudience</td><td>Honesty</td><td>Genericizing repo artifacts at write-time prevents publish-leak; preserving attribution on workspace-private prevents pattern-signal loss.</td></tr>
+<tr><td>P-WriteTimeAudience</td><td>Dogfooding</td><td>The dual durability profile is what makes workspace artifacts useful as forcing function.</td></tr>
+<tr><td>P-TrustThenRetro</td><td>Dual-audience</td><td>The principle is <em>about</em> the composition — direction set up-front, team executes within direction.</td></tr>
+<tr><td>P-TrustThenRetro</td><td>Quality</td><td>Concentrating review on outcomes (not per-flag) is what makes the workflow sustainable.</td></tr>
+<tr><td>P-TrustThenRetro</td><td>Composition</td><td>Direct operationalization — protocol mechanism for the Composition value (paired with P-CompositionBridge’s substrate mechanism).</td></tr>
+<tr><td>P-CompositionBridge</td><td>Composition</td><td>Direct operationalization — substrate mechanism for the Composition value (paired with P-TrustThenRetro’s protocol mechanism).</td></tr>
+<tr><td>P-CompositionBridge</td><td>Dogfooding</td><td>The two-durability-profile discipline (workspace-private vs publish-ready artifacts) is what makes the substrate work as forcing function.</td></tr>
+<tr><td>P-MinBlastRadius</td><td>Maintainability</td><td>Direct operationalization — minimum-blast-radius fix is the value’s stated unit goal.</td></tr>
+<tr><td>P-MinBlastRadius</td><td>Reversibility</td><td>Bounded change cost preserves the mitigation surface — small changes are easier to revert.</td></tr>
+<tr><td>P-AgentPrimarySource</td><td>Decomposition</td><td>Source artifacts are for agents; human views derivative — preserves the decomposer’s role as direction-setter.</td></tr>
+<tr><td>P-AgentPrimarySource</td><td>Dual-audience</td><td>Explicit dual-audience model with agents as primary consumer.</td></tr>
+<tr><td>P-LeadOrchestration</td><td>Composition</td><td>The lead owns work direction (control converges) while teammates exchange information peer-to-peer — the team-topology operationalization of Composition.</td></tr>
+<tr><td>P-TrustworthySignal</td><td>Observability</td><td>Operationalizes the Observability value’s faithful-instrument clause for the verification signal specifically (CI gate, test suite, coverage/lint, runner) — the fidelity-axis sibling to P-InstrumentBefore’s timing/backfillable axis.</td></tr>
+<tr><td>P-TrustworthySignal</td><td>Quality</td><td>A flaky gate is a quality defect in the verification apparatus — a nondeterministic signal on the gated merge line undermines the quality the gate exists to enforce.</td></tr>
+<tr><td>P-TestableByDesign</td><td>Quality</td><td>Design-time injection seams let the test drive the real path cheaply and deterministically — the design-side complement to P-TDDPairs’ test-authorship discipline and P-TrustworthySignal’s no-flaky-infrastructure discipline.</td></tr>
+<tr><td>P-TestableByDesign</td><td>Maintainability</td><td>The injection seam is usually the same structural lever as P-MinBlastRadius’ change-isolation seam — a dependency injected behind a stable contract bounds change reach and enables the swap.</td></tr>
+<tr><td>P-GuaranteeByMechanism</td><td>Quality</td><td>Enforcing a guarantee with a loud-failing mechanism (test, schema, type-token, hash, lint, hook) rather than a convention is what makes the quality guarantee actually hold — a violation fails visibly instead of silently no-opping.</td></tr>
+<tr><td>P-GuaranteeByMechanism</td><td>Observability</td><td>The mechanism <em>fails loudly</em> — a guarantee’s breach is observable rather than a silent no-op. The parent of DF1 (deferral firing), TS2 (coverage-scope reconciliation), and MB1’s consolidation clause; see the parent walk-note below.</td></tr>
+<tr><td>P-VerifyInheritedState</td><td>Honesty</td><td>Re-verifying an inherited claim against its source before acting preserves the known-vs-asserted distinction; a producer’s assertion is not evidence, regardless of who produced it.</td></tr>
+<tr><td>P-VerifyInheritedState</td><td>Reversibility</td><td>Verifying before acting on an inherited claim keeps a mitigation path open where acting on a false claim would foreclose one.</td></tr>
+<tr><td>P-LeastAuthority</td><td>Security</td><td>Direct operationalization — a component/agent/credential holds the minimum standing authority its role requires; the authority-axis analogue of P-MinBlastRadius’ change-isolation.</td></tr>
 </tbody>
 </table>
 </div>
@@ -257,32 +268,27 @@
 <tr><th>Source</th><th>Target</th><th>Rationale</th></tr>
 </thead>
 <tbody>
-<tr><td>G-0001 (testing philosophy)</td><td>P-TDDPairs</td><td>Codifies branch-delta plus property-based testing as gates with an inverted pyramid. Concrete mechanism for the TDD-pairs discipline.</td></tr>
-<tr><td>G-0001 (testing philosophy)</td><td>Quality</td><td>Testing standards as the quality floor.</td></tr>
-<tr><td>G-0002 (no compile-time embedding)</td><td>P-Defer</td><td>Defers the asset-embedding mechanism in favor of ServeDir plus Docker. Simpler, with an evidence-driven revisit later if needed.</td></tr>
-<tr><td>G-0003 (ADR two-tier system)</td><td>P-PreserveDecisionSpace</td><td>Two-tier ADRs (G-workspace, P-project) preserve decision lineage across scope levels.</td></tr>
-<tr><td>G-0004 (XML agent profiles)</td><td>Dual-audience</td><td>The XML profile format reads cleanly for humans and parses reliably for agents.</td></tr>
-<tr><td>G-0005 (SQL file migrations)</td><td>Reversibility</td><td>File-based migrations are reversible, encoded in <code>up</code>/<code>down</code> pairs.</td></tr>
-<tr><td>G-0006 (Justfile as CI contract)</td><td>P-LockContract</td><td>The Justfile is the single contract. The runner (hosted, self-hosted, or local) is swappable.</td></tr>
-<tr><td>G-0007..G-0012 (knowledge-extraction series)</td><td>P-CompositionBridge</td><td>Encodes session-level pattern signal into durable artifacts loadable in future sessions. P-CompositionBridge is the operationalizing principle, and the series specializes the substrate mechanism. The Composition value stays reachable transitively through P-CompositionBridge.</td></tr>
-<tr><td>G-0013 (Stage 6 approval label vocabulary)</td><td>P-ShiftLeft</td><td>The closed-enum vocabulary moves decomposer intent into a state machine that later gates can read.</td></tr>
-<tr><td>G-0014 (review finding identity and persistence)</td><td>P-IterateToZero</td><td>Content-anchored finding identity is what makes iterate-to-zero converge across rounds.</td></tr>
-<tr><td>G-0015 (devcontainer per-repo upstream base)</td><td>P-PerRepoFirst</td><td>A per-repo devcontainer with a shared upstream. Extraction only at the base layer.</td></tr>
-<tr><td>G-0016 (layered secret detection)</td><td>P-SecurityLayered</td><td>Direct operationalization of the runtime layer.</td></tr>
-<tr><td>G-0017 (feature flags FlagProvider trait)</td><td>P-LockContract</td><td>A trait in front of the feature-flag backend lets the backend swap without touching call sites.</td></tr>
-<tr><td>G-0018 (workspace merge template + recovery cap)</td><td>P-Worktrees</td><td>Concrete lifecycle for worktree merges, including failure recovery.</td></tr>
-<tr><td>G-0019 (tag race serialization)</td><td>Reversibility</td><td>No lost work under concurrent tag operations.</td></tr>
-<tr><td>G-0020 (Rust release-plz)</td><td>P-StackDiscipline</td><td>Stack-aligned release tooling.</td></tr>
-<tr><td>G-0021 (monotonic non-decreasing version policy)</td><td>Honesty</td><td>Versions don’t lie about progression.</td></tr>
-<tr><td>G-0022 (embargo flow architecture)</td><td>Security</td><td>The embargo flow protects pre-disclosure work.</td></tr>
-<tr><td>G-0023 (GitHub merge queue)</td><td>P-MainProtected</td><td>Direct operationalization of the merge gate.</td></tr>
-<tr><td>G-0024 (Stage 6 label authorization)</td><td>P-ShiftLeft</td><td>Authorization on the state machine gates intent earlier.</td></tr>
-<tr><td>G-0025 (internal IPC typed binary encoding)</td><td>P-LockContract</td><td>The typed schema is the locked contract.</td></tr>
-<tr><td>G-0026 (project dev-docs tooling)</td><td>Dual-audience</td><td>Dev docs serve both the decomposer and agents reading docs cold.</td></tr>
-<tr><td>G-0027 (agent-primary source artifacts)</td><td>Decomposition</td><td>Source artifacts are for agents, with human views derivative. This preserves the decomposer’s role as direction-setter.</td></tr>
-<tr><td>G-0027 (agent-primary source artifacts)</td><td>Dual-audience</td><td>An explicit dual-audience model with agents as the primary consumer.</td></tr>
-<tr><td>G-0028 (agent-first workflow shape)</td><td>Composition</td><td>The workflow shape blends human and agent strengths, applying structure where drift occurs.</td></tr>
-<tr><td>G-0028 (agent-first workflow shape)</td><td>Decomposition</td><td>The Stage 1 and Stage 3 gates (intake-exit and spec-exit) preserve the decomposer’s structural role.</td></tr>
+<tr><td>G-0001 (ADR two-tier system)</td><td>P-PreserveDecisionSpace</td><td>Two-tier (G-workspace / P-project) ADRs preserve decision lineage across scope levels.</td></tr>
+<tr><td>G-0002 (Justfile as CI contract)</td><td>P-LockContract</td><td>Justfile is the single contract; runner (hosted/self-hosted/local) is swappable.</td></tr>
+<tr><td>G-0003 (merge governance)</td><td>P-ShiftLeft</td><td>The governing artifact carries the maintainer’s review; the merge verifies the marker, not the PR — review shifted left.</td></tr>
+<tr><td>G-0004 (review-finding identity and persistence)</td><td>P-IterateToZero</td><td>Content-anchored finding identity is what makes iterate-to-zero converge across rounds.</td></tr>
+<tr><td>G-0005 (devcontainer per-repo upstream base)</td><td>P-PerRepoFirst</td><td>Per-repo devcontainer with shared upstream — extraction only at the base layer.</td></tr>
+<tr><td>G-0006 (layered secret detection)</td><td>P-SecurityLayered</td><td>Direct operationalization of the runtime layer.</td></tr>
+<tr><td>G-0007 (feature flags FlagProvider trait)</td><td>P-LockContract</td><td>Trait in front of feature-flag backend lets backend swap without touching call sites.</td></tr>
+<tr><td>G-0008 (PR-merge apparatus)</td><td>P-Worktrees</td><td>Concrete worktree merge lifecycle including failure recovery. Multi-anchor node — see also the Reversibility and P-MainProtected edges below.</td></tr>
+<tr><td>G-0008 (PR-merge apparatus)</td><td>Reversibility</td><td>Tag-race serialization — no lost work under concurrent tag operations.</td></tr>
+<tr><td>G-0008 (PR-merge apparatus)</td><td>P-MainProtected</td><td>Single-merge-at-a-time merge queue is the merge gate.</td></tr>
+<tr><td>G-0009 (Rust release apparatus)</td><td>P-StackDiscipline</td><td>Stack-aligned release tooling.</td></tr>
+<tr><td>G-0009 (Rust release apparatus)</td><td>Honesty</td><td>Monotonic non-decreasing version policy — versions don’t lie about progression.</td></tr>
+<tr><td>G-0010 (embargo flow architecture)</td><td>Security</td><td>Embargo flow protects pre-disclosure work.</td></tr>
+<tr><td>G-0011 (internal IPC typed binary encoding)</td><td>P-LockContract</td><td>Typed schema is the locked contract.</td></tr>
+<tr><td>G-0012 (project dev-docs tooling)</td><td>Dual-audience</td><td>Dev docs serve both decomposer and agents reading docs cold.</td></tr>
+<tr><td>G-0013 (agent-first workflow shape)</td><td>Composition</td><td>Workflow shape blends human and agent strengths; applies structure where drift occurs.</td></tr>
+<tr><td>G-0013 (agent-first workflow shape)</td><td>Decomposition</td><td>The brief’s intake-exit and spec-exit gates preserve the decomposer’s structural role.</td></tr>
+<tr><td>G-0014 (publish-time human render)</td><td>Dual-audience</td><td>The publish-time render pass is the mechanism serving the value’s third audience (outside humans on a rendered docs site) while source self-containment stays with the in-workspace audience — the value’s publish-boundary clause names it directly.</td></tr>
+<tr><td>G-0015 (relational substrate default)</td><td>P-LockContract</td><td>The engine-agnostic <code>Storage</code> seam is the locked intrinsic contract; the engine (Postgres/SQLite) varies behind it. (Also specializes P-Defer for the deferred second adapter.)</td></tr>
+<tr><td>G-0016 (unattended GitHub credential)</td><td>P-SecurityLayered</td><td>Scoped, short-lived, revocable app-installation tokens replace an account-wide key — the smallest-blast-radius credential discipline applied at the automation trust boundary.</td></tr>
+<tr><td>G-0016 (unattended GitHub credential)</td><td>P-LeastAuthority</td><td>Scoped, short-lived, revocable app-installation tokens are the smallest-authority credential the automation loop can run on — least authority applied at the automation trust boundary. G-0016’s first specialization on the authority axis (a multi-anchor node; it also specializes P-SecurityLayered on the layer axis).</td></tr>
 </tbody>
 </table>
 </div>
@@ -293,16 +299,16 @@
 <tr><th>Source</th><th>Target</th><th>Rationale</th></tr>
 </thead>
 <tbody>
-<tr><td>P-IterateToZero</td><td>P-HeterogeneousReviewers</td><td>Stable finding identity requires distinct reviewer lenses. The same model on the same prompt produces identity collapse.</td></tr>
-<tr><td>P-TDDPairs</td><td>P-HeterogeneousReviewers</td><td>A TDD pair <em>is</em> a heterogeneous pair (test-writer plus impl-writer). The same agent produces contamination.</td></tr>
-<tr><td>P-Worktrees</td><td>P-MainProtected</td><td>Worktrees solve the main-stability problem that main protection enforces. Remove main protection and worktrees turn decorative.</td></tr>
-<tr><td>P-ShiftLeft</td><td>P-PreserveDecisionSpace</td><td>The decomposer’s intent check operates on the full option space. Erased alternatives produce a blind gate.</td></tr>
-<tr><td>G-0028 (agent-first workflow)</td><td>G-0027 (agent-primary source artifacts)</td><td>G-0028 names this dependency in its prose. A workflow that produces agent-primary artifacts presupposes the artifacts-are-agent-primary stance.</td></tr>
-<tr><td>G-0023 (merge queue)</td><td>G-0006 (Justfile as CI contract)</td><td>The merge queue runs the Justfile recipe. Without the contract, the queue has no canonical gate.</td></tr>
-<tr><td>G-0014 (finding identity)</td><td>G-0001 (testing philosophy)</td><td>Finding identity assumes the test gates from G-0001 fire on changes. Without the gates, the identity has nothing to anchor against.</td></tr>
-<tr><td>G-0017 (FlagProvider trait)</td><td>P-LockContract</td><td>The trait is the lock. The principle is the rationale.</td></tr>
-<tr><td>G-0007..G-0012 (knowledge-extraction)</td><td>G-0008 (capture schema)</td><td>The series builds on a shared schema. The capture schema is the load-bearing root.</td></tr>
-<tr><td>Composition (value)</td><td>Decomposition (value)</td><td>“Decomposition tells you what to build; Composition is how the team that builds it stays coherent.” Composition presupposes decomposition has happened.</td></tr>
+<tr><td>P-IterateToZero</td><td>P-HeterogeneousReviewers</td><td>Stable finding identity requires distinct reviewer lenses; same model on same prompt produces identity collapse.</td></tr>
+<tr><td>P-TDDPairs</td><td>P-HeterogeneousReviewers</td><td>TDD pair <em>is</em> a heterogeneous pair (test-writer + impl-writer); same agent produces contamination.</td></tr>
+<tr><td>P-Worktrees</td><td>P-MainProtected</td><td>Worktrees solve the main-stability problem that main protection enforces. Removing main-protection makes worktrees decorative.</td></tr>
+<tr><td>P-ShiftLeft</td><td>P-PreserveDecisionSpace</td><td>The decomposer’s intent check operates on the full option space; erased alternatives produce a blind gate.</td></tr>
+<tr><td>G-0013 (agent-first workflow)</td><td>P-AgentPrimarySource</td><td>G-0013 names this dependency in its prose — a workflow that produces agent-primary artifacts presupposes the artifacts-are-agent-primary stance.</td></tr>
+<tr><td>G-0008 (PR-merge apparatus)</td><td>G-0002 (Justfile as CI contract)</td><td>The merge queue runs the Justfile recipe; without the contract, the queue has no canonical gate.</td></tr>
+<tr><td>G-0003 (merge governance)</td><td>G-0016 (unattended GitHub credential)</td><td>G-0003’s unattended push→PR→merge loop presupposes a sleep-surviving, no-human-present credential; G-0016’s own prose names itself the missing piece that lets the loop actually run.</td></tr>
+<tr><td>G-0004 (review-finding identity)</td><td>P-TDDPairs</td><td>Finding identity assumes the test gates fire on changes; without the gates, the identity has nothing to anchor against.</td></tr>
+<tr><td>G-0007 (feature flags FlagProvider trait)</td><td>P-LockContract</td><td>The trait is the lock; the principle is the rationale.</td></tr>
+<tr><td>Composition (value)</td><td>Decomposition (value)</td><td>Per <code>architecture-values.md</code>: “Decomposition tells you what to build; Composition is how the team that builds it stays coherent.” Composition presupposes decomposition has happened.</td></tr>
 </tbody>
 </table>
 </div>
@@ -313,62 +319,75 @@
 <tr><th>Source</th><th>Target</th><th>Rationale</th></tr>
 </thead>
 <tbody>
-<tr><td>G-0024 (Stage 6 label authorization)</td><td>G-0013 (Stage 6 approval label vocabulary)</td><td>G-0024 tightens authorization rules on the label vocabulary G-0013 introduced.</td></tr>
-<tr><td>G-0028 (agent-first workflow)</td><td>Decomposition</td><td>G-0028’s mandatory Stage 0 baseline-load tightens the value’s “scope known before the first dispatch” claim into a concrete workflow step. Same domain, narrower mechanism.</td></tr>
-<tr><td>G-0014 (finding identity)</td><td>P-IterateToZero</td><td>The concrete identity tuple definition narrows what counts as the “same finding across rounds.”</td></tr>
-<tr><td>G-0028 (agent-first workflow)</td><td>P-TrustThenRetro</td><td>The workflow shape <em>is</em> the structural implementation of trust-then-retro. Same principle, narrower mechanism.</td></tr>
-<tr><td>G-0022 (embargo flow)</td><td>P-SecurityLayered</td><td>The embargo flow refines the design-time layer with disclosure-window mechanics.</td></tr>
-<tr><td>G-0006 (Justfile as CI contract)</td><td>P-StackDiscipline</td><td>The Justfile choice over alternatives like Make or scripts refines stack-discipline at the build-tooling layer.</td></tr>
+<tr><td>G-0013 (agent-first workflow)</td><td>Decomposition</td><td>The mandatory Stage 0 baseline-load tightens the value’s “scope known before the first dispatch” claim into a concrete workflow step. Same domain, narrower mechanism.</td></tr>
+<tr><td>G-0004 (review-finding identity)</td><td>P-IterateToZero</td><td>Concrete identity tuple definition narrows what counts as “same finding across rounds.”</td></tr>
+<tr><td>G-0013 (agent-first workflow)</td><td>P-TrustThenRetro</td><td>The workflow shape <em>is</em> the structural implementation of trust-then-retro — same principle, narrower mechanism.</td></tr>
+<tr><td>G-0010 (embargo flow)</td><td>P-SecurityLayered</td><td>Embargo flow refines the design-time layer with disclosure-window mechanics.</td></tr>
+<tr><td>G-0002 (Justfile as CI contract)</td><td>P-StackDiscipline</td><td>Justfile choice over alternatives like Make or scripts — refines stack-discipline at the build-tooling layer.</td></tr>
+<tr><td>G-0013 (agent-first workflow)</td><td>P-LockContract</td><td>The designed-tier/committed-tier amendment is the workflow mechanism that implements “the spec is a locked contract; the plan varies behind it.” The principle owns the <em>why</em>; G-0013 owns the workflow stage that produces the locked spec.</td></tr>
 </tbody>
 </table>
 </div>
 <h2 id="conflicts-with"><a class="header" href="#conflicts-with">Conflicts-with</a></h2>
-<p>Per the <code>architecture-values.md</code> conflict-resolution table, two-core trade-offs surface the axis rather than pre-resolving it. The pairs below are <em>known tension points</em>. They aren’t blockers; they’re escalation surfaces for the review pass.</p>
+<p>Per <code>architecture-values.md</code> conflict-resolution table, two-core trade-offs surface the axis rather than pre-resolving. The pairs below are <em>known tension points</em>, not blockers, but escalation surfaces for the review pass.</p>
 <div class="table-wrapper">
 <table>
 <thead>
 <tr><th>A</th><th>B</th><th>Tension axis</th><th>Resolution posture</th></tr>
 </thead>
 <tbody>
-<tr><td>Security</td><td>Simplicity</td><td>“Each layer is load-bearing” vs “smallest mechanism”</td><td>Name the axis. Default to Security per “default-on, never opt-in.”</td></tr>
-<tr><td>Observability</td><td>Simplicity</td><td>Instrumentation cost vs minimum mechanism</td><td>Name the axis. Default to Observability for production surfaces.</td></tr>
-<tr><td>Observability</td><td>Security</td><td>Logs leak secrets if untreated</td><td>P-SecurityLayered’s runtime layer handles this via redaction discipline.</td></tr>
-<tr><td>Quality</td><td>Cost (situational, not a core value but a weighting axis)</td><td>Quality outranks cost as default</td><td>Surface the cost override explicitly: “doing this at quality cost X because Y.”</td></tr>
-<tr><td>Simplicity</td><td>Migration cost</td><td>A clever simpler abstraction may be harder to migrate to or away from</td><td>Per-repo first, per P-PerRepoFirst. Defer the migration cost by deferring the abstraction.</td></tr>
-<tr><td>Honesty</td><td>Dogfooding</td><td>Workspace-private attribution preserves pattern signal; repo artifacts get genericized</td><td>P-WriteTimeAudience resolves it with two durability profiles and two disciplines.</td></tr>
-<tr><td>P-Defer</td><td>P-InstrumentBefore</td><td>“Don’t add until evidence forces” tension with “ship instrumented before launch”</td><td>P-InstrumentBefore wins for production surfaces. Observability is the evidence-gathering mechanism that makes deferral safe elsewhere.</td></tr>
+<tr><td>Security</td><td>Simplicity</td><td>“Each layer is load-bearing” vs “smallest mechanism”</td><td>Name the axis; default-to-Security per “default-on, never opt-in.”</td></tr>
+<tr><td>Observability</td><td>Simplicity</td><td>Instrumentation cost vs minimum mechanism</td><td>Name the axis; default-to-Observability for production surfaces.</td></tr>
+<tr><td>Observability</td><td>Security</td><td>Logs leak secrets if untreated</td><td>P-SecurityLayered’s runtime layer handles via redaction discipline.</td></tr>
+<tr><td>Quality</td><td>Cost (situational, not a core value but a weighting axis)</td><td>Quality outranks cost as default</td><td>Surface the cost override explicitly — “doing this at quality cost X because Y.”</td></tr>
+<tr><td>Simplicity</td><td>Migration cost</td><td>A clever simpler abstraction may be harder to migrate to/away from</td><td>Per-repo first per P-PerRepoFirst; defer the migration cost by deferring the abstraction.</td></tr>
+<tr><td>Honesty</td><td>Dogfooding</td><td>Workspace-private attribution preserves pattern signal; repo artifacts get genericized</td><td>P-WriteTimeAudience resolves — two durability profiles, two disciplines.</td></tr>
+<tr><td>P-Defer</td><td>P-InstrumentBefore</td><td>“Don’t add until evidence forces” tension with “ship instrumented before launch”</td><td>P-InstrumentBefore wins for production surfaces — observability is the evidence-gathering mechanism that makes deferral safe elsewhere.</td></tr>
+<tr><td>P-LockContract</td><td>P-PreserveDecisionSpace</td><td><em>When to lock.</em> “Lock the contract early” pulls toward early commitment; “preserve the decision space / keep options open” pulls toward deferring it.</td><td>Surface the axis; do not pre-resolve (scope-rule 3). The discriminator: lock what is <em>intrinsic to the artifact’s identity</em> — an intrinsic invariant locks at the stage it is defined, even if not exposed until later — and preserve the space on what is a <em>separable future option</em>. A lock is scoped to the assumptions it was made against; when a later change falsifies that world, the contract is re-derived against the new world, not honored as if the world had not moved.</td></tr>
+<tr><td>P-AgentPrimarySource</td><td>P-ShiftLeft</td><td><em>Form optimized for the primary (agent) consumer</em> vs <em>the form the accountable human gates most reliably</em>. Deterministic view-generation guarantees the human’s view matches the source byte-wise; it does not guarantee the human catches in catalog form what they would catch in narrative.</td><td>Surface, don’t pre-resolve. The workspace reads the agent-primary form directly at the Frame/spec gates; G-0014’s publish-render is the analogous mitigation at the publish boundary.</td></tr>
 </tbody>
 </table>
 </div>
+<blockquote>
+<p><strong>Performance, a situational weighting axis alongside cost, not a core value.</strong> Like cost (the <code>Quality | Cost</code> row above), performance is a situational weighting axis rather than a core system-property value: latency, throughput, and resource efficiency weight design choices where a surface bears them, surfaced explicitly when they override a core value rather than carried as a default lean. A performance-<em>budget</em> principle is deferred with a fireable trip-wire; it fires when the first latency-bearing surface adopts a stated budget (for example, retrieval latency in mnemra, page-load on a public site, an editor’s input responsiveness), at which point the budget and its measurement land in that project’s P-ADR. Naming the axis now closes the reads-as-omission gap: the canon named cost as a deliberate non-value weighting axis but left performance unnamed, and that absence was an omission, not a deliberate scoping-out.</p>
+</blockquote>
 <h2 id="notes-on-this-initial-walk"><a class="header" href="#notes-on-this-initial-walk">Notes on this initial walk</a></h2>
 <ul>
-<li><strong>Coverage:</strong> 7 core values plus 5 supporting values plus 15 named principles plus 28 G-ADRs. The edges below are <em>obvious</em> per the initial walk framing, not exhaustive. Add edges as work surfaces them.</li>
-<li><strong>Composition value is recent (2026-05-13).</strong> G-0028’s specializes-Composition edge is load-bearing. Expect that node to gain edges as the workflow lands.</li>
-<li><strong>Maintainability value adopted 2026-05-13.</strong> P-MinBlastRadius lands as the operationalizing principle. Stack-specific extensions live in the implementer stack skills’ <code>&lt;maintainability&gt;</code> sections, which are skill content rather than nodes.</li>
-<li><strong>ADR-to-ADR depends-on edges are sparse.</strong> Most ADRs anchor on a principle or value rather than another ADR. The G-0023 → G-0006 and G-0014 → G-0001 edges are the load-bearing cross-ADR dependencies. Others may surface during graph walks.</li>
-<li><strong>Refines vs specializes</strong> is a continuum. “Narrower scope” can read as either. This walk used <code>refines</code> when the source narrows the <em>mechanism</em> the target named, rather than adding a new case to a class.</li>
+<li><strong>Coverage:</strong> 8 core values + 8 supporting values + 24 named principles + 16 live G-ADRs. Edges below are the <em>obvious</em> ones, not exhaustive. Add edges as work surfaces them.</li>
+<li><strong>Composition value is recent (2026-05-13).</strong> G-0013’s specializes-Composition edge is load-bearing; expect that node to gain edges as the workflow lands.</li>
+<li><strong>Maintainability value adopted 2026-05-13.</strong> P-MinBlastRadius lands as the operationalizing principle. F/R-rule stack-specific extensions live in the implementer stack skills’ <code>&lt;maintainability&gt;</code> sections (skill content, not nodes).</li>
+<li><strong>ADR-to-ADR depends-on edges are sparse.</strong> Most ADRs anchor on a principle/value rather than another ADR. The G-0008 → G-0002 edge (PR-merge apparatus → Justfile CI contract) is the load-bearing cross-ADR dependency; the G-0004 → P-TDDPairs edge is the load-bearing cross-ADR-to-principle dependency. Others may surface during graph walks.</li>
+<li><strong>Refines vs specializes</strong> is a continuum; “narrower scope” can read as either. Used <code>refines</code> when the source narrows the <em>mechanism</em> the target named (vs adding a new case to a class).</li>
+<li><strong>P-PerRepoFirst ⇄ P-MinBlastRadius: rule-of-three at two scopes.</strong> Both principles invoke a rule-of-three, and they do not collide: P-PerRepoFirst’s governs <em>workspace-crate birth</em> (cross-repo, create the shared crate when a third repo adopts the shape; rule PR1), P-MinBlastRadius’s governs <em>function/abstraction extraction within a single codebase</em>. Disambiguation note, not a conflict edge.</li>
+<li><strong>P-Worktrees ⇄ P-MinBlastRadius: compose at change-isolation.</strong> The two operationalize change isolation at different layers: P-Worktrees at the workflow layer (isolate the work in progress), P-MinBlastRadius at the code layer (bound how far the change reaches). Recorded here for graph-walk visibility (a compose relationship, with no formal edge type for it).</li>
+<li><strong>P-TestableByDesign ⇄ P-MinBlastRadius ⇄ P-LockContract: one lever, three ends.</strong> A dependency injected behind a stable contract is usually the <em>same structural seam</em> serving three principles at once: the change lands behind it (P-MinBlastRadius), the implementation swaps behind it (P-LockContract), and the test drives through it (P-TestableByDesign). Named in P-TestableByDesign’s Why; recorded here for graph-walk visibility (a compose relationship, with no formal edge type for it) so a review finding on any of the three can cite the shared lever.</li>
+<li><strong>P-GuaranteeByMechanism is the cross-family parent of three existing X-rules.</strong> DF1 (P-Defer), TS2 (P-TrustworthySignal), and MB1’s consolidation clause (P-MinBlastRadius) each specialize P-GuaranteeByMechanism (the general “enforce a guarantee with a loud-failing mechanism, not a convention” discipline) on their respective surfaces (deferral firing, coverage-scope reconciliation, deduplication). X-rules are not constraint-graph nodes (they live inside their parent principles, scope-rule 2), so this cross-family parent relationship is recorded here as a walk-note rather than as edge rows, with each rule back-linked to P-GuaranteeByMechanism at its site in <code>architecture-principles.md</code>. The language-agnostic control-integrity clause on P-SecurityLayered is a fourth specialization, on the Security surface.</li>
+<li><strong>Observability ⇄ Honesty: a faithful instrument is where they coincide.</strong> A signal that reports success without verifying, reports a failure that did not occur, or stops reporting silently is simultaneously an Observability fidelity defect and an Honesty defect (it asserts confidence it has not earned). Recorded so review findings can cite “the instrument lied” against both values; no formal edge type fits a value↔value mutual-reinforcement, so it sits here rather than in a typed table. <strong>P-TrustworthySignal</strong> operationalizes this coincidence for the verification signal specifically; its anchors are Observability + Quality, and it names the Honesty coincidence in its Why as a cross-reinforcement rather than a third anchor, so this value↔value note and the principle stay linked rather than asserting the faithful-instrument idea unlinked in two places.</li>
+<li><strong>P-LockContract ⇄ P-PreserveDecisionSpace: a worked instance of the when-to-lock edge (in the Conflicts-with table).</strong> A storage layer was locked as an <em>engine-agnostic trait</em> (an interface every storage call site depends on) with exactly one implementation built behind it (Postgres) and no second adapter. The two principles do not collide; they govern different objects. <strong>P-LockContract</strong> justifies locking the trait <em>now</em>: the storage seam is intrinsic to the layer’s identity, so the contract locks at definition even though no second engine yet exercises it. <strong>P-PreserveDecisionSpace</strong> justifies <em>not</em> building the second adapter: that is a separable future option, deferred behind a named trip-wire (a candidate engine relicenses permissively, or the single-engine path strains under the real workload), not foreclosed. The same instance illustrates the cell’s <em>re-derive-on-reshape</em> half: this lock <strong>reversed</strong> an earlier project-local “this engine is natural here, no swap needed” lock, because that earlier lock was scoped to “no realistic swap pressure”, an assumption a later on-merits storage re-evaluation falsified. When the world the lock assumed moved, the contract was re-derived against the new world rather than honored as if the world had stood still. (Project ADR pointer: the storage layer’s project ADR carries the full reasoning; cited as a pointer, not a dependency; the edge decides the general case without it.)</li>
 </ul>
 <h2 id="scope-rules-resolved-2026-05-13"><a class="header" href="#scope-rules-resolved-2026-05-13">Scope rules (resolved 2026-05-13)</a></h2>
 <ol>
 <li>
-<p><strong>Project P-ADR edges live in per-project files.</strong> Each project bootstraps <code>&lt;project&gt;/docs/src/adrs/constraint-edges.md</code> once it accumulates around 5 P-ADRs. The per-project file extends this one via <code>specializes</code> edges to G-ADRs. The workspace file stays clean.</p>
+<p><strong>Project P-ADR edges live in per-project files.</strong> Each project bootstraps <code>&lt;project&gt;/docs/src/adrs/constraint-edges.md</code> once it accumulates ~5 P-ADRs. The per-project file extends this one via <code>specializes</code> edges to G-ADRs. Workspace file stays clean.</p>
 </li>
 <li>
-<p><strong>Skills are not nodes in the constraint graph.</strong> Stack skill files operationalize principles. They’re the mechanism layer, not the constraint layer. When a skill rule conflicts with a principle or another constraint, surface the conflict edge back into this file at discovery time. Skill files are referenced by name in the rationale, but there are no per-skill nodes.</p>
+<p><strong>Skills are not nodes in the constraint graph.</strong> Skill files operationalize principles; they’re the mechanism layer, not the constraint layer. When a skill rule conflicts with a principle or another constraint, surface the conflict edge back into this file at discovery time (skill files referenced by name in the rationale, but no per-skill nodes).</p>
 </li>
 <li>
-<p><strong>Principle-pair conflict walks are surfacing-driven.</strong> There’s no systematic walk of principle pairs for tensions. Conflict edges get added when a review pass or graph walk forces them. This aligns with P-Defer.</p>
-</li>
-<li>
-<p><strong>G-0007..G-0012 → Composition holds at series level for now.</strong> A per-ADR second pass for more-specific principle anchors is deferred. The Composition edge stays. Finer anchors land when a graph walk needs them.</p>
+<p><strong>Principle-pair conflict walks are surfacing-driven.</strong> No systematic walk of principle pairs for tensions; conflict edges are added when a review pass or graph walk forces them. Aligned with P-Defer.</p>
 </li>
 </ol>
 <h2 id="changelog"><a class="header" href="#changelog">Changelog</a></h2>
 <ul>
-<li><strong>2026-05-15:</strong> P-CompositionBridge principle landed. Added P-CompositionBridge → Composition (specializes) plus P-CompositionBridge → Dogfooding (specializes) anchoring edges; added P-TrustThenRetro → Composition (specializes, the paired protocol mechanism); re-anchored the G-0007..G-0012 series from the Composition value direct to P-CompositionBridge (Composition still reachable transitively).</li>
-<li><strong>2026-05-13:</strong> Maintainability value plus P-MinBlastRadius principle landed. Added Maintainability and P-MinBlastRadius nodes via anchoring edges.</li>
-<li><strong>2026-05-13:</strong> Initial walk. 28 G-ADRs plus 15 principles plus 12 values walked for obvious specializes/depends-on/refines edges and known value-level conflicts. Composition plus Maintainability nodes flagged for population as those values land in <code>architecture-values.md</code>.</li>
-<li><strong>2026-05-13:</strong> Open questions resolved: the per-project P-ADR file pattern is locked, skills are out of scope as nodes, the conflict walk is surfacing-driven, and the G-0007..G-0012 per-ADR pass is deferred. The initial walk is now stable.</li>
+<li><strong>2026-07-04</strong>: Axis-2 gap-scan landing. Anchoring <code>specializes</code> edges for three new principles: <strong>P-GuaranteeByMechanism → Quality</strong> and <strong>→ Observability</strong>; <strong>P-VerifyInheritedState → Honesty</strong> and <strong>→ Reversibility</strong>; <strong>P-LeastAuthority → Security</strong>. Added <strong>G-0016 → P-LeastAuthority</strong> (its second anchor, alongside the existing → P-SecurityLayered, making it a multi-anchor node). Added the <strong>P-AgentPrimarySource ⇄ P-ShiftLeft</strong> conflict edge. Recorded the <strong>P-GuaranteeByMechanism</strong> parent-of-DF1/TS2/MB1 cross-family walk-note and the <strong>performance situational-weighting-axis</strong> note alongside the cost row. Coverage note reconciled to <strong>8 core values + 8 supporting values + 24 named principles + 16 live G-ADRs</strong>.</li>
+<li><strong>2026-07-04</strong>: Added <strong>P-TestableByDesign</strong> (Anchors Quality, Maintainability). Two anchoring <code>specializes</code> rows and the <em>one lever, three ends</em> walk-note (P-TestableByDesign ⇄ P-MinBlastRadius ⇄ P-LockContract).</li>
+<li><strong>2026-06-26</strong>: Added <strong>P-TrustworthySignal</strong> (Anchors Observability, Quality). Two anchoring <code>specializes</code> rows; cross-linked the <em>Observability ⇄ Honesty</em> faithful-instrument walk-note to the new principle.</li>
+<li><strong>2026-06-22</strong>: Added <strong>P-LeadOrchestration → Composition</strong>. Consolidated the merge-governance node (<strong>G-0003</strong>) and the multi-anchor PR-merge apparatus (<strong>G-0008 →</strong> P-Worktrees, Reversibility, P-MainProtected) and Rust release apparatus (<strong>G-0009 →</strong> P-StackDiscipline, Honesty); the <strong>G-0008 → G-0002</strong> cross-ADR dependency is the load-bearing one.</li>
+<li><strong>2026-06-11</strong>: Added the <strong>P-AgentPrimarySource</strong> anchoring rows (→ Decomposition, → Dual-audience) and the <strong>G-0013 → P-AgentPrimarySource</strong> dependency.</li>
+<li><strong>2026-06-09</strong>: Added the P-LockContract ⇄ P-PreserveDecisionSpace worked-instance walk-note (the engine-agnostic storage-trait example).</li>
+<li><strong>2026-05-31</strong>: Added the <strong>P-LockContract ⇄ P-PreserveDecisionSpace</strong> <em>when-to-lock</em> conflict edge and the <strong>G-0013 → P-LockContract</strong> refine. Recorded three walk-note relationships (P-PerRepoFirst ⇄ P-MinBlastRadius, P-Worktrees ⇄ P-MinBlastRadius, Observability ⇄ Honesty).</li>
+<li><strong>2026-05-15</strong>: P-CompositionBridge principle landed. Added <strong>P-CompositionBridge → Composition</strong> and <strong>→ Dogfooding</strong> anchoring edges; added <strong>P-TrustThenRetro → Composition</strong> (paired protocol mechanism).</li>
+<li><strong>2026-05-13</strong>: Maintainability value + <strong>P-MinBlastRadius</strong> principle landed (→ Maintainability, → Reversibility). Initial walk: obvious specializes/depends-on/refines edges and known value-level conflicts.</li>
 </ul>
 
                     </main>

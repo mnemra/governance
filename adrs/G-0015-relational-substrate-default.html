@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>G-0027: Agent-Primary Source Artifacts - mnemra-governance</title>
+        <title>G-0015: Relational Substrate Default - mnemra-governance</title>
 
 
         <!-- Custom HTML head -->
@@ -35,10 +35,10 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-79642c4f.js";
+            window.path_to_searchindex_js = "../searchindex-c688843e.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-eb7d2461.js"></script>
+        <script src="../toc-92488165.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -177,112 +177,57 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="g-0027-agent-primary-source-artifacts-human-views-derivative"><a class="header" href="#g-0027-agent-primary-source-artifacts-human-views-derivative">G-0027: Agent-Primary Source Artifacts; Human Views Derivative</a></h1>
+                        <h1 id="g-0015-relational-substrate-default--postgres-server-side--sqlite-embedded-behind-an-engine-agnostic-seam"><a class="header" href="#g-0015-relational-substrate-default--postgres-server-side--sqlite-embedded-behind-an-engine-agnostic-seam">G-0015: Relational Substrate Default — Postgres (Server-Side) / SQLite (Embedded), Behind an Engine-Agnostic Seam</a></h1>
 <p><strong>Status:</strong> Accepted
-<strong>Date:</strong> 2026-05-11</p>
+<strong>Date:</strong> 2026-06-11</p>
 <h2 id="context"><a class="header" href="#context">Context</a></h2>
-<p>The source-of-truth artifacts in this workspace are requirements, specs, architecture documents, and ADRs (architecture decision records, the records that capture why a design choice was made). They’re read primarily by AI agents doing dispatched work, not by humans reading top to bottom. The conventional look of these documents (integrated narrative prose, woven cross-references, a designed reading flow) is a holdover from the human-authoring tradition. It adds little for an agent consumer, and it taxes every author with composition work on every change.</p>
-<p>Investigation of OpenSpec, a spec-driven development framework, confirmed that a format that works well for agents is structurally different from a human-narrative document. It uses named identifiers as primary keys, labeled sections (ADDED / MODIFIED / REMOVED / RENAMED), block-level addressability, and deterministic merge by name. The integrated-narrative property matters to human readers and is incidental to agents. Agents prefer the catalog.</p>
-<p>The decision point came up during a specops CLI discovery session. The choice was between an LLM-assisted merge engine, which would preserve integrated prose, and a deterministic structural merge, which produces catalog-shaped output. Picking between them forced a re-examination of who the spec is actually for.</p>
-<p>Two earlier decisions, G-0004 and G-0025, applied this same format-follows-consumer logic to narrower domains: agent profiles and internal IPC. G-0027 makes the underlying principle explicit and applies it to documentation source artifacts.</p>
+<p>A relational-store choice is a decision-fork every qualifying project faces identically; it is not project-specific. It is also near-irreversible at scale (a substrate migration is the most expensive migration a project makes), which is the decision-altitude signature (a hard-to-reverse fork), not implementation tuning.</p>
+<p>The backing-services area of the constraint taxonomy read as <em>empty</em> of decision-altitude members. The reason was structural: the one decision-altitude member that belonged there was buried inside a project ADR, while the thing sitting in general canon at this subject (a SQL file-based migration recipe) was an implementation-altitude <em>recipe</em> that did not belong at this altitude. That recipe has been demoted to an implementation-level Rust reference; this ADR records the right-altitude substrate fork the slot was missing.</p>
+<p>The decision is conditioned on deployment topology, and the condition is load-bearing. A bare “need a relational store → Postgres” would collide with the live SQLite lane; the project task DB itself runs on embedded SQLite, the lane the demoted migration recipe still serves. The two defaults are siblings keyed on topology, not a collision.</p>
 <h2 id="decision"><a class="header" href="#decision">Decision</a></h2>
-<p>Source-of-truth artifacts (requirements, specs, architecture, ADRs) are
-authored, stored, and maintained in agent-primary form:</p>
+<p>The default relational substrate is keyed on deployment topology:</p>
+<ul>
+<li>
+<p><strong>Server-side / multi-tenant / managed-tier relational store → default PostgreSQL.</strong> Chosen on affirmative merits after a license-pass-first gate, not on incumbency. The merits that ground the default (and that any project re-runs rather than inheriting as survivor bias): a hard license gate applied first (pass/fail, not a scored axis; a redistributed product’s substrate license propagates downstream); multi-tenancy maturity (Postgres Row-Level Security is the reference implementation for tenant-scoped isolation); single-transaction atomicity for multi-write operations that must commit or roll back as a whole; and decades-deep backup / point-in-time-recovery / observability maturity, a quality requirement for any sold or operated product.</p>
+</li>
+<li>
+<p><strong>Embedded / single-writer / single-process relational store → SQLite.</strong> The live lane: the project task DB, and the lane the demoted file-based-migration recipe still serves. Choosing SQLite here is not a fallback from Postgres; it is the correct default for the embedded topology.</p>
+</li>
+</ul>
+<p>A project’s substrate choice is recorded against its topology. A server-side/multi-tenant project does not get to pick SQLite for convenience, and an embedded single-writer tool does not inherit Postgres operational weight it has no use for.</p>
+<h3 id="mitigation--engine-agnostic-storage-seam-named-not-a-second-default"><a class="header" href="#mitigation--engine-agnostic-storage-seam-named-not-a-second-default">Mitigation — engine-agnostic <code>Storage</code> seam (named, not a second default)</a></h3>
+<p>Lock an engine-agnostic <code>Storage</code> seam <strong>only</strong> for an intrinsic contract invariant: the storage surface is an engine-agnostic trait, and the chosen engine is the implementation behind it. The contract is locked because it is intrinsic to the storage layer’s identity (P-LockContract: lock what is intrinsic, even when only one engine exercises it; an in-memory test adapter is reason enough for the seam). A future engine swap is bounded behind that one seam (P-MinBlastRadius, minimum blast radius), so a future permissively-relicensed engine slots in without re-architecting call sites.</p>
+<p>Do <strong>not</strong> build a second adapter speculatively (P-Defer, defer the build until evidence forces it). The seam is locked now; the second implementation is deferred behind a named trip-wire (a candidate engine relicenses to a permissive tier and becomes a shippable default, or the single-engine path measurably strains on a real workload). This is P-LockContract + P-MinBlastRadius <em>applied</em> as the mitigation for the near-irreversibility of the substrate choice; it is not a separate promotable “use a trait” default.</p>
+<h3 id="postgres-operational-preconditions-applies-when-the-postgres-default-is-chosen-with-rls"><a class="header" href="#postgres-operational-preconditions-applies-when-the-postgres-default-is-chosen-with-rls">Postgres operational preconditions (applies when the Postgres default is chosen with RLS)</a></h3>
+<p>When the Postgres default is taken and Row-Level Security is the multi-tenancy mechanism, RLS <em>is</em> the reference implementation for tenant-scoped isolation, but only with its operational preconditions met; omitting any one is a silent cross-tenant-leak risk. These are operational guidance riding with the substrate default, not a separate ADR:</p>
 <ol>
-<li>
-<p><strong>Structured and machine-addressable.</strong> Named blocks with stable
-identifiers, labeled sections, RFC 2119 keywords where applicable, explicit
-cross-references by name.</p>
-</li>
-<li>
-<p><strong>Identifiers carry both a stable unique ID and a human-readable name.</strong>
-Names alone collide; bare numbers are opaque to humans. Pairing gives
-durable identity (for merge, supersede, cross-reference) and grokable
-references (for review, discussion, recall). Exact syntax is per-format.</p>
-</li>
-<li>
-<p><strong>No integrated-narrative requirement.</strong> Connective prose between blocks is
-not load-bearing. Mechanical operations may discard it.</p>
-</li>
-<li>
-<p><strong>Operations on these artifacts are mechanical code, not LLM-driven.</strong>
-Parsing, validation, merging, and archiving are all deterministic. The
-format is <em>consumed by</em> agents; the operations on the format are not
-<em>performed by</em> them. Any language model in the artifact lifecycle sits at a
-clear boundary (authoring assist upstream, view generation downstream),
-never inside the core operation.</p>
-</li>
+<li><strong>The application role MUST NOT hold <code>BYPASSRLS</code> and MUST NOT be a superuser.</strong> Superusers and <code>BYPASSRLS</code> roles bypass every policy by default; the application connects as an ordinary role.</li>
+<li><strong><code>ALTER TABLE … FORCE ROW LEVEL SECURITY</code> is required if the application role owns the tables.</strong> Table owners are exempt from their own RLS unless <code>FORCE</code> is set.</li>
+<li><strong>The tenant key MUST be set per-transaction, not per-session.</strong> Under a transaction-mode connection pooler, use <code>SET LOCAL &lt;tenant-key&gt; = …</code> <em>inside</em> the transaction; a bare session-level <code>SET</code> persists on the physical connection and leaks across pooled checkouts to the next tenant.</li>
 </ol>
-<p>Human-readable views, when needed, are <em>derivative</em>: generated from the
-agent-primary source on demand. They are never the source of truth. A change
-to a generated view that does not also change the source is a bug.</p>
 <h2 id="alternatives-considered"><a class="header" href="#alternatives-considered">Alternatives Considered</a></h2>
-<p><strong>Human-primary with agent-readable subset.</strong> The traditional approach: design
-the document for human readers, structure it well enough that agents can
-parse it. Rejected because the actual read ratio is heavily agent-skewed in
-this workspace, and the human-author tax (composing narrative, integrating
-each change into the whole) is the slowest part of the cycle. Optimizing for
-the rarer consumer is wrong.</p>
-<p><strong>LLM-driven merge to preserve integrated narrative.</strong> Use a language model to
-rewrite the source into integrated form on each change. Rejected because (a)
-it introduces non-determinism into a load-bearing path, (b) it makes
-byte-identical acceptance criteria impossible to enforce, (c) it consumes
-model budget for a property the primary consumer doesn’t need, (d) the
-“looks-integrated” aesthetic is itself a derivative concern that can be
-served downstream without polluting the source.</p>
-<p><strong>Dual-source: keep both an agent-primary and a human-primary copy.</strong> Rejected
-because dual sources drift. The whole point of a source of truth is that
-there’s one.</p>
+<p><strong>Unconditioned “relational → Postgres.”</strong> Rejected: it collides with the live embedded SQLite lane. The fork is real only when keyed on deployment topology; an embedded single-writer tool that adopted Postgres would pay multi-tenant operational weight for no benefit.</p>
+<p><strong>Leave the substrate fork buried in a project ADR (the prior state).</strong> Rejected: the fork recurs identically across every qualifying project. Leaving it project-local manufactures the <em>opposite</em> problem the generality audit warned against: a general decision-altitude fork hidden where the next project re-derives it blind. The fork “projects into” each project rather than living in one.</p>
+<p><strong>Build a second storage adapter now to prove the seam.</strong> Rejected per P-Defer: the seam is justified by the in-memory test adapter and its role as the swap re-open point; a second production adapter spends effort on a non-shippable path before a trip-wire forces it. The seam is locked; the second implementation is deferred.</p>
+<p><strong>A Postgres-shaped (not engine-agnostic) trait.</strong> Rejected: a deliberately Postgres-shaped seam forecloses the relicense/landscape optionality the mitigation exists to preserve. The seam is engine-agnostic; Postgres is the only implementation built.</p>
 <h2 id="consequences"><a class="header" href="#consequences">Consequences</a></h2>
-<p><strong>Positive:</strong></p>
 <ul>
-<li>Mechanical merge engines become tractable for spec and architecture deltas.
-Deterministic structural code, no model in the merge path.</li>
-<li>Authoring discipline shifts toward named blocks and structured deltas, which
-improves clarity even for the occasional human reader of the source.</li>
-<li>Cross-artifact references survive renames, refactors, and document
-reorganizations in ways narrative cross-references do not.</li>
-<li>Human-view generation becomes optional: pay for it only when a real reader
-needs one, not preemptively on every change.</li>
-<li>Format evolution is evaluated on agent-consumability, not on whether the
-source “reads well.”</li>
+<li>The backing-services slot now carries its decision-altitude member; the slot read as empty only because that member was buried in a project ADR while a recipe sat in its place. The fold takes the wrong-altitude recipe out; this ADR puts the right-altitude fork in.</li>
+<li>The two defaults are siblings keyed on deployment topology; a project records its substrate against its topology rather than re-litigating Postgres-vs-SQLite from scratch.</li>
+<li>The engine-agnostic seam preserves swap optionality at the cost of a one-implementation-deep trait, justified by the in-memory test adapter and by the seam’s role as the trip-wired re-open point.</li>
+<li>The Postgres RLS preconditions travel with the default, so a project taking the Postgres lane carries them rather than rediscovering them as implementation trivia after a cross-tenant leak.</li>
 </ul>
-<p><strong>Negative:</strong></p>
-<ul>
-<li>Direct readers of the source will find it more catalog-like, less designed.
-Acceptable: the source is not the reader’s document.</li>
-<li>Authoring cost shifts to discipline (thinking in named blocks) rather than
-composition (free-form prose). Paid by every author of every artifact.</li>
-<li>View generation is an additional surface when humans actually need a view.
-Non-trivial work; worth doing only when a real reader is present.</li>
-<li>Existing narrative-shaped artifacts will not match this standard until
-rewritten. Migration is opportunistic. Rewrite when an artifact is
-touched, not on a blanket sweep.</li>
-</ul>
-<p><strong>Downstream:</strong></p>
-<ul>
-<li>Specops CLI inherits directly: the named-block additive primitive
-(OpenSpec-style) is this decision’s implementation for the spec format.
-Separately captured as a project ADR for specops.</li>
-<li>Architecture tooling inherits directly: architecture documents adopt the same
-named-block primitive; the integrated-narrative goal drops from
-architecture-doc structure.</li>
-<li>The <code>/spec</code> skill needs revisiting. Feature-spec is reasonably structured but
-doesn’t use named requirements as identifiers.</li>
-<li>Per-format syntax decisions (exact form of the name+ID pair, section
-layout) are captured in per-project P-* ADRs, not relitigated at the
-general level.</li>
-</ul>
+<p><strong>Project-local, NOT promoted here.</strong> A specific product’s embedded-engine choice (a single-self-hosted-binary deployment posture), its V0 stack (pgvector HNSW / native full-text search / recursive CTEs / JSONB), its single-transaction keyed-supersession headline guarantee, and its per-capability trip-wires (keyword / graph / time-series) stay in that product’s own project ADRs. Those are the product’s sizing and identity, not a cross-project fork. This ADR carries only the kernel: the conditioned substrate default plus the engine-agnostic seam as the P-LockContract / P-MinBlastRadius mitigation, with the Postgres RLS operational preconditions riding along.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../adrs/G-0026-project-dev-docs-tooling.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../adrs/G-0014-publish-time-human-render.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="../adrs/G-0028-agent-first-workflow-shape.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../adrs/G-0016-unattended-github-credential.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -292,11 +237,11 @@ general level.</li>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../adrs/G-0026-project-dev-docs-tooling.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../adrs/G-0014-publish-time-human-render.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="../adrs/G-0028-agent-first-workflow-shape.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../adrs/G-0016-unattended-github-credential.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>

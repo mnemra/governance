@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>G-0029: Publish-Time Human Render - mnemra-governance</title>
+        <title>G-0014: Publish-Time Human Render - mnemra-governance</title>
 
 
         <!-- Custom HTML head -->
@@ -35,10 +35,10 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-79642c4f.js";
+            window.path_to_searchindex_js = "../searchindex-c688843e.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-eb7d2461.js"></script>
+        <script src="../toc-92488165.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -177,19 +177,18 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="g-0029-publish-time-human-render-via-bidirectional-translation"><a class="header" href="#g-0029-publish-time-human-render-via-bidirectional-translation">G-0029: Publish-Time Human Render via Bidirectional Translation</a></h1>
+                        <h1 id="g-0014-publish-time-human-render-via-bidirectional-translation"><a class="header" href="#g-0014-publish-time-human-render-via-bidirectional-translation">G-0014: Publish-Time Human Render via Bidirectional Translation</a></h1>
 <p><strong>Status:</strong> Accepted
 <strong>Date:</strong> 2026-05-20</p>
 <h2 id="context"><a class="header" href="#context">Context</a></h2>
-<p>Source artifacts written for agents first (<a href="../glossary.html#agent-primary-source">agent-primary source</a>, the convention G-0027 sets) are tuned for an agent reader: dense, named, heavily cross-referenced, and full of workspace-internal vocabulary. That vocabulary includes ADR codes like G-0027, principle shorthand like P-Defer (the principle that defers a mechanism choice until evidence forces it), requirement codes like R12, and lifecycle-tier names. It carries real meaning for an agent. To an outside human, it’s opaque. The outside humans here are the contributors, integrators, and evaluators who land on a published docs site without any of that context.</p>
-<p>G-0026 made mdBook the workspace docs stack and already ships rendered HTML to GitHub Pages. So a repo that follows both G-0026 and G-0027 publishes a human-readable surface, the mdBook HTML, whose underlying source was authored for agents. The two decisions leave a gap between them. Humans arrive on pages that were never written for them.</p>
-<p>The usual fix is P-WriteTimeAudience (strip workspace-internal team names when the page is published). That removes the names but leaves the conceptual shorthand untouched. Resolving the shorthand needs a separate translation pass.</p>
-<p>A second gap showed up at the same time. There’s no agent-addressable docs surface (no <code>llms.txt</code> or <code>llms-full.txt</code>), so an agent querying the published docs has no structured way in. The same pipeline that builds the human surface can build the agent surface, both from the one canonical source.</p>
-<p>Resolving those two gaps together is the mechanism this ADR records.</p>
+<p>Agent-first source artifacts (per <code>P-AgentPrimarySource</code>) are optimized for agent consumers: dense, named, cross-referenced, using insider vocabulary (ADR codes, principle shorthand like <code>P-Defer</code>, requirement codes, lifecycle tier names). That vocabulary is load-bearing for agents but opaque to outside humans: contributors, integrators, and evaluators encountering a published docs site.</p>
+<p>The project dev-docs tooling decision (<a href="G-0012-project-dev-docs-tooling.html">G-0012</a>) established mdBook as the docs stack, already shipping rendered HTML to GitHub Pages. A repo following G-0012 + P-AgentPrimarySource therefore publishes a human-readable surface (mdBook HTML) whose source is agent-first prose. The two decisions create a gap: humans land on pages not authored for them. The standard publish-time discipline (<code>P-WriteTimeAudience</code>, the write-time-audience discipline) strips insider team names but does not resolve conceptual shorthand; a separate translation pass is required.</p>
+<p>A second gap surfaced alongside: no agent-addressable docs surface (<code>llms.txt</code> / <code>llms-full.txt</code>) exists, so agents querying published docs have no structured entry point. The same pipeline that generates the human surface can generate the agent surface from the same canonical source.</p>
+<p>These two gaps, resolved together, define the mechanism this ADR records.</p>
 <h2 id="decision"><a class="header" href="#decision">Decision</a></h2>
-<p>Repos whose source is agent-primary publish two surfaces from one canonical source tree, using a translation pass at publish time that runs in both directions.</p>
+<p>Agent-primary doc repos publish two surfaces from one canonical source tree, via a publish-time bidirectional translation pass.</p>
 <h3 id="1-single-canonical-source-tree"><a class="header" href="#1-single-canonical-source-tree">1. Single canonical source tree</a></h3>
-<p><code>docs/src/</code> is the one place documents are authored. No parallel sibling trees. Every document (intent, ADRs, specs, guides, glossary) is written once: in agent-primary form where an agent is the natural reader, or in human-primary form where a human is. The source is the source of truth. Both published surfaces derive from it.</p>
+<p><code>docs/src/</code> is the canonical authoring location. No parallel sibling trees. Every document (intent, ADRs, specs, guides, glossary) is authored once, in agent-primary form where that is the natural audience, human-primary where it is not. The source is the source of truth; both publication surfaces are derivative.</p>
 <h3 id="2-two-publication-surfaces"><a class="header" href="#2-two-publication-surfaces">2. Two publication surfaces</a></h3>
 <div class="table-wrapper">
 <table>
@@ -197,28 +196,27 @@
 <tr><th>Surface</th><th>Location</th><th>Generated via</th></tr>
 </thead>
 <tbody>
-<tr><td>mdBook HTML (humans)</td><td><code>_published/human/</code> → GitHub Pages</td><td>EXPLAIN-pass translations + mdBook build</td></tr>
-<tr><td>llms.txt + llms-full.txt (agents)</td><td><code>_published/agent/</code> + <code>_published/llms*.txt</code></td><td>STRIP-pass translations + concatenation</td></tr>
+<tr><td>mdBook HTML (humans)</td><td><code>docs/_published/human/</code> → GitHub Pages</td><td>EXPLAIN-pass translations + mdBook build</td></tr>
+<tr><td>llms.txt + llms-full.txt (agents)</td><td><code>docs/_published/agent/</code> + <code>docs/_published/llms*.txt</code></td><td>STRIP-pass translations + concatenation</td></tr>
 </tbody>
 </table>
 </div>
-<p>Both surfaces are generated locally and <strong>committed to the repo</strong>. CI stays dumb: it runs <code>mdbook build</code> against the committed <code>_published/human/</code> tree, copies the committed llms.txt and llms-full.txt into the build output, and deploys to gh-pages. No LLM calls happen in cloud CI.</p>
+<p>Both surfaces are generated locally and <strong>committed to the repo</strong>. CI is dumb: it runs <code>mdbook build docs/</code>, copies the committed <code>llms.txt</code> / <code>llms-full.txt</code> into the build output (<code>docs/book/</code>), and deploys that tree to the <code>gh-pages</code> branch. No LLM calls in cloud CI. The llms files are therefore served at the Pages site root alongside the human HTML and remain committed in <code>docs/_published/</code>.</p>
 <h3 id="3-bidirectional-translation-at-publish-time"><a class="header" href="#3-bidirectional-translation-at-publish-time">3. Bidirectional translation at publish time</a></h3>
-<p>Each canonical page declares a <code>primary-audience</code> frontmatter field, either <code>agent</code> or <code>human</code>. The default comes from the directory: <code>intent/</code>, <code>adrs/</code>, and <code>specs/</code> default to <code>agent</code>; <code>guides/</code> and <code>intro.md</code> default to <code>human</code>.</p>
-<p>There are two translation passes, invoked via the <code>/docs-translate</code> slash command [superseded — see Mechanism details (resolved 2026-05-21)]:</p>
+<p>Each canonical page declares a <code>primary-audience</code> frontmatter field (<code>agent</code> or <code>human</code>). Default by directory: <code>intent/</code>, <code>adrs/</code>, <code>specs/</code> → <code>agent</code>; <code>guides/</code>, <code>intro.md</code> → <code>human</code>.</p>
+<p>Two translation passes, orchestrated by a <code>docs-translate</code> slash command (see §9 for why a slash command rather than a recipe):</p>
 <ul>
-<li><strong>EXPLAIN pass</strong> — agent-primary source to a human render. It resolves jargon, adds narrative, links glossary terms, and surfaces the context the source left implicit. Used for intent docs, ADRs, and specs.</li>
-<li><strong>STRIP pass</strong> — human-primary source to an agent render. It removes pedagogical scaffolding, tightens the prose to facts and contracts, and adds explicit cross-references to ADRs and specs. Used for guides.</li>
+<li><strong>EXPLAIN pass:</strong> agent-primary source → human render: resolve jargon, add narrative, link glossary terms, surface implicit context. Used for intent docs, ADRs, specs.</li>
+<li><strong>STRIP pass:</strong> human-primary source → agent render: remove pedagogical scaffolding, tighten to facts and contracts, add explicit cross-references to ADRs and specs. Used for guides.</li>
 </ul>
-<p>For each page, the side that matches its canonical audience is copied verbatim into the matching <code>_published/</code> subtree. Only the opposite-audience side needs a translation pass.</p>
+<p>Each page’s canonical-audience side is copied verbatim into the matching <code>_published/</code> subtree. Only the opposite-audience side requires a translation pass. The passes are not symmetrical rewrites; they are directed transformations. EXPLAIN resolves insider vocabulary for readers who do not share the agent’s context; STRIP removes instructional scaffolding that wastes an agent’s token budget. The glossary is the load-bearing register for EXPLAIN; it anchors what terms mean so the pass produces consistent translations rather than invented paraphrases.</p>
 <h3 id="4-translation-runs-locally-not-in-cloud-ci"><a class="header" href="#4-translation-runs-locally-not-in-cloud-ci">4. Translation runs locally, not in cloud CI</a></h3>
-<p>Translation is invoked through the <code>/docs-translate</code> slash command on the maintainer’s local machine, using Claude Code subscription usage (the plan budget, not metered API spend). The translated outputs get committed. This is the API-budget constraint at work: any LLM call placed in cloud CI would draw API credits on every push.</p>
+<p>Translation is invoked on the maintainer’s local machine using a subscription budget (plan budget, not API spend); translated outputs are committed. This is the API-budget constraint in force: any LLM call in cloud CI would draw API credits on every push. The tradeoff (committed build artifacts in the diff) is explicitly accepted.</p>
 <h3 id="5-frontmatter-summary-as-llmstxt-description-source"><a class="header" href="#5-frontmatter-summary-as-llmstxt-description-source">5. Frontmatter <code>summary:</code> as llms.txt description source</a></h3>
-<p>Each canonical <code>.md</code> carries a <code>summary:</code> YAML frontmatter field. The llms.txt manifest is generated from the SUMMARY.md navigation structure plus these <code>summary:</code> values. When the translation pass generates the human-form page and the canonical source has no summary yet, the pass populates <code>summary:</code>.</p>
-<h3 id="6-hash-gated-translation-regeneration-via-translation-manifestjson"><a class="header" href="#6-hash-gated-translation-regeneration-via-translation-manifestjson">6. Hash-gated translation regeneration via <code>.translation-manifest.json</code></a></h3>
-<p>A <code>.translation-manifest.json</code> sidecar tracks the content hash of each canonical source page. <code>just docs-check</code> computes hashes for all <code>docs/src/**/*.md</code> and returns nonzero if any source has changed without a matching translation update. That nonzero is the enforcement signal for pre-push validation. Translation only runs for pages whose source hash differs from the manifest entry.</p>
+<p>Each canonical <code>.md</code> carries a <code>summary:</code> YAML frontmatter field. The <code>llms.txt</code> manifest is generated from <code>SUMMARY.md</code> navigation structure + these <code>summary:</code> values. The translation pass populates <code>summary:</code> when generating the human-form page if the canonical source does not already have one; the agent-canonical summary feeds both the translated page and the <code>llms.txt</code> manifest.</p>
+<h3 id="6-hash-gated-translation-regeneration"><a class="header" href="#6-hash-gated-translation-regeneration">6. Hash-gated translation regeneration</a></h3>
+<p>LLM translation is non-deterministic; without a gate, every translation run would re-generate all pages and produce diff churn even when no source changed. A <code>.translation-manifest.json</code> sidecar tracks the content hash of each canonical source page (and of each pass prompt). A translation pass runs only for pages whose source hash OR prompt hash differs from the manifest entry; unchanged pages are copied from the existing <code>_published/</code> tree. A <code>docs-check</code> mode computes hashes for all <code>docs/src/**/*.md</code> and returns nonzero if any source has changed without a corresponding translation update; the enforcement signal for pre-push validation.</p>
 <h3 id="7-canonical-specs-vs-implementation-history-split"><a class="header" href="#7-canonical-specs-vs-implementation-history-split">7. Canonical specs vs. implementation-history split</a></h3>
-<p>A docs tree holds two categories of “spec”:</p>
 <div class="table-wrapper">
 <table>
 <thead>
@@ -230,27 +228,21 @@
 </tbody>
 </table>
 </div>
-<p>Implementation-history specs live at <code>docs/src/history/</code> on disk so <code>llms-full.txt</code> picks them up, which gives the agent surface the full trail. SUMMARY.md leaves them out, so mdBook never renders them to HTML. Outside humans see only the primary content. Agents see everything.</p>
-<h3 id="8-build-factoring-hybrid-scaffold-then-promote"><a class="header" href="#8-build-factoring-hybrid-scaffold-then-promote">8. Build factoring: hybrid scaffold-then-promote</a></h3>
-<p>The mechanism is built in the first repo to adopt it (mnemra-core). The workspace-canon slot is reserved now, by this ADR, with the mechanism details promoted up from a TBD placeholder. Once the mechanism settles in mnemra-core, it gets promoted in place into the workspace-shared tool (either a <code>scripts/</code> recipe or a <code>.claude/commands/docs-translate.md</code> slash command), with no relocation. Repos that adopt later get a thin justfile recipe that calls the workspace tool.</p>
-<h2 id="mechanism-details-resolved-2026-05-21"><a class="header" href="#mechanism-details-resolved-2026-05-21">Mechanism details (resolved 2026-05-21)</a></h2>
-<p>The translation pipeline’s deterministic gating, its prompt and substitution mechanism, its manifest, and the agent (llms.txt) surface were built and proven in the first adopter, mnemra-core. The human (mdBook) surface <em>generates</em> correctly but is NOT yet wired into the published build. That wiring is tracked separately. The specifics below are promoted from the TBD placeholder into canon.</p>
-<h3 id="pipeline-surfaces"><a class="header" href="#pipeline-surfaces">Pipeline surfaces</a></h3>
-<p>Three surfaces work together:</p>
+<p>Implementation-history specs live at <code>docs/src/history/</code> on disk so <code>llms-full.txt</code> picks them up (the agent surface gets the full trail), but <code>SUMMARY.md</code> does not include them; mdBook does not render them to HTML. Outside humans see only primary content; agents see everything.</p>
+<h3 id="8-pipeline-surfaces-the-resolved-mechanism"><a class="header" href="#8-pipeline-surfaces-the-resolved-mechanism">8. Pipeline surfaces (the resolved mechanism)</a></h3>
+<p>Three collaborating surfaces:</p>
 <ul>
-<li><strong><code>scripts/docs-translate.py</code></strong> — deterministic gating only, no LLM calls. It has modes <code>--plan</code>, <code>--finalize</code>, and <code>--check</code>, with <code>--src docs/src --out docs/_published --prompts docs/prompts</code>. It owns: source hashing, manifest IO, verbatim copies of canonical-audience and structural pages, orphan cleanup, and emitting the per-page translation plan (the assembled prompts) for the orchestrator to dispatch.</li>
-<li><strong><code>scripts/docs-llms.py</code></strong> — generates <code>llms.txt</code> (the manifest) and <code>llms-full.txt</code> (the agent-tree concatenation in SUMMARY.md order). Its <code>--check</code> mode is the drift gate.</li>
-<li><strong><code>/docs-translate</code> slash command</strong> — the orchestration loop (see Dispatch contract).</li>
+<li><strong><code>scripts/docs-translate.py</code>:</strong> deterministic gating only, no LLM calls. Modes <code>--plan</code> / <code>--finalize</code> / <code>--check</code>, with <code>--src docs/src --out docs/_published --prompts docs/prompts</code>. Owns: source hashing, manifest IO, verbatim copies of canonical-audience and structural pages, orphan cleanup, and emitting the per-page translation plan (assembled prompts) for the orchestrator to dispatch.</li>
+<li><strong><code>scripts/docs-llms.py</code>:</strong> generates <code>llms.txt</code> (a manifest, Jeremy Howard format) and <code>llms-full.txt</code> (an agent-tree concatenation in SUMMARY.md order); <code>--check</code> is the drift gate.</li>
+<li><strong>The <code>docs-translate</code> slash command:</strong> the orchestration loop (the in-session LLM-dispatch step; see §9).</li>
 </ul>
-<h3 id="recipes"><a class="header" href="#recipes">Recipes</a></h3>
+<p><strong>Recipes (deterministic, no-LLM, these remain justfile recipes):</strong></p>
 <ul>
-<li><code>just docs-check</code> → <code>docs-translate.py --check</code> plus <code>docs-llms.py --check</code> (the pre-push non-stale gate).</li>
-<li><code>just docs-llms</code> → regenerate <code>llms.txt</code> and <code>llms-full.txt</code>.</li>
+<li><code>just docs-check</code> → <code>docs-translate.py --check</code> + <code>docs-llms.py --check</code> (the pre-push non-stale gate).</li>
+<li><code>just docs-llms</code> → regenerate <code>llms.txt</code> / <code>llms-full.txt</code>.</li>
 <li><code>just docs-serve</code> → <code>mdbook serve docs/</code>.</li>
 </ul>
-<p>There’s intentionally no <code>just docs-translate</code> recipe. Translation needs an in-session agent dispatch, and a justfile recipe can’t perform one.</p>
-<h3 id="prompt-files-and-substitution"><a class="header" href="#prompt-files-and-substitution">Prompt files and substitution</a></h3>
-<p>The EXPLAIN-pass and STRIP-pass prompts live at <code>docs/prompts/explain-pass.md</code> and <code>docs/prompts/strip-pass.md</code>. The planner builds each page’s prompt by substituting three tokens:</p>
+<p><strong>Prompt files and substitution.</strong> EXPLAIN-pass and STRIP-pass prompts live at <code>docs/prompts/explain-pass.md</code> and <code>docs/prompts/strip-pass.md</code>. The planner assembles each page’s prompt by substituting three tokens:</p>
 <div class="table-wrapper">
 <table>
 <thead>
@@ -263,9 +255,8 @@
 </tbody>
 </table>
 </div>
-<p><code>validate_prompt</code> requires <code>{{NONCE}}</code> in every prompt template. A template that’s missing it fails the planner. The nonce wraps untrusted page content so that any instructions injected inside a source page can’t escape the data region.</p>
-<h3 id="manifest-schema"><a class="header" href="#manifest-schema">Manifest schema</a></h3>
-<p><code>docs/_published/.translation-manifest.json</code>:</p>
+<p><code>validate_prompt</code> requires <code>{{NONCE}}</code> in every prompt template; a template missing it fails the planner. The nonce wraps untrusted page content so instructions injected inside a source page cannot escape the data region.</p>
+<p><strong>Manifest schema</strong> (<code>docs/_published/.translation-manifest.json</code>):</p>
 <pre><code class="language-json">{
   "schema_version": 1,
   "entries": {
@@ -279,10 +270,9 @@
   }
 }
 </code></pre>
-<p>Hash gating keys on <strong>both</strong> <code>source_sha256</code> and <code>prompt_sha256</code>. A page retranslates when its source changes OR when its pass prompt changes.</p>
-<h3 id="structural-never-translated-pages"><a class="header" href="#structural-never-translated-pages">Structural (never-translated) pages</a></h3>
-<p><code>SUMMARY.md</code> and <code>glossary.md</code> are structural. They’re copied verbatim into BOTH <code>_published/human/</code> and <code>_published/agent/</code>, and they’re excluded from the manifest and the plan items. (<code>glossary.md</code> is also the <code>{{GLOSSARY}}</code> injection source.)</p>
-<h3 id="_published-layout-as-built"><a class="header" href="#_published-layout-as-built"><code>_published/</code> layout (as built)</a></h3>
+<p>Hash gating keys on <strong>both</strong> <code>source_sha256</code> and <code>prompt_sha256</code>: a page retranslates when its source changes OR when its pass prompt changes.</p>
+<p><strong>Structural (never-translated) pages.</strong> <code>SUMMARY.md</code> and <code>glossary.md</code> are structural: copied verbatim to BOTH <code>_published/human/</code> and <code>_published/agent/</code>, and excluded from the manifest and plan items. (<code>glossary.md</code> is additionally the <code>{{GLOSSARY}}</code> injection source.)</p>
+<p><strong><code>_published/</code> layout (as built):</strong></p>
 <pre><code>docs/_published/
   human/                      # EXPLAIN-translated + verbatim human-canonical pages (mdBook source)
   agent/                      # STRIP-translated + verbatim agent-canonical pages
@@ -290,68 +280,66 @@
   llms-full.txt               # agent/ concatenation in SUMMARY.md order
   .translation-manifest.json  # source + prompt content hashes
 </code></pre>
-<h3 id="dispatch-contract-docs-translate"><a class="header" href="#dispatch-contract-docs-translate">Dispatch contract (<code>/docs-translate</code>)</a></h3>
-<p>Translation needs an in-session LLM call, so the loop is an orchestrator-driven slash command rather than a justfile recipe:</p>
+<h3 id="9-why-a-slash-command-not-a-recipe--the-dispatch-contract"><a class="header" href="#9-why-a-slash-command-not-a-recipe--the-dispatch-contract">9. Why a slash command, not a recipe — the dispatch contract</a></h3>
+<p>Translation requires an in-session LLM call, which a justfile recipe cannot perform; the orchestration loop is therefore a slash command. The deterministic, no-LLM portions (<code>--check</code>, manifest IO, verbatim copies) remain script/recipe-invoked (§8). The loop:</p>
 <ol>
-<li><strong>Plan</strong> — <code>docs-translate.py --plan</code> emits JSON <code>items[]</code>, each carrying <code>source_path</code>, <code>output_path</code>, and an <code>assembled_prompt</code>. An empty <code>items</code> means nothing is stale, so stop.</li>
-<li><strong>Dispatch</strong> — for each item, the orchestrator dispatches a general-purpose sub-agent (<code>mode: default</code>, no Write/Edit/Bash) whose only job is to return the translated Markdown as its final message. The parent session writes each result to <code>output_path</code>. Parallelism is mandatory: sub-agents dispatch in batches of 4 in a single message. An empty or preamble response retries once with a “return only Markdown” prefix; a second failure aborts before finalize.</li>
-<li><strong>Finalize</strong> — <code>docs-translate.py --finalize</code> updates the manifest after all outputs are on disk. A non-zero exit (a missing output) aborts without writing a partial manifest.</li>
+<li><strong>Plan:</strong> <code>docs-translate.py --plan</code> emits JSON <code>items[]</code>, each with <code>source_path</code>, <code>output_path</code>, and an <code>assembled_prompt</code>. Empty <code>items</code> → nothing stale, stop.</li>
+<li><strong>Dispatch:</strong> for each item, the orchestrator dispatches a general-purpose sub-agent (default mode, no Write/Edit/Bash) whose sole job is to return the translated Markdown as its final message; the parent session writes each result to <code>output_path</code>. Parallelism is mandatory; sub-agents dispatch in batches of four in a single message. An empty/preamble response retries once with a “return only Markdown” prefix; a second failure aborts before finalize.</li>
+<li><strong>Finalize:</strong> <code>docs-translate.py --finalize</code> updates the manifest after all outputs are on disk; a non-zero (missing output) aborts without a partial manifest write.</li>
 </ol>
-<h3 id="operational-notes-orchestrator-side--policy-not-pipeline-mechanism"><a class="header" href="#operational-notes-orchestrator-side--policy-not-pipeline-mechanism">Operational notes (orchestrator-side — policy, not pipeline mechanism)</a></h3>
-<p>The pipeline itself is model-agnostic. What follows is orchestration policy applied at dispatch time:</p>
+<p><strong>Operational note (orchestrator-side policy, not pipeline mechanism).</strong> The pipeline is model-agnostic (the slash command pins the default sub-agent mode and selects no model). EXPLAIN-pass renders (human-facing prose) default to the strategy tier per the human-prose-output standard. In early runs, cheaper sub-agents narrated preamble before the document on a majority of EXPLAIN pages, while the strategy tier produced clean first-pass renders. STRIP-pass (agent form) can use a cheaper tier.</p>
+<h3 id="10-build-factoring-scaffold-then-promote"><a class="header" href="#10-build-factoring-scaffold-then-promote">10. Build factoring: scaffold-then-promote</a></h3>
+<p>The mechanism builds in the first adopting repo; the shared-canon slot is reserved by this ADR. Once the mechanism stabilizes there, it is promoted in-place into a shared tool (a shared script recipe or slash-command definition) without relocation. Adopter repos get a thin justfile recipe that invokes the shared tool. The shared tool location is decided at promotion time.</p>
+<h2 id="drivers--rationale"><a class="header" href="#drivers--rationale">Drivers / Rationale</a></h2>
 <ul>
-<li>EXPLAIN-pass renders (the human-facing prose) default to the Opus tier, per the human-prose-output standard. The STRIP pass (the agent form) can use a cheaper tier.</li>
+<li><strong>Agent-first, but humans still read docs.</strong> P-AgentPrimarySource optimizes source for agent consumers; this decision closes the resulting gap at the only point that does not violate the principle: the publish surface, not the source. Translating the source would introduce two sources; refusing to translate would leave human readers with unreadable prose.</li>
+<li><strong>EXPLAIN/STRIP framing.</strong> The passes are directed transformations, not symmetrical rewrites. The glossary is the load-bearing register for EXPLAIN; it anchors term meanings so the pass produces consistent translations rather than invented paraphrases.</li>
+<li><strong>Local translation, not CI.</strong> API spend in cloud CI would run on every push, unbounded. Local subscription translation + committed outputs caps the cost: one translation event per source change, at the maintainer’s workstation, result stored in the repo. The committed-build-artifact tradeoff is explicitly accepted.</li>
+<li><strong>Hash-gated regeneration.</strong> The manifest bounds regeneration to actual source (or prompt) deltas, so translation commits correlate with real changes and PR diffs stay meaningful.</li>
+<li><strong>Ecosystem-scoped by declaration.</strong> <code>P-PerRepoFirst</code> (build per-repo first, extract on the rule of three) ordinarily defers extraction until a second adopter materializes. The maintainer explicitly declared this pattern ecosystem-scoped at design time, overriding the rule-of-three. The ADR is drafted before the mechanism is fully built; the first adopter is the proving ground; the slot is reserved to make the promotion path clean, not to impose premature shared tooling.</li>
 </ul>
-<h3 id="ci-shape"><a class="header" href="#ci-shape">CI shape</a></h3>
-<p>CI stays dumb, with no LLM calls. It runs <code>mdbook build docs/</code>, copies the committed <code>llms.txt</code> and <code>llms-full.txt</code> into the build output (<code>docs/book/</code>), and deploys that tree to the <code>gh-pages</code> branch.</p>
-<p><strong>Current-state caveat (2026-05-21):</strong> <code>book.toml</code> sets <code>src = "src"</code>, so mdBook builds the canonical <code>docs/src/</code> tree, NOT <code>_published/human/</code>. The human surface is therefore not yet wired to the EXPLAIN translations. The §2 design-intent wiring is pending. The agent surface (<code>docs-llms.py</code>, default <code>--src docs/_published/agent</code>) IS wired to the STRIP translations.</p>
-<h2 id="scope"><a class="header" href="#scope">Scope</a></h2>
-<p>This is a workspace-shared pattern. <strong>First adopter: mnemra-core.</strong> It applies to any workspace repo that publishes docs to outside humans where the canonical source is agent-first. Downstream adopters aren’t enumerated here. The trigger is “publishing to outside humans from an agent-primary source,” not membership in a fixed list.</p>
-<p>The workspace tool location (the promotion target once the mechanism settles) is TBD at promotion time. Current candidates: <code>scripts/docs-translate</code>, <code>.claude/commands/docs-translate.md</code>.</p>
+<h2 id="current-state-caveat"><a class="header" href="#current-state-caveat">Current-state caveat</a></h2>
+<p>The deterministic gating, prompt/substitution mechanism, manifest, and agent (<code>llms.txt</code>) surface were built and proven in the first adopter. The <strong>agent surface IS wired</strong> (<code>docs-llms.py</code>, default <code>--src docs/_published/agent</code>, reads the STRIP translations). The <strong>human (mdBook) surface generates correctly but is NOT yet wired into the published build</strong>: <code>book.toml</code> sets <code>src = "src"</code>, so mdBook builds the canonical <code>docs/src/</code> tree, not <code>_published/human/</code>. Wiring the human surface to the EXPLAIN translations (and stripping YAML frontmatter so it stops rendering as page text) is tracked as a separate task. This caveat records state at the time of writing and is not asserted resolved.</p>
 <h2 id="alternatives-considered"><a class="header" href="#alternatives-considered">Alternatives Considered</a></h2>
-<p><strong>Workspace-shared tooling from day one.</strong> Build the translation prompts and scripts in the workspace right away, before mnemra-core proves the pattern. Rejected: that’s premature workspace plumbing, laid before the mechanism is validated in a real adopter.</p>
-<p><strong>Per-repo-then-extract on second adopter.</strong> Build the full mechanism in mnemra-core, and extract it only when a second repo needs it. Rejected: the maintainer named workspace scope explicitly at design time, which overrides the rule-of-three. Waiting for a second adopter would defer the promotion-path design.</p>
-<p><strong>First-paragraph extraction as llms.txt description source.</strong> Use each page’s first paragraph after the H1 as its llms.txt description. Rejected: first paragraphs aren’t always good one-liners, and the pattern produces inconsistent manifest quality.</p>
-<p><strong>Accept non-deterministic translation.</strong> Run translation on every invocation and accept the diff churn. Rejected: noisy diffs on unchanged source hurt PR review quality and erode trust in the committed translation artifacts.</p>
+<p><strong>Shared tooling from day one.</strong> Build translation prompts and scripts as a shared tool immediately, before the first adopter proves the pattern. Rejected: premature plumbing before the mechanism is validated in a real adopter; the build cost is unjustified until the shape is known.</p>
+<p><strong>Per-repo-then-extract on a second adopter.</strong> Build the full mechanism in the first adopter; extract only when a second repo needs it. Rejected: the maintainer explicitly named ecosystem scope at design time, overriding the rule-of-three. Waiting for a second adopter ignores a known signal and defers the promotion-path design.</p>
+<p><strong>First-paragraph extraction as the <code>llms.txt</code> description source.</strong> Use each page’s first paragraph after the H1 as the description. Rejected: first paragraphs are not always good one-liners; the pattern produces inconsistent manifest quality and cannot be reliably auto-populated by the translation pass.</p>
+<p><strong>Accept non-deterministic translation.</strong> Run translation on every invocation, accepting diff churn. Rejected: noisy diffs on unchanged source impede PR review quality (reviewers cannot distinguish content changes from translation re-rolls) and erode trust in the committed translation artifacts.</p>
+<h2 id="scope"><a class="header" href="#scope">Scope</a></h2>
+<p>An ecosystem-shared pattern. The pattern applies to any repo that publishes docs to outside humans where the canonical source is agent-first. The trigger is “publishing to outside humans from an agent-primary source,” not membership in a fixed list; downstream adopters are not enumerated here.</p>
 <h2 id="consequences"><a class="header" href="#consequences">Consequences</a></h2>
 <p><strong>Positive:</strong></p>
 <ul>
-<li>Outside humans land on pages authored for them, and outside agents get a structured llms.txt entry point. Both gaps from the Context section close.</li>
-<li>One canonical source, so there’s no dual-source drift. That’s the failure mode G-0027 explicitly rejected in its “Dual-source” alternative.</li>
-<li>Translation cost stays bounded to local subscription usage. Cloud CI stays free of API spend.</li>
-<li>Hash gating produces stable, meaningful diffs. Translation commits line up with actual source changes.</li>
-<li>The glossary gives the EXPLAIN pass a shared register, which keeps it consistent across pages and over time.</li>
+<li>Outside humans land on pages authored for them; outside agents have a structured <code>llms.txt</code> entry point. Both Context-section gaps are closed.</li>
+<li>A single canonical source; no dual-source drift (the failure mode P-AgentPrimarySource’s “dual-source” alternative explicitly rejected).</li>
+<li>Translation cost is bounded to local subscription usage; cloud CI remains API-spend-free.</li>
+<li>Hash gating produces stable, meaningful diffs; translation commits correlate with actual source changes.</li>
+<li>The glossary provides a shared register for EXPLAIN-pass consistency across pages and over time.</li>
 </ul>
 <p><strong>Negative / accepted:</strong></p>
 <ul>
-<li>The <code>_published/</code> tree is a committed build artifact, so PR diffs include translated content next to the source changes. Mitigation: the PR review convention focuses content review on <code>docs/src/</code>, and treats <code>_published/</code> changes as visual confirmation only.</li>
-<li>Translation quality depends on the EXPLAIN and STRIP prompts. A prompt change triggers a full retranslation (a one-off cost, bounded, and explicit in the PR diff).</li>
-<li>Future contributors have to run <code>just docs-check</code> before pushing doc changes. The failure-with-message handles first-violation cases. This is an acknowledged onboarding cost.</li>
-<li>Translation is gated on a local subscription. A repo maintainer without a Claude Code subscription can’t regenerate translations. That’s an accepted constraint.</li>
+<li><code>_published/</code> is a committed build artifact. PR diffs include translated content alongside source changes. Mitigation: the PR review convention focuses on <code>docs/src/</code> for content review; <code>_published/</code> changes are visual confirmation only.</li>
+<li>Translation quality depends on the EXPLAIN/STRIP prompts. A prompt change at <code>docs/prompts/</code> triggers a full retranslation (a one-off, bounded, explicit-in-the-diff cost).</li>
+<li>Future contributors must run the translation step before pushing doc changes. The <code>just docs-check</code> failure-with-message handles first-violation cases; this is an acknowledged onboarding cost.</li>
+<li>Translation is local-subscription-gated. A repo maintainer without a subscription cannot regenerate translations. Accepted; it matches the current tooling profile.</li>
 </ul>
 <p><strong>Downstream:</strong></p>
 <ul>
-<li>The mnemra-core docs restructure inherits directly from the spec layout and the frontmatter contract (<code>title</code>, <code>summary:</code>, <code>primary-audience</code>).</li>
-<li>When the mechanism settles in mnemra-core, a workspace-promotion task updates this ADR with the resolved workspace tool location.</li>
-<li>The glossary migrates to a structured form once the structured-delta tooling lands. At that point the EXPLAIN pass reads from the structured source.</li>
-</ul>
-<h2 id="changelog"><a class="header" href="#changelog">Changelog</a></h2>
-<ul>
-<li>2026-05-20 — Initial draft. Decision lineage recorded; mechanism details TBD pending first-adopter implementation.</li>
-<li>2026-05-20 — Amendment: corrected “session codes” → “requirement codes” in Context section. R-codes are requirement identifiers from canonical requirements docs, not session-episode shorthand.</li>
-<li>2026-05-21 — Amendment: “Mechanism details” promoted from TBD placeholder to resolved mechanism, following first-adopter (mnemra-core) implementation. Records the three pipeline surfaces, the recipe set, prompt files + <code>{{GLOSSARY}}</code>/<code>{{PAGE}}</code>/<code>{{NONCE}}</code> substitution (incl. the nonce injection defense), the manifest schema (source/prompt sha256 hash-gating), the structural-page both-sides-verbatim rule (<code>SUMMARY.md</code> + <code>glossary.md</code>), the <code>_published/</code> layout, and the <code>/docs-translate</code> dispatch contract. Resolves the proposal’s <code>just docs-translate</code> recipe to a <code>/docs-translate</code> slash command (translation needs in-session Agent dispatch).</li>
-<li>2026-05-21 — Correction: the same-day “Mechanism details” amendment overclaimed the human surface as built. In fact <code>book.toml</code> sets <code>src = "src"</code>, so CI builds <code>docs/src/</code> and the human EXPLAIN translations are not yet served (the agent/llms surface IS wired). Corrected the resolved-section intro and CI-shape subsection to current state; human-surface wiring tracked as a separate pending task.</li>
+<li>A docs restructure inherits directly from the spec layout (§7) and the frontmatter contract (<code>title</code>, <code>summary:</code>, <code>primary-audience</code>).</li>
+<li>When the mechanism stabilizes in the first adopter, a promotion task updates this ADR with the resolved shared-tool location (§10).</li>
+<li>The glossary migrates to a structured form when the structured-delta tooling lands; the EXPLAIN pass will read from the structured source at that point. This ADR accommodates that migration without requiring a revision.</li>
+<li>Human-surface wiring plus the frontmatter strip is tracked as a separate task (see Current-state caveat).</li>
 </ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../adrs/G-0028-agent-first-workflow-shape.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../adrs/G-0013-agent-first-workflow-shape.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="../glossary.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../adrs/G-0015-relational-substrate-default.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -361,11 +349,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../adrs/G-0028-agent-first-workflow-shape.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../adrs/G-0013-agent-first-workflow-shape.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="../glossary.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../adrs/G-0015-relational-substrate-default.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>

@@ -35,10 +35,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-79642c4f.js";
+            window.path_to_searchindex_js = "searchindex-c688843e.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-eb7d2461.js"></script>
+        <script src="toc-92488165.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -183,7 +183,7 @@
 <p><strong>Architecture values.</strong> The standing beliefs that shape every architecture decision. Eight core values (Security, Simplicity, Quality, Observability, Maintainability, Honesty, Decomposition, Composition) plus supporting method values. Lives in <code>architecture-values.md</code>.</p>
 <p><strong>Architecture principles.</strong> Named rules that operationalize the values. Each carries a <code>P-</code> label and traces back to one or more values. Lives in <code>architecture-principles.md</code>.</p>
 <p><strong>Constraint edges.</strong> The relationships between values, principles, and ADRs, expressed as a graph of typed edges (specializes, depends-on, conflicts-with, refines). The nodes live in the values doc, the principles doc, and the ADR files; this doc is the edges view over them. Lives in <code>constraint-edges.md</code>.</p>
-<p><strong>G-ADR.</strong> A governance architecture decision record. The <code>G-</code> series captures decisions that apply across the ecosystem rather than to one project. G-0001 through G-0029 at the time of this writing.</p>
+<p><strong>G-ADR.</strong> A governance architecture decision record. The <code>G-</code> series captures decisions that apply across the ecosystem rather than to one project. G-0001 through G-0016 at the time of this writing.</p>
 <h2 id="naming-conventions"><a class="header" href="#naming-conventions">Naming conventions</a></h2>
 <p><strong><code>G-</code> prefix.</strong> Governance-level ADRs. They apply to the whole ecosystem and live in this repo under <code>adrs/</code>.</p>
 <p><strong><code>P-</code> prefix.</strong> Two meanings, disambiguated by context. As a principle label (<code>P-Defer</code>, <code>P-LockContract</code>) it names an entry in the principles doc. As an ADR prefix it names a project-level decision record that lives in an individual project repo, not here. The principles doc and the ADR series both use <code>P-</code>; the surrounding words make clear which is meant.</p>
@@ -205,7 +205,7 @@
 <p><strong>Iterate-to-zero.</strong> The review loop that runs fix-and-review rounds until no blocking finding remains, with a round cap that triggers escalation rather than another round.</p>
 <p><strong>Worktree.</strong> A separate working tree off the main branch, opened per code-modifying dispatch so the main branch stays stable and failed work is discardable.</p>
 <h2 id="domain-terms"><a class="header" href="#domain-terms">Domain terms</a></h2>
-<p><strong>Finding identity.</strong> The tuple that decides whether two review findings across rounds are the same defect: file plus content-anchor plus severity. Dedup ignores severity so a downgraded finding still matches; gating reads current-round severity. Defined in G-0014.</p>
+<p><strong>Finding identity.</strong> The tuple that decides whether two review findings across rounds are the same defect: file plus content-anchor plus severity. Dedup ignores severity so a downgraded finding still matches; gating reads current-round severity. Defined in G-0004.</p>
 <p><strong>Content-anchor.</strong> A hash of a normalized window of code around a cited finding. It anchors a finding to content rather than line numbers, so the finding survives line shifts and reformatting.</p>
 <p><strong>Edge types.</strong> The four relationships in the constraint graph. Specializes: the source is a specific case of the target. Depends-on: the source presupposes the target. Conflicts-with: the two can’t both hold without negotiation. Refines: the source tightens the target within the same domain.</p>
 <p><strong>Dual-audience publish model.</strong> The publishing posture for this canon. The source documents are agent-primary: written for agents first, with humans as a derivative audience. Each page declares a <code>primary-audience</code> in its frontmatter. At publish time the sources render into a human-facing site and an agent-facing set used to generate <code>llms.txt</code> and <code>llms-full.txt</code>.</p>
@@ -219,7 +219,7 @@
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="adrs/G-0029-publish-time-human-render.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="adrs/G-0016-unattended-github-credential.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
@@ -230,7 +230,7 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="adrs/G-0029-publish-time-human-render.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="adrs/G-0016-unattended-github-credential.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 

@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>G-0021: Monotonic Non-Decreasing Version Policy - mnemra-governance</title>
+        <title>G-0010: Embargo Flow Architecture - mnemra-governance</title>
 
 
         <!-- Custom HTML head -->
@@ -35,10 +35,10 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-79642c4f.js";
+            window.path_to_searchindex_js = "../searchindex-c688843e.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-eb7d2461.js"></script>
+        <script src="../toc-92488165.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -177,97 +177,97 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="g-0021-monotonic-non-decreasing-version-policy-pattern-a"><a class="header" href="#g-0021-monotonic-non-decreasing-version-policy-pattern-a">G-0021: Monotonic Non-Decreasing Version Policy (Pattern A)</a></h1>
+                        <h1 id="g-0010-embargo-flow-architecture--default-no-build--security-advisory-private-fork"><a class="header" href="#g-0010-embargo-flow-architecture--default-no-build--security-advisory-private-fork">G-0010: Embargo Flow Architecture — Default No-Build + Security-Advisory Private Fork</a></h1>
 <p><strong>Status:</strong> Accepted
 <strong>Date:</strong> 2026-04-30</p>
+<blockquote>
+<p><strong>Provisional standalone:</strong> kept separate from the release apparatus because it is a security flow applicable to any repo, not Rust-specific. It may consolidate with the security ADRs later.</p>
+</blockquote>
 <h2 id="context"><a class="header" href="#context">Context</a></h2>
-<p>The semver companion doc declared two release patterns per repo:</p>
+<p>The question was the workflow’s posture toward embargoed security disclosures. Three options were on the table:</p>
 <ul>
-<li><strong>Pattern A:</strong> per-merge bump (bump on each merge to main, version cut at flag activation).</li>
-<li><strong>Pattern B:</strong> deploy-as-release (bump only at deploy time; merges are dark).</li>
+<li><strong>Metadata-in-the-gate:</strong> the approval token encodes an <code>embargo_until</code> value; gate logic respects the date and delays merge / release.</li>
+<li><strong>No embargo workflow by default:</strong> build it ad-hoc on the first incident.</li>
+<li><strong>Changeset-encoded:</strong> carried in a changeset file, which depends on adopting changesets (rejected elsewhere).</li>
 </ul>
-<p>Under Pattern A, the open question is what shape the version sequence on <code>main</code> takes between merges. Strictly increasing, monotonic non-decreasing, or unconstrained?</p>
-<p>The monotonic-non-decreasing answer (<strong>Pattern A1</strong>) means: after every merge to main, <code>prev_version &lt;= new_version</code>. Most merges advance the version. Some merges (say, a docs-only merge or a CHANGELOG-only edit) MAY produce equal versions. Strictly-increasing (<strong>Pattern A2</strong>) requires every merge to produce a strictly higher version.</p>
-<p>The discussion locked Pattern A1. The reason is signal quality: forcing a <code>bump:patch</code> minimum on every merge inflates patch counts and dilutes the meaning of the patch number.</p>
-<p>Pattern B is out of scope for this ADR (architecture decision record). Pattern B repos declare their own bump policy in their repo spec.</p>
+<p>The stated posture was: no embargo has ever occurred, and none is anticipated until the product publishes (which may bring CVE reports). Security/embargo was not among the locked top-three quality attributes.</p>
+<p>Research found:</p>
+<ul>
+<li><strong>The dominant ecosystem pattern is the host’s Security Advisory with a temporary private fork.</strong> Draft advisory → private fork → fixes merged in private → advisory and fix released together. This is the host’s documented approach and what the Rust language’s Security Response working group uses for compiler and package-manager CVEs.</li>
+<li><strong>The Rust advisory database explicitly does not handle embargoed advisories.</strong> Contributors wait until the embargo lifts before filing. It is post-disclosure only.</li>
+<li><strong>CHANGELOG-staging during embargo is not directly supported by tooling.</strong> Projects publish the CHANGELOG and advisory simultaneously at unembargo time, or include a generic “security fix” line with the advisory link added at publication.</li>
+</ul>
+<p>The no-build default matches the stated posture and aligns with how the large majority of package maintainers handle CVE-class issues. Metadata-in-the-gate is the lowest-lift upgrade path if and when embargo becomes a real workflow; it adds metadata only, and requires no new tooling.</p>
 <h2 id="decision"><a class="header" href="#decision">Decision</a></h2>
-<p><strong>For Pattern A repos, the version sequence on <code>main</code> MUST be monotonic non-decreasing.</strong> After every merge to main, <code>prev_version &lt;= new_version</code>. A merge MAY produce an equal version when:</p>
-<ul>
-<li>The merge is documentation-only (no <code>src/</code> or equivalent change)</li>
-<li>The merge is internal (not surfacing to public API), AND</li>
-<li>The repo’s release-plz config is set to skip-bump for the affected paths</li>
-</ul>
-<p>Concretely: the bump label (per G-0013) declares the bump intent. The workspace template script (G-0018) sets <code>bump:patch</code> as default. Explicit <code>bump:none</code> is an additional value in the bump-label family for non-bumping merges:</p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Bump label</th><th>Effect</th><th>Use</th></tr>
-</thead>
-<tbody>
-<tr><td><code>bump:major</code></td><td>major+1, minor=0, patch=0</td><td>Breaking API change</td></tr>
-<tr><td><code>bump:minor</code></td><td>minor+1, patch=0</td><td>Feature addition</td></tr>
-<tr><td><code>bump:patch</code></td><td>patch+1</td><td>Bugfix or behavior change</td></tr>
-<tr><td><code>bump:none</code></td><td>no version change</td><td>Docs-only, internal-only, CHANGELOG-edit-only</td></tr>
-</tbody>
-</table>
-</div>
-<p><code>bump:none</code> is <strong>honor-system + Stage 4 reviewer responsibility</strong> (Stage 4 is the review stage of a change’s life), not tool-enforced. Research verified that release-plz has no path-coverage feature. It operates on commit-message regex (<code>release_commits</code>), not labels or paths. Two paths to enforcement were considered:</p>
+<p><strong>Default posture: no embargo workflow built.</strong> When the first embargoed disclosure arrives (e.g., the product publishes and receives a Common Vulnerabilities and Exposures (CVE) report), use the <strong>Security Advisory with temporary private fork</strong> pattern:</p>
 <ol>
-<li>Build a workspace-side gate (workflow step that reads PR labels via <code>gh api</code>, runs <code>git diff --name-only</code>, exits non-zero on mismatch).</li>
-<li>Reframe as honor-system: <code>bump:none</code> is the dev’s declaration of “no surfacing change”; Stage 4 reviewers catch false <code>bump:none</code> claims during review.</li>
+<li>
+<p>The reporter or maintainer files a private security advisory (via the host API or the Security tab).</p>
+</li>
+<li>
+<p>The maintainer creates a temporary private fork via the advisory UI (“Start a temporary private fork”).</p>
+</li>
+<li>
+<p>Fix work happens in the private fork; PRs merge in private; CI runs in private (advisory metadata gates visibility). <strong>Note the CI gap:</strong> the host does not run status checks or third-party integrations on PRs in temporary private forks. This means Stage 4 iterate-to-zero, Stage 5 <code>just ci</code>, and the G-0004 finding-identity persistence are all <strong>bypassed during embargo prep</strong>. The audit-PR step at unembargo time (below) is how the workflow re-engages those gates.</p>
+</li>
+<li>
+<p><strong>Flag-flip release merges are suspended in the affected repo during embargo.</strong> If the affected repo runs the per-merge-bump + flag-activation release model, no <code>bump:minor</code> / <code>bump:major</code> merges land on public main during embargo; a release-PR opened during embargo would carry feature CHANGELOG content unaware of the pending embargo fix, and would drift on unembargo merge. The operator holds non-security release merges until the embargo lifts. Independent <code>bump:patch</code> merges for unrelated bugfixes MAY proceed at operator discretion if the patch is independent of the embargo region.</p>
+</li>
+<li>
+<p>The CHANGELOG entry on the public branch uses a generic placeholder (e.g., <code>### Security: pending advisory disclosure</code>) with the advisory ID added at publication time. The release tool is configured to allow manual edit of this section per release, not auto-overridden (a per-repo config preserves the section under a marker comment).</p>
+</li>
+<li>
+<p><strong>At unembargo time:</strong> the workflow re-engages the quality gates via a single follow-up <strong>audit-PR</strong> before the release publishes:</p>
+<p>a. The fix is merged from the private fork to public main (the advisory-resolution merge).</p>
+<p>b. <strong>The audit-PR opens immediately:</strong> a no-op or trivial CHANGELOG-finalization PR targets main, carrying the now-public diff in its review surface. Stage 4 (iterate-to-zero) runs in full against the diff; Stage 5 (<code>just ci</code> + the secret-scanning query + a dependency audit against the now-public dependency state) runs in full. G-0004 finding-identity persistence resumes for this audit-PR.</p>
+<p>c. <strong>Stage 6 approval on the audit-PR</strong> carries the standard label set (<code>stage6-approved</code>, the release-mode label, <code>bump:patch</code>, typical for security fixes); G-0003 label-set authorization applies; the G-0008 merge apparatus handles the merge.</p>
+<p>d. <strong>Only after the audit-PR merges</strong> does the release publish, with the CHANGELOG entry citing the advisory ID.</p>
+<p>The audit-PR is not optional. It re-engages Stage 4/5 review on what embargo prep skipped, produces the audit trail the activity log and host event log expect, and provides the human-review checkpoint the workflow gates the release on. The embargo lift itself is not delayed by the audit-PR; the advisory-resolution merge in step (a) is the public-disclosure moment; the release publication in step (d) is purely the changelog-and-tag step.</p>
+<p><strong>Audit-PR vs. an already-open release-PR.</strong> If an independent <code>bump:patch</code> bugfix proceeded during embargo (operator discretion per step 4), an unrelated release-PR may already be open and contain the patch’s CHANGELOG entry by the time the advisory-resolution merge lands. Three coordination paths, chosen by context:</p>
+<p>i. <strong>Close-and-reopen the release-PR.</strong> Cleanest when the patch’s CHANGELOG entry is small. The release tool reopens automatically on the next push to main; the new release-PR captures the patch and the embargo fix together.</p>
+<p>ii. <strong>Wait for the release-PR to merge before the audit-PR.</strong> Cleanest when the release-PR is approved and queueing; the audit-PR then re-runs Stage 4/5 on a clean main. The release containing the embargo fix lands as a follow-up release.</p>
+<p>iii. <strong>Run the audit-PR alongside the release-PR.</strong> The audit-PR’s bump label is <code>bump:patch</code> (security fix); semver checks and Stage 4 reviewers cross-check that the audit-PR’s diff is independent of the release-PR’s minor/major content. If the diffs conflict, fall back to (i) or (ii).</p>
+<p>The operator picks the path; the embargo coordinator documents the choice in the audit-PR’s activity-log entry. No mechanical rule fits all cases; the contextual choice is preserved as audit metadata.</p>
+</li>
 </ol>
-<p>This ADR adopts path 2, per the simplicity anchor (no new tools) and the principle that Stage 4 review is the place architectural review lands. The PR body MUST include a one-line path-coverage justification (“changed paths: <code>docs/**</code>, <code>README.md</code> only, no <code>src/</code> change”) that reviewers cross-check against <code>git diff --name-only</code>. Reviewers who suspect a misleading <code>bump:none</code> flag the PR with a <code>blocker</code> finding citing the false claim.</p>
-<p><strong>Revert PR semantics.</strong> A PR that reverts a prior merge MUST declare its bump label based on <strong>public-API impact, not numeric distance from the reverted version</strong>. Concretely:</p>
+<p><strong>Trip-wire to upgrade to metadata-in-the-gate:</strong> if any of the following happens, this ADR is amended to add embargo metadata to the gating signal:</p>
 <ul>
-<li>Reverting a <code>bump:patch</code> merge with <code>bump:patch</code> is correct (patch undoes a bugfix; net public-API effect is patch-level).</li>
-<li>Reverting a <code>bump:minor</code> merge requires <code>bump:major</code> if the revert removes public-API surface added by the reverted minor. Semver semantics treat surface removal as a breaking change.</li>
-<li>Reverting a <code>bump:major</code> merge with <code>bump:major</code> is the obvious case.</li>
+<li>Two or more embargoes in any rolling six-month window;</li>
+<li>An embargo overlaps with a non-security release such that the overlap cannot be cleanly handled in human coordination;</li>
+<li>The product’s publish cadence settles such that embargoes become a recurring concern.</li>
 </ul>
-<p>The revert PR body MUST cite the reverted PR plus the bump-label rationale. Reviewers cross-check that the bump label matches the public-API delta. The monotonic-non-decreasing numeric invariant is preserved by definition (we only ever bump up). The semver contract is preserved by reviewer discipline on revert bump labels.</p>
-<p>Pattern A2 (strictly increasing) is <strong>rejected</strong> for Pattern A repos. Pattern B repos may implement strictly-increasing if their spec chooses; this ADR only constrains Pattern A.</p>
+<p>Until the trip-wire fires, embargo handling is human-coordinated per-incident, with no tooling investment.</p>
+<p>The closed-enum bump-label vocabulary (G-0003) deliberately omits embargo labels for v1. Adding them later (e.g., <code>embargo:until-&lt;date&gt;</code>, <code>embargo:resolved</code>) is the upgrade.</p>
 <h2 id="alternatives-considered"><a class="header" href="#alternatives-considered">Alternatives Considered</a></h2>
 <ul>
-<li><strong>Strictly increasing (Pattern A2).</strong> Rejected. Inflates patch count on docs-only and internal-refactor merges; dilutes the signal of patch numbers; forces release-plz CHANGELOG entries for every merge regardless of consumer impact.</li>
-<li><strong>Unconstrained / arbitrary</strong> (allow same or lower versions). Rejected. Same-version-after-merge is fine. Lower-version-after-merge breaks every downstream tool’s assumption (cargo, crates.io, dependents) and offers no benefit.</li>
-<li><strong>Date-based versioning instead of semver.</strong> Rejected. Out of scope for this ADR; semver is locked at workspace level.</li>
-<li><strong>No bump-none label; force bump:patch on every merge.</strong> Rejected per the dilution argument.</li>
-<li><strong>Bump-none allowed unconditionally.</strong> Rejected. Without any path-coverage check, dev convenience erodes the version signal.</li>
+<li><strong>Build embargo metadata into the approval token and labels from day one.</strong> Rejected for v1: building gating logic for a workflow that has never fired is premature; the logic would atrophy without exercise. The trip-wire reserves the option.</li>
+<li><strong>Encode embargo state in a changeset file.</strong> Rejected. It depends on changeset adoption, which the release apparatus (G-0009) rejected. Not viable.</li>
+<li><strong>A dedicated embargo branch convention</strong> (e.g., <code>embargo/CVE-2026-XXXX</code>). Rejected. The host’s temporary private fork is more secure (a private repo, not just a private branch), better integrated with advisory metadata, and is the host’s recommendation.</li>
+<li><strong>No security-disclosure protocol at all</strong> (absorb into the general bug flow). Rejected. CVE-class issues need coordinated disclosure; the private-fork path is documented and ready when needed.</li>
+<li><strong>Custom in-repo embargo metadata</strong> (PR labels, milestones, custom fields). Rejected. It reinvents what the host’s Security Advisory provides natively, requires per-repo training, and does not survive tooling consolidation cleanly.</li>
 </ul>
 <h2 id="consequences"><a class="header" href="#consequences">Consequences</a></h2>
 <ul>
-<li><strong>Bump-label family adds <code>bump:none</code></strong> as a valid value (extension to G-0013’s vocabulary). G-0013 is amended to update the cardinality enforcement to recognize four bump-label values; <code>bump:none</code> is now in the closed enum.</li>
-<li><strong><code>bump:none</code> is honor-system + reviewer-enforced.</strong> No tool gate. Stage 4 reviewers (operational-discipline + test-author scope) cross-check the PR’s <code>bump:none</code> declaration against <code>git diff --name-only</code> and flag misleading claims.</li>
-<li><strong>Mandatory <code>bump:none</code> reviewer routing.</strong> Every <code>bump:none</code> PR MUST include the operational-discipline reviewer in the Stage 4 reviewer set, regardless of the per-spec routing the chunk would otherwise have called for. The dispatch envelope (the scoped context handed to a specialist when work is routed to them) detects <code>bump:none</code> label presence and adds the operational reviewer to the fan-out automatically. If unavailable, the implementing developer serves as backup with the same path-coverage cross-check duty. Stage 4 cannot iterate-to-zero (run fix-and-review rounds until no blocking finding remains) on a <code>bump:none</code> PR until at least one operational-discipline reviewer has acknowledged the path-coverage statement.</li>
-<li><strong>PR body must declare <code>bump:none</code> rationale.</strong> A one-line path-coverage statement in the PR body is mandatory when <code>bump:none</code> is set (for example, “changed paths: <code>docs/**</code>, <code>*.md</code> only, no <code>src/</code> change”). The workspace template script (G-0018) does not auto-generate this; the operator or agent setting <code>bump:none</code> writes the line.</li>
-<li><strong>Per-repo retrofit:</strong> add the <code>bump:none</code> label to the repo’s allowed-labels list. A per-repo <code>release-plz.toml</code> may declare a <code>release_commits</code> regex to suppress release-PR creation for <code>bump:none</code>-style commit messages, but this is a CHANGELOG-quality concern, not a gate.</li>
-<li><strong>CHANGELOG entries for <code>bump:none</code> merges:</strong> release-plz emits these into a “Miscellaneous” or “Internal” CHANGELOG section, or omits them per per-repo <code>release-plz.toml</code> config.</li>
-<li><strong>Pattern B unaffected.</strong> Pattern B repos may use any bump policy; this ADR only governs Pattern A.</li>
-<li><strong>cargo-semver-checks interaction:</strong> release-plz integration catches breaking-API changes that lack <code>bump:major</code> at release-PR open time per G-0020. So <code>bump:none</code> on a breaking-API change fails at the release-plz step, even though no path-coverage gate runs upstream.</li>
-<li><strong>Revert PR bump labels are public-API-driven, not numeric.</strong> Reverting a <code>bump:minor</code> that added public surface requires <code>bump:major</code>. Reviewers cross-check the bump label against the public-API delta of the revert.</li>
-<li><strong>Audit trail:</strong> the activity_log row from G-0018’s step 1 captures the bump label. <code>bump:none</code> merges have a clean audit history showing the dev’s intent.</li>
-<li><strong>Release-PR pattern:</strong> when <code>bump:none</code> accumulates across multiple merges with no <code>bump:patch</code>-or-higher activity, no release PR is opened. Quiet periods are expected and not a bug.</li>
+<li><strong>Zero v1 implementation work.</strong> No code, no tooling, no workflow config. The decision is documented; the private-fork path is ready when needed.</li>
+<li><strong>Per-repo retrofit:</strong> ensure each in-scope repo has the Security tab enabled (default for public repos) and a <code>SECURITY.md</code> documenting the disclosure path. A workspace template ships <code>SECURITY.md</code>; the per-repo spec adds a repo-specific contact.</li>
+<li><strong>CHANGELOG generic-line convention:</strong> while an embargo is active, the public-side CHANGELOG entry for the fix uses a placeholder until unembargo time. The release tool is configured to allow manual edit of this section per release.</li>
+<li><strong>Audit trail during embargo:</strong> activity-log entries during embargo work happen in the private fork’s clone; on unembargo merge, the fork’s commit history merges to public main. The Stage 6 audit (per G-0003) runs on the private-fork PR; the corresponding activity row stays internal.</li>
+<li><strong>Product interaction:</strong> if the product publishes and a bug in a shipped component becomes a CVE, the embargo flow above applies to that repo specifically. The trip-wire metric is measured across all in-scope repos (rolling six-month embargo count).</li>
+<li><strong>Trip-wire monitoring:</strong> at retrospectives, count embargoes since the last retro. A threshold trip schedules the upgrade as its own spec.</li>
+<li><strong>No paid advanced-security subscription required</strong> for the private-fork flow on public repos (free tier). Private repos would need the paid tier; revisit at the point a private repo first enters scope.</li>
+<li><strong>Documentation:</strong> a <code>SECURITY.md</code> template plus a per-repo <code>SECURITY.md</code> lives alongside other repo-baseline docs.</li>
+<li><strong>Substrate nuance:</strong> the Rust advisory database is post-disclosure only, but mirrors published advisories roughly 72 hours after disclosure, so the workflow’s reliance on the host’s Security Advisory as canon during embargo (rather than the advisory database) is the right substrate.</li>
 </ul>
-<h2 id="changelog"><a class="header" href="#changelog">Changelog</a></h2>
-<h3 id="2026-04-30-round-2-review-amendments"><a class="header" href="#2026-04-30-round-2-review-amendments">2026-04-30: Round 2 review amendments</a></h3>
-<ul>
-<li><strong>Honor-system collapse prevention (bump:none routing):</strong> without a routing rule, the honor-system has no enforcement when the spec-driven reviewer fan-out happens not to include the operational-discipline reviewer. <strong>Fixed:</strong> added a mandatory operational-reviewer-in-reviewer-set rule for <code>bump:none</code> PRs (the workspace template detects the label and adds the reviewer to fan-out automatically).</li>
-</ul>
-<h3 id="2026-04-30-round-1-review-amendments"><a class="header" href="#2026-04-30-round-1-review-amendments">2026-04-30: Round 1 review amendments</a></h3>
-<ul>
-<li><strong>Path-coverage check unimplemented:</strong> the original ADR claimed release-plz enforced a path-coverage gate for <code>bump:none</code>. Verified release-plz has no such feature. It operates on commit-message regex, not labels or paths. <strong>Fixed:</strong> reframed <code>bump:none</code> as honor-system + Stage 4 reviewer responsibility. Building a workspace-side gate was the alternative, rejected on simplicity-anchor grounds.</li>
-<li><strong>Revert PR bump semantics:</strong> reverting a <code>bump:minor</code> removes public-API surface; <code>bump:patch</code> understates the breakage. <strong>Fixed:</strong> added explicit revert-PR semantics. The bump label tracks public-API impact, not numeric distance. Reviewers verify.</li>
-</ul>
-<p>Status remains <strong>Proposed</strong> pending r2 review on the amended Decision + Consequences sections.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../adrs/G-0020-rust-release-automation-release-plz.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../adrs/G-0009-rust-release-apparatus.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="../adrs/G-0022-embargo-flow-architecture.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../adrs/G-0011-internal-ipc-typed-binary-encoding.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -277,11 +277,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../adrs/G-0020-rust-release-automation-release-plz.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../adrs/G-0009-rust-release-apparatus.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="../adrs/G-0022-embargo-flow-architecture.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../adrs/G-0011-internal-ipc-typed-binary-encoding.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>
