@@ -16,7 +16,7 @@ Terms and conventions used across this canon. A first-time reader can start here
 
 **Constraint edges.** The relationships between values, principles, and ADRs, expressed as a graph of typed edges (specializes, depends-on, conflicts-with, refines). The nodes live in the values doc, the principles doc, and the ADR files; this doc is the edges view over them. Lives in `constraint-edges.md`.
 
-**G-ADR.** A governance architecture decision record. The `G-` series captures decisions that apply across the ecosystem rather than to one project. G-0001 through G-0029 at the time of this writing.
+**G-ADR.** A governance architecture decision record. The `G-` series captures decisions that apply across the ecosystem rather than to one project. G-0001 through G-0016 at the time of this writing.
 
 ## Naming conventions
 
@@ -60,7 +60,7 @@ These labels name participants by function. The canon uses them in place of inte
 
 ## Domain terms
 
-**Finding identity.** The tuple that decides whether two review findings across rounds are the same defect: file plus content-anchor plus severity. Dedup ignores severity so a downgraded finding still matches; gating reads current-round severity. Defined in G-0014.
+**Finding identity.** The tuple that decides whether two review findings across rounds are the same defect: file plus content-anchor plus severity. Dedup ignores severity so a downgraded finding still matches; gating reads current-round severity. Defined in G-0004.
 
 **Content-anchor.** A hash of a normalized window of code around a cited finding. It anchors a finding to content rather than line numbers, so the finding survives line shifts and reformatting.
 

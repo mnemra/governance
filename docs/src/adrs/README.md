@@ -6,7 +6,7 @@ primary-audience: human
 
 # Architecture Decision Records
 
-This directory holds the `G-` series of governance architecture decision records, G-0001 through G-0029. Each record captures one decision: the context that forced it, the decision itself, the alternatives that were rejected and why, and the consequences.
+This directory holds the `G-` series of governance architecture decision records, G-0001 through G-0016. Each record captures one decision: the context that forced it, the decision itself, the alternatives that were rejected and why, and the consequences.
 
 ## Conventions
 
@@ -18,11 +18,10 @@ Records anchor to the canon. Most trace to an architecture principle or value, a
 
 The decisions group into a few areas.
 
-- **Testing and review.** G-0001 sets the testing philosophy. G-0014 defines how review findings are identified and persisted across rounds.
-- **Build, release, and versioning.** G-0006 makes the justfile the CI contract. G-0019 through G-0023 cover tag-race serialization, release automation, the version policy, embargo flow, and the merge queue.
-- **Repository and infrastructure baseline.** G-0002 (asset embedding), G-0005 (SQL migrations), G-0015 (devcontainers), G-0016 (secret detection), G-0017 (feature flags), and G-0025 (internal IPC encoding) set per-repo defaults.
-- **Approval and authorization.** G-0013 sets the approval-label vocabulary; G-0024 sets who may apply those labels; G-0018 covers the merge template and recovery cap.
-- **Knowledge capture.** G-0007 through G-0012 cover the knowledge-extraction mechanism, from the capture hook to the schema, duplicate detection, worked examples, drift detection, and the safety ceiling.
-- **Documentation and workflow.** G-0003 (the two-tier ADR system), G-0004 (XML agent profiles), G-0026 (project dev-docs tooling), G-0027 (agent-primary source artifacts), G-0028 (the agent-first workflow shape), and G-0029 (the publish-time human render).
+- **Documentation and decision-recording.** G-0001 sets the two-tier ADR system (general `G-` decisions versus project-local `P-` decisions). G-0012 sets the project dev-docs tooling; G-0014 records the publish-time human render that turns agent-first sources into a human-readable site.
+- **Workflow and review.** G-0013 defines the agent-first workflow shape (`/brief` + `/verify`). G-0004 defines how review findings are identified and persisted across rounds.
+- **Merge, release, and versioning.** G-0003 sets merge governance (shift-left review on the governing artifact, verified at merge). G-0008 is the PR-merge apparatus (merge template, recovery cap, tag-race serialization, merge queue). G-0009 is the Rust release apparatus (release automation + the version policy). G-0010 records the embargo flow for coordinated security disclosure.
+- **Repository and infrastructure baseline.** G-0002 makes the justfile the CI contract. G-0005 (devcontainers), G-0006 (layered secret detection), G-0007 (feature flags), G-0011 (internal IPC encoding), and G-0016 (unattended host credential) set per-repo and automation defaults.
+- **Data substrate.** G-0015 sets the default relational store, keyed on deployment topology, behind an engine-agnostic seam.
 
 The full list, in order, is in the navigation sidebar and in [SUMMARY.md](../SUMMARY.md).
