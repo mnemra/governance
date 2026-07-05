@@ -28,7 +28,7 @@ Publishing is dual-audience. The sources under `docs/src/` render two ways:
 - a human-facing site, built with [mdBook](https://rust-lang.github.io/mdBook/), for reading in a browser;
 - an agent-facing set used to generate `llms.txt` and `llms-full.txt`, for loading into an agent's context.
 
-The render mechanism and the reasoning behind it are recorded in [G-0029](adrs/G-0029-publish-time-human-render.md). The agent-primary stance itself is recorded in [G-0027](adrs/G-0027-agent-primary-source-artifacts.md).
+The render mechanism and the reasoning behind it are recorded in [G-0014](adrs/G-0014-publish-time-human-render.md). The agent-primary stance itself is the `P-AgentPrimarySource` principle in the [architecture principles](architecture-principles.md).
 
 ## Repository
 

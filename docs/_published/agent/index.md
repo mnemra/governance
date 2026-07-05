@@ -21,14 +21,14 @@ The [glossary](glossary.md) defines terms and conventions, including role labels
 
 ## How the canon is written and published
 
-Source documents are agent-primary: authored for an agent reader as first consumer, with the human-facing site generated from the same sources rather than maintained separately (per [G-0027](adrs/G-0027-agent-primary-source-artifacts.md)). Every page declares a `primary-audience` value in its frontmatter; the publish pipeline treats the page per that value.
+Source documents are agent-primary: authored for an agent reader as first consumer, with the human-facing site generated from the same sources rather than maintained separately (`P-AgentPrimarySource`, see [architecture principles](architecture-principles.md)). Every page declares a `primary-audience` value in its frontmatter; the publish pipeline treats the page per that value.
 
 Publishing is dual-audience. Sources under `docs/src/` render two ways:
 
 - a human-facing site, built with [mdBook](https://rust-lang.github.io/mdBook/), for browser reading;
 - an agent-facing set used to generate `llms.txt` and `llms-full.txt`, for loading into an agent's context.
 
-Render mechanism and reasoning: [G-0029](adrs/G-0029-publish-time-human-render.md). Agent-primary stance: [G-0027](adrs/G-0027-agent-primary-source-artifacts.md).
+Render mechanism and reasoning: [G-0014](adrs/G-0014-publish-time-human-render.md).
 
 ## Repository
 
